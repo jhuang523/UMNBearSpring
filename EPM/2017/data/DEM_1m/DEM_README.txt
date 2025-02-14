@@ -1,0 +1,2 @@
+**Note that this folder does NOT include the .bil file which is necessary for generating the 1m DEM raster in the model.
+This file is too big to upload to github, and the file must be independently gathered from the MDH- Bear Spring shared gdrive
