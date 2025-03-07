@@ -1,0 +1,26 @@
+# domain source files / params
+geojson:
+  watershed : '../data/HUC_12.geojson'
+  springshed : '../data/Bear_Springshed.geojson'
+  creeks : '../data/creeks_geoJSON.geojson'
+csv:
+  karst_features : '../data/karst_features.csv'
+  precip : '../data/BS_precip_5_1_24_5_30_24.csv'
+crs : 'EPSG:32615'
+DEM : '../../src/data/DEM/dem_1m_m.bil'
+
+# grid discretization params
+delr : 5
+delc : 5
+nlay : 1
+
+#time discretization
+tuni : 'DAYS'
+nper : 1 #The number of stress periods
+nstp : 1 #The number of timesteps
+perlen : 1.0 #The length of each stress period
+tsmult : 1.0 #length of successive timesteps
+
+#aquifer params
+
+
