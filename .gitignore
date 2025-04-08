@@ -1,0 +1,10 @@
+*.bil
+*.bud
+*.chd
+*.dis
+*.grb
+*.hds
+*.ic
+*.lst
+*.gif
+/EPM/frames
