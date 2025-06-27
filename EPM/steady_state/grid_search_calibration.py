@@ -4,7 +4,7 @@ import pandas as pd #for handling dataframes
 import sys
 import os
 import math
-# from mpi4py import MPI
+from mpi4py import MPI
 from itertools import product 
 import tqdm
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../../src"))) #use this to be able to import local packages
@@ -16,22 +16,22 @@ from utils.calibration import *
 
 #param space, specify here in dict form
 param_space = {
-    'Kh_0' : list(np.arange(10, 110, 10)),
-    'Kh_1' : list(np.arange(1, 10.1, 1)),
+    'Kh_0' : list(np.arange(0.1, 10.1, 0.1)),
+    'Kh_1' : list(np.arange(0.1, 5.1, 1)),
     'Kv_0' : list(np.arange(0.1, 10.1, 0.1)),
-    'Kv_1' : list(np.arange(0.1, 10.1, 0.1)),
-    'C_spring' : list(np.arange(10, 110, 10)),
+    'Kv_1' : list(np.arange(0.1, 5.1, 0.1)),
+    'C_spring' : list(np.arange(0.1, 10.1, 0.1)),
     'C_creek' : list(np.arange(.1, 1.1, .1)),
 }
 
 
 #mpi configs
-# comm = MPI.COMM_WORLD
-# rank = comm.Get_rank()
-# size = comm.Get_size()
-rank = 1
-size = 1000
-max_runs = 1 #fix this for full runs, at low number for testing right now
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+size = comm.Get_size()
+# rank = 1
+# size = 1000
+max_runs = 1000 #fix this for full runs, at low number for testing right now
 
 
 
@@ -49,7 +49,7 @@ combo_gen = (
     combo
     for i, vals in enumerate(product(*values))
     if (i % size == rank)
-    and (lambda combo: combo['Kh_1'] <= combo['Kh_0'] and combo['Kv_1'] <= combo['Kv_0'])(dict(zip(keys, vals)))
+    and (lambda combo: combo['Kh_1'] <= combo['Kh_0'] and combo['Kv_1'] <= combo['Kv_0'] and combo['Kh_0']== combo['C_spring'])(dict(zip(keys, vals)))
     # returns the dict only if it passes the condition
     for combo in [dict(zip(keys, vals))]
 )

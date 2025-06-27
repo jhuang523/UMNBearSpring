@@ -7,8 +7,12 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=huan1428@umn.edu
 #SBATCH -p pkkang
-#SBATCH --nodes=10
-#SBATCH --output=calibration.out
+#SBATCH --nodes=2
+#SBATCH --output=calibration_%j.out
+#SBATCH --error=calibration_%j.out
 
-module loadimpi/2021/5.1
+
+module load impi/2021/5.1
+module load conda
+source activate modflow
 mpirun -np $SLURM_NTASKS python grid_search_calibration.py 
