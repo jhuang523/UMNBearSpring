@@ -41,4 +41,5 @@ dependencies:
   - pytest
   - statsmodels
   - modflowapi
+  - mpi4py
   # - pygeos # Having dependency issues 
