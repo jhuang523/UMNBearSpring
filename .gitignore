@@ -1,0 +1,17 @@
+*.bil
+dem*
+*.bud
+*.dis
+*.dis.grb
+*.drn
+*.hds
+*.ic
+*.ims
+*.lst
+*.nam
+*.npf
+*.oc
+*.rcha
+*.tdis
+*.shp
+*.shx
