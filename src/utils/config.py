@@ -3,6 +3,7 @@ import numpy as np
 import geopandas as gpd
 import pandas as pd
 import flopy as mf
+import shapely as shp
 from utils.utils import *
 from utils.creeks import * 
 from utils.calibration import *
@@ -198,9 +199,11 @@ class Config:
         #set idomain array
         xc, yc = self.model_grid.xcellcenters, self.model_grid.ycellcenters #Get the cell center coords
         points = np.array([(xc[i, j], yc[i, j]) for i in range(self.nrow) for j in range(self.ncol)])
+        points_geom = shp.points(points[:, 0], points[:, 1])
         #Extract the raw polygon from the GDF object subDomain
         domain = self.domain.geometry.values[0]
-        mask = shp.vectorized.contains(domain, points[:, 0], points[:, 1])
+        # mask = shp.contains_xy(domain, points[:, 0], points[:, 1])
+        mask = shp.contains(domain, points_geom)
         idomain_mask = mask.reshape((self.nrow, self.ncol))
         idomain = np.zeros((self.nlay, self.nrow, self.ncol), dtype=int)
         idomain[:, :, :] = idomain_mask.astype(int)
@@ -414,12 +417,20 @@ class Config:
         print(f'model {name} loaded')
     
     def read_head_output(self, **params):
-        self.heads = self.model.output.head().get_data(idx = 0)
+        try: 
+            self.heads = self.model.output.head().get_data(idx = 0)
+        except AttributeError:
+            self.load_model()
+            self.heads = self.model.output.head().get_data(idx = 0)
         self.heads[self.heads > 1e10] = np.nan #clean data by setting very high heads to nan 
         print('heads data read to heads')
     
     def read_drain_discharge_output(self):
-        bud = self.model.output.budget() #read budget
+        try:
+            bud = self.model.output.budget() #read budget
+        except AttributeError:
+            self.load_model()
+            bud = self.model.output.budget() #read budget
         drain_dis = bud.get_data(text='DRN')[0] #get drain discharge from budget
         drain_spd = pd.DataFrame(self.model.get_package('drn').stress_period_data.get_data()[0]) #get drain spd
         dis_arr = np.zeros((self.nlay, self.nrow, self.ncol)) #make discharge array of size nlay x nrow x ncol
