@@ -14,8 +14,21 @@ from utils.utils import *
 from utils.creeks import *
 from utils.calibration import * 
 
+
+    
+    
+
 #param space, specify here in dict form
 def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 1000, is_mpi = True):
+    def print_output(output, zero_only = False):
+        if is_msi:
+            if zero_only == True and rank == 0:
+                print(output, flush = True)
+            elif zero_only == False:
+                print(output, flush = True)
+
+
+
     param_space = {
         'Kh_0' : list(np.arange(0.1, 10.1, 0.1)),
         'Kh_1' : list(np.arange(0.1, 5.1, 1)),
@@ -36,7 +49,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
         rank = 0
         size = 1000
 
-    print(f'rank {rank} started', flush = True)
+    print_output(f'rank {rank} started')
 
     #generate valid combinations 
     values = list(param_space.values())
@@ -52,14 +65,14 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     )
 
     #set up model run base
-    if rank == 0:
-        print('setting up config', flush = True)
+    print_output('setting up config', zero_only=True)
     run = Config('EPM_2layer.yaml')
     run.load_polygon('watershed', 'springshed', 'subdomain')
     run.merge_polygons('merged', 'watershed_polygon', 'springshed_polygon')
     run.load_creeks()
     run.set_domain('subdomain_polygon')
     run.apply_DEM_to_domain()
+    print_output('domain set', zero_only=True)
     start = run.creeks.return_coordinates(186)[-1]
     nearest = get_nearest_point(start, run.merged_polygon)
     run.creeks.extend_creek(start, nearest)
@@ -67,16 +80,22 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     nearest = get_nearest_point(start, run.merged_polygon)
     run.creeks.extend_creek(start, nearest)
     run.creeks.clip_creek(run.domain, 10)
+    print_output('creeks set', zero_only=True)
+
     run.load_karst_features()
     run.extract_grid_params_from_domain()
     run.extract_top_config()
     run.extract_bottom_config()
     run.create_grid()
+    print_output('grid set', zero_only=True)
+
     run.extract_idomain()
+    print_output('idomain set', zero_only=True)
+
     run.extract_creek_cells()
 
-    if rank == 0:
-        print('config complete', flush = True)
+
+    print_output('config complete', zero_only = True
     #calibration data 
     mrsw = CalibrationData(name = 'mrsw', filename = '../../data/MRSW/MRSW_head_CSV.csv', UTME = 557091, UTMN = 4867265)
     bs_q = CalibrationData(name = 'bs_q', filename = '../../data/discharge/discharge_2017_2020.csv')
@@ -99,8 +118,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     i = 0
     for combo in combo_gen:        
         run_name = f'{sim_dir}/creeks_{combo["C_creek"]}_springs_{combo["C_spring"]}_Kh_{combo["Kh_0"]}_{combo["Kh_1"]}_Kv_{combo["Kv_0"]}_{combo["Kv_1"]}'
-        if rank == 0:
-            print(run_name, flush = True)
+        rint(run_name, zero_only = True)
         if os.path.exists(run_name):
             print(f'run {combo} already completed, skipping')
             continue
