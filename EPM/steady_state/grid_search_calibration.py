@@ -4,7 +4,6 @@ import pandas as pd #for handling dataframes
 import sys
 import os
 import math
-from mpi4py import MPI
 from itertools import product 
 import tqdm
 import argparse
@@ -16,7 +15,7 @@ from utils.creeks import *
 from utils.calibration import * 
 
 #param space, specify here in dict form
-def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 1000):
+def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 1000, is_mpi = True):
     param_space = {
         'Kh_0' : list(np.arange(0.1, 10.1, 0.1)),
         'Kh_1' : list(np.arange(0.1, 5.1, 1)),
@@ -28,23 +27,20 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
 
 
     #mpi configs
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    size = comm.Get_size()
-    # rank = 1
-    # size = 1000
+    if is_mpi: 
+        from mpi4py import MPI
+        comm = MPI.COMM_WORLD
+        rank = comm.Get_rank()
+        size = comm.Get_size()
+    else:
+        rank = 0
+        size = 1000
 
     print(f'rank {rank} started', flush = True)
 
     #generate valid combinations 
     values = list(param_space.values())
     keys = list(param_space.keys())
-    filtered_combos = (
-        combo for combo in (
-            dict(zip(keys, values))
-            for values in product(*values)
-        )  
-    )
 
     combo_gen = (
         combo
@@ -56,6 +52,8 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     )
 
     #set up model run base
+    if rank == 0:
+        print('setting up config')
     run = Config('EPM_2layer.yaml')
     run.load_polygon('watershed', 'springshed', 'subdomain')
     run.merge_polygons('merged', 'watershed_polygon', 'springshed_polygon')
@@ -154,19 +152,29 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
         if rank == 0:
             print(f'data saved to {run_data_fname}', flush = True)
     except OSError:
+        print("making directory")
         os.makedirs(run_data_dir)
         run_data.to_csv(f'{run_data_dir}/{run_data_fname}_{rank}.csv', index = False)
+        print(f'data saved to {run_data_fname}', flush = True)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    max_runs = parser.add_argument('max_runs', type = int, help = 'max runs per rank', default = 5)
-    run_data_dir = parser.add_argument('data_output_dir', type = str, help = 'output dir for run data', default = 'EPM_2layer')
-    run_data_fname = parser.add_argument('data_output_fname', type = str, help = 'file name pattern for run data csvs', default = 'results')
-    sim_dir = parser.add_argument('sim_dir', type = str, help = 'path for model simulations', default = 'model_runs')
-    grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs)
+    parser.add_argument('--max_runs', type = int, help = 'max runs per rank', default = 5)
+    parser.add_argument('--data_output_dir', type = str, help = 'output dir for run data', default = 'EPM_2layer')
+    parser.add_argument('--data_output_fname', type = str, help = 'file name pattern for run data csvs', default = 'results')
+    parser.add_argument('--sim_dir', type = str, help = 'path for model simulations', default = 'model_runs')
+    parser.add_argument('--no_mpi', action='store_false', dest='is_mpi', help='Disable MPI (default is enabled)')
+    parser.set_defaults(is_mpi=True)    
+    args = parser.parse_args()
+    max_runs = args.max_runs
+    run_data_fname = args.data_output_fname
+    run_data_dir = args.data_output_dir
+    sim_dir = args.sim_dir
 
 
 
+    grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs, is_mpi = args.is_mpi)
 
 
 
