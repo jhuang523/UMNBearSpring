@@ -6,6 +6,7 @@ import os
 import math
 from itertools import product 
 import tqdm
+import time
 import argparse
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../../src"))) #use this to be able to import local packages
 
@@ -88,8 +89,11 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     run.extract_bottom_config()
     run.create_grid()
     print_output('grid set', zero_only=True)
-
+    start = time.time()
     run.extract_idomain()
+    end = time.time()
+    run_time = end - start
+    print(f'time elapsed: {run_time:.3f} ')
     print_output('idomain set', zero_only=True)
 
     run.extract_creek_cells()
