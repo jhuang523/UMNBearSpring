@@ -33,7 +33,7 @@ size = comm.Get_size()
 # size = 1000
 max_runs = 1000 #fix this for full runs, at low number for testing right now
 
-print(f'rank {rank} started')
+print(f'rank {rank} started', flush = True)
 
 #generate valid combinations 
 values = list(param_space.values())
