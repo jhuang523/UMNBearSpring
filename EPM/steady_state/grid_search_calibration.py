@@ -21,7 +21,7 @@ from utils.calibration import *
 #param space, specify here in dict form
 def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 1000, is_mpi = True):
     def print_output(output, zero_only = False):
-        if is_msi:
+        if is_mpi:
             if zero_only == True and rank == 0:
                 print(output, flush = True)
             elif zero_only == False:
