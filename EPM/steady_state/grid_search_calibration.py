@@ -95,7 +95,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     run.extract_creek_cells()
 
 
-    print_output('config complete', zero_only = True
+    print_output('config complete', zero_only = True)
     #calibration data 
     mrsw = CalibrationData(name = 'mrsw', filename = '../../data/MRSW/MRSW_head_CSV.csv', UTME = 557091, UTMN = 4867265)
     bs_q = CalibrationData(name = 'bs_q', filename = '../../data/discharge/discharge_2017_2020.csv')
