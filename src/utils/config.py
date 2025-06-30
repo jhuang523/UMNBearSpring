@@ -199,15 +199,8 @@ class Config:
         #set idomain array
         xc, yc = self.model_grid.xcellcenters, self.model_grid.ycellcenters #Get the cell center coords
         points = np.array([(xc[i, j], yc[i, j]) for i in range(self.nrow) for j in range(self.ncol)])
-        gdf_points = gpd.GeoDataFrame(geometry=[shp.geometry.Point(xy) for xy in points])
-# domain: a GeoSeries (or convert your Polygon to one)
-        domain_gdf = gpd.GeoDataFrame(geometry=[self.domain.geometry.values[0]])
-        # Use spatial join with index
-        result = gpd.sjoin(gdf_points, domain_gdf, how="left", predicate="within")
-        # mask = True where point is within the domain
-        mask = ~result.index_right.isna()
-        # mask = shp.contains_xy(domain, points[:, 0], points[:, 1])
-        # mask = shp.contains(domain, points_geom)
+        domain = self.domain.geometry.values[0]
+        mask = shp.contains_xy(domain, points[:, 0], points[:, 1])
         idomain_mask = mask.reshape((self.nrow, self.ncol))
         idomain = np.zeros((self.nlay, self.nrow, self.ncol), dtype=int)
         idomain[:, :, :] = idomain_mask.astype(int)
