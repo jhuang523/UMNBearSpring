@@ -53,7 +53,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
 
     #set up model run base
     if rank == 0:
-        print('setting up config')
+        print('setting up config', flush = True)
     run = Config('EPM_2layer.yaml')
     run.load_polygon('watershed', 'springshed', 'subdomain')
     run.merge_polygons('merged', 'watershed_polygon', 'springshed_polygon')
