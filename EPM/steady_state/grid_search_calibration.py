@@ -54,7 +54,6 @@ combo_gen = (
     for combo in [dict(zip(keys, vals))]
 )
 
-
 #set up model run base
 run = Config('EPM_2layer.yaml')
 run.load_polygon('watershed', 'springshed', 'subdomain')
@@ -77,6 +76,8 @@ run.create_grid()
 run.extract_idomain()
 run.extract_creek_cells()
 
+if rank == 0:
+    print('config complete', flush = True)
 #calibration data 
 mrsw = CalibrationData(name = 'mrsw', filename = '../../data/MRSW/MRSW_head_CSV.csv', UTME = 557091, UTMN = 4867265)
 bs_q = CalibrationData(name = 'bs_q', filename = '../../data/discharge/discharge_2017_2020.csv')
@@ -98,8 +99,10 @@ run_data_fname = f'results_{rank}.csv'
 
 #grid search
 i = 0
-for combo in combo_gen:
+for combo in combo_gen:        
     run_name = f'EPM_2layer/creeks_{combo["C_creek"]}_springs_{combo["C_spring"]}_Kh_{combo["Kh_0"]}_{combo["Kh_1"]}_Kv_{combo["Kv_0"]}_{combo["Kv_1"]}'
+    if rank == 0:
+        print(run_name, flush = True)
     if os.path.exists(run_name):
         print(f'run {combo} already completed, skipping')
         continue
@@ -148,6 +151,8 @@ for combo in combo_gen:
             print(f'{run_name} done')
 try: 
     run_data.to_csv(f'{run_data_dir}/{run_data_fname}', index = False)
+    if rank == 0:
+        print(f'data saved to {run_data_fname}', flush = True)
 except OSError:
     os.makedirs(run_data_dir)
     run_data.to_csv(f'{run_data_dir}/{run_data_fname}', index = False)
