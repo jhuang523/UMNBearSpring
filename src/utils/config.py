@@ -7,6 +7,7 @@ import shapely as shp
 from utils.utils import *
 from utils.creeks import * 
 from utils.calibration import *
+import time
 
 class Config:
     """reads config info from yaml file. contains domain and aquifer properties. stores all relevant model params + objects"""
@@ -197,14 +198,18 @@ class Config:
         fig.colorbar(mappable, ax=ax, shrink=0.5, aspect=10, label=var_name)
     def extract_idomain(self):
         #set idomain array
-        xc, yc = self.model_grid.xcellcenters, self.model_grid.ycellcenters #Get the cell center coords
-        points = np.array([(xc[i, j], yc[i, j]) for i in range(self.nrow) for j in range(self.ncol)])
-        domain = self.domain.geometry.values[0]
+        xc_flat = self.model_grid.xcellcenters.ravel()
+        yc_flat = self.model_grid.ycellcenters.ravel()
+        points = np.column_stack((xc_flat, yc_flat))
+        domain = self.domain.values[0]
+        shp.prepare(domain)
+        
         mask = shp.contains_xy(domain, points[:, 0], points[:, 1])
         idomain_mask = mask.reshape((self.nrow, self.ncol))
         idomain = np.zeros((self.nlay, self.nrow, self.ncol), dtype=int)
         idomain[:, :, :] = idomain_mask.astype(int)
         self.idomain = idomain
+
 
     def update_idomain(self, layer, indices, update_val):
         row = indices[:,0]
