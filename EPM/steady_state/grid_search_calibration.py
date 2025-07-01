@@ -20,7 +20,7 @@ from utils.calibration import *
     
 
 #param space, specify here in dict form
-def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 1000, is_mpi = True):
+def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 1000, is_mpi = True, overwrite = False):
     def print_output(output, zero_only = False):
         if is_mpi:
             if zero_only == True and rank == 0:
@@ -123,8 +123,8 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     for combo in combo_gen:        
         run_name = f'{sim_dir}/creeks_{combo["C_creek"]}_springs_{combo["C_spring"]}_Kh_{combo["Kh_0"]}_{combo["Kh_1"]}_Kv_{combo["Kv_0"]}_{combo["Kv_1"]}'
         print_output(run_name, zero_only = True)
-        if os.path.exists(run_name):
-            print(f'run {combo} already completed, skipping')
+        if os.path.exists(run_name) and overwrite == False:
+            print(f'run {combo} already completed, skipping', flush = True)
             continue
         else: 
             if i >= max_runs:
@@ -167,8 +167,8 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
                     results['head_above_surface_error'] = np.nan
                     for f in os.listdir(run_name): #delete files to save space
                         os.remove(f'{run_name}/{f}')
-                run_data = pd.concat([run_data, pd.DataFrame(results)], axis = 0, ignore_index = True)
-                print(f'{run_name} done')
+                run_data = pd.concat([run_data, pd.DataFrame([results])], axis = 0, ignore_index = True)
+                print(f'{run_name} done', flush = True)
     try: 
         run_data.to_csv(f'{run_data_dir}/{run_data_fname}_{rank}.csv', index = False)
         if rank == 0:
@@ -187,6 +187,8 @@ if __name__ == '__main__':
     parser.add_argument('--data_output_fname', type = str, help = 'file name pattern for run data csvs', default = 'results')
     parser.add_argument('--sim_dir', type = str, help = 'path for model simulations', default = 'model_runs')
     parser.add_argument('--no_mpi', action='store_false', dest='is_mpi', help='Disable MPI (default is enabled)')
+    parser.add_argument('--overwrite', action='store_true', dest='overwrite', help='overwrite existing model runs')
+
     parser.set_defaults(is_mpi=True)    
     args = parser.parse_args()
     max_runs = args.max_runs
@@ -196,7 +198,7 @@ if __name__ == '__main__':
 
 
 
-    grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs, is_mpi = args.is_mpi)
+    grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs, is_mpi = args.is_mpi, overwrite = args.overwrite)
 
 
 
