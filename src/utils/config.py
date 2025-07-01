@@ -209,6 +209,18 @@ class Config:
         idomain = np.zeros((self.nlay, self.nrow, self.ncol), dtype=int)
         idomain[:, :, :] = idomain_mask.astype(int)
         self.idomain = idomain
+    
+    def export_idomain(self, path= None):
+        if path is None:
+            path = self.npy['idomain']
+        np.save(path, self.idomain)
+        print(f'saved idomain to {path}')
+
+    def import_idomain(self, path = None): 
+        if path is None:
+            path = self.npy['idomain']
+        self.idomain = np.load(path)
+        print(f'loaded idomain from {path}')
 
 
     def update_idomain(self, layer, indices, update_val):

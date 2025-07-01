@@ -12,6 +12,8 @@ csv:
   karst_features : '../../data/geo_data/karst_features.csv'
   sinkholes : '../../data/geo_data/bear_sinkholes_coords.txt'
   precip : '../../data/precip/BS_precip_5_1_24_5_30_24.csv'
+npy: 
+  idomain: '../../data/geo_data/idomain.npy'
 DEM : '../../data/DEM/dem_1m_m.bil'
 crs : 'EPSG:32615'
 
