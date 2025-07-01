@@ -50,6 +50,13 @@ Kh: #horizontal K, 1 for each layer
 Kv : #vertical K
   - 2.6 #1.3
   - 1.3 #2.6
+Kh_ss: 
+ - 500
+ - 200
+Kv_ss:
+ - 500
+ - 200
+
 
 # drains
 drain_data: #list of features to be represented as drains 

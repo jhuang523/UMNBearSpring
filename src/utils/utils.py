@@ -56,6 +56,17 @@ def apply_DEM_to_polygon(dem_path : str, polygon_data, delr, delc, crs = 'EPSG:3
         maxval = 10000
         dem_grid = np.ma.masked_where(dem_grid > maxval, dem_grid)
         return dem_grid
+def map_geometry_to_grid(geoms: list, nrow, ncol, delr, delc, xmin, ymax):
+    """Return indices of cells that overlap with a given list of geometries"""
+    rasterized = rasterio.features.rasterize(
+        [(geom, 1) for geom in geoms],
+        out_shape=(nrow, ncol),
+        transform=rasterio.transform.from_origin(xmin, ymax, delc, delr),
+        all_touched=True
+    )
+    intersecting_cells = np.argwhere(rasterized == 1)
+    return intersecting_cells
+
 def get_point(coords : tuple) -> shp.geometry.Point:
     return shp.geometry.Point(coords)
 

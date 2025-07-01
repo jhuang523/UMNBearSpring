@@ -239,6 +239,17 @@ class Config:
             Kv_array.append(np.ones((self.nrow, self.ncol)) * K)
         self.Kv_vals = np.stack(Kv_array, axis = 0)
         print('extracted K values')
+    def set_K_values(self, cell_idx : list, Kh = None, Kv = None):
+        idx = np.array(cell_idx, dtype=int).T  # shape (3, N)
+        layers, rows, cols = idx
+        vals = ""
+        if Kh is not None:
+            self.Kh_vals[layers, rows, cols] = Kh
+            vals += f"Kh = {Kh}"
+        if Kv is not None:
+            self.Kv_vals[layers, rows, cols] = Kv
+            vals += f"Kv = {Kv}"
+        print(f'updated {len(cell_idx)} cells with {vals}')
         #TODO deal with more variable K values
     # def assign_conduit_cells(self):
     #     return
@@ -248,7 +259,8 @@ class Config:
         self.update_idomain(0, self.creek_cells,1)
         print('extracted creek cells')
         return self.creek_cells
-    
+    def extract_polygon_cells(self, polygon):
+        return map_geometry_to_grid([polygon], self.nrow, self.ncol, self.delr, self.delc, self.total_bounds[0], self.total_bounds[3])
     def get_cell_elev(self, x, y, is_coordinate = False, **params):
         #given cell index or coordinate, return associated elevation in the elevation array. can handle single point (int or float coordinates) or multiple points (x : array, y : array)
         top = params.get('top', self.top)

@@ -47,14 +47,7 @@ class Creek:
         return self.return_segment(FID).geometry.coords
     def map_creek_to_grid(self, nrow, ncol, delr, delc, xmin, ymax):
         creek_lines = list(self.data.geometry)
-        rasterized = features.rasterize(
-            [(line, 1) for line in creek_lines],  # Assign value 1 where the line intersects
-            out_shape=(nrow, ncol),
-            transform=rasterio.transform.from_origin(xmin, ymax, delc, delr),
-            all_touched=True  # Ensures partial cells are included
-        )
-        intersecting_cells = np.argwhere(rasterized == 1)
-        return intersecting_cells
+        return map_geometry_to_grid(creek_lines, nrow, ncol, delr, delc, xmin, ymax)
     
 
     
