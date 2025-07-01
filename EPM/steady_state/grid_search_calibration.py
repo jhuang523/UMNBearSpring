@@ -31,10 +31,14 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
 
 
     param_space = {
-        'Kh_0' : list(np.arange(0.1, 10.1, 0.1)),
+        'Kh_0' : list(np.arange(0.1, 10.1, 1)),
         'Kh_1' : list(np.arange(0.1, 5.1, 1)),
-        'Kv_0' : list(np.arange(0.1, 10.1, 0.1)),
-        'Kv_1' : list(np.arange(0.1, 5.1, 0.1)),
+        'Kv_0' : list(np.arange(0.1, 10.1, 1)),
+        'Kv_1' : list(np.arange(0.1, 5.1, 1)),
+        'Kh_0_ss' : list(np.arange(100, 550, 50)),
+        'Kv_0_ss' : list(np.arange(100, 550, 50)),
+        'Kh_1_ss' : list(np.arange(100, 550, 50)),
+        'Kv_1_ss' : list(np.arange(100, 550, 50)),
         'C_spring' : list(np.arange(0.1, 10.1, 0.1)),
         'C_creek' : list(np.arange(.1, 1.1, .1)),
     }
@@ -60,7 +64,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
         combo
         for i, vals in enumerate(product(*values))
         if (i % size == rank)
-        and (lambda combo: combo['Kh_1'] <= combo['Kh_0'] and combo['Kv_1'] <= combo['Kv_0'] and combo['Kh_0']== combo['C_spring'])(dict(zip(keys, vals)))
+        and (lambda combo: combo['Kh_1'] < combo['Kh_0'] and combo['Kv_1'] < combo['Kv_0'] and combo['Kh_0']== combo['C_spring'] and combo['Kh_1_ss'] < combo['Kh_0_ss'] and combo['Kv_1_ss'] < combo['Kv_0_ss'])(dict(zip(keys, vals)))
         # returns the dict only if it passes the condition
         for combo in [dict(zip(keys, vals))]
     )
@@ -95,8 +99,10 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     run_time = end - start
     print(f'time elapsed: {run_time:.3f} ')
     print_output('idomain set', zero_only=True)
-
     run.extract_creek_cells()
+    springshed_cells = run.extract_polygon_cells(run.springshed_polygon)
+    springshed_top = np.hstack([np.zeros((springshed_cells.shape[0], 1)), springshed_cells])
+    springshed_botm = np.hstack([np.ones((springshed_cells.shape[0], 1)), springshed_cells])
 
 
     print_output('config complete', zero_only = True)
@@ -134,6 +140,9 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
                 run.Kh = [combo['Kh_0'], combo['Kh_1']]
                 run.Kv = [combo['Kv_0'], combo['Kv_1']]
                 run.extract_K_values()
+                run.set_K_values(springshed_top, Kh = combo['Kh_0_ss'], Kv = combo['Kv_0_ss'])
+                run.set_K_values(springshed_botm, Kh = combo['Kh_1_ss'], Kv = combo['Kv_1_ss'])
+
                 for drain in run.drain_data:
                     if drain['name'] == 'creek':
                         drain['C'] = combo['C_creek']
