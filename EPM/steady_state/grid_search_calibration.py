@@ -90,7 +90,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     run.create_grid()
     print_output('grid set', zero_only=True)
     start = time.time()
-    run.extract_idomain()
+    run.import_idomain()
     end = time.time()
     run_time = end - start
     print(f'time elapsed: {run_time:.3f} ')
