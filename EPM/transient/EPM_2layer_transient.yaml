@@ -64,7 +64,7 @@ drain_data: #list of features to be represented as drains
   - name : 'creek'
     C : 10
   - name : 'spring'
-    C : 100
+    C : 400
 
 # initial conditions
 dtw : 1.58 #depth to water table

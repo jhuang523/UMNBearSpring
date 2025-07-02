@@ -457,7 +457,7 @@ class Config:
         self.heads[self.heads > 1e10] = np.nan #clean data by setting very high heads to nan 
         print('heads data read to heads')
     
-    def read_drain_discharge_output(self, **params):
+    def read_drain_discharge_output(self, verbose = False, **params):
         totim = params.get('totim', 1)
 
         try:
@@ -477,7 +477,8 @@ class Config:
             dis_arr[loc] = q
         self.drain_spd = drain_spd
         self.drain_array = dis_arr
-        print('read drain discharge to drain_spd and drain_array')
+        if verbose:
+            print('read drain discharge to drain_spd and drain_array')
         return drain_spd, dis_arr
     
     def check_head_above_land_surface(self, return_type = 'raw'): 
