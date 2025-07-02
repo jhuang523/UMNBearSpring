@@ -178,15 +178,15 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
                         os.remove(f'{run_name}/{f}')
                 run_data = pd.concat([run_data, pd.DataFrame([results])], axis = 0, ignore_index = True)
                 print(f'{run_name} done', flush = True)
-    try: 
-        run_data.to_csv(f'{run_data_dir}/{run_data_fname}_{rank}.csv', index = False)
-        if rank == 0:
-            print(f'data saved to {run_data_fname}', flush = True)
-    except OSError:
-        print("making directory")
-        os.makedirs(run_data_dir)
-        run_data.to_csv(f'{run_data_dir}/{run_data_fname}_{rank}.csv', index = False)
-        print(f'data saved to {run_data_fname}', flush = True)
+                try: #save data after every run so that data is still preserved in crashes 
+                    run_data.to_csv(f'{run_data_dir}/{run_data_fname}_{rank}.csv', index = False)
+                    if rank == 0:
+                        print(f'data saved to {run_data_fname}', flush = True)
+                except OSError:
+                    print("making directory")
+                    os.makedirs(run_data_dir)
+                    run_data.to_csv(f'{run_data_dir}/{run_data_fname}_{rank}.csv', index = False)
+                    print(f'data saved to {run_data_fname}', flush = True)
 
 
 if __name__ == '__main__':
