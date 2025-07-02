@@ -332,9 +332,14 @@ class Config:
             )
         self.npf = npf 
         print('npf module created')
+    def extract_recharge(self, **params):
+        """takes recharge df and turns into spd compatible with recharge module for MF sim"""
+        recharge = params.get('recharge', self.recharge)
+        self.rech = dict(recharge.items())
+        return self.rech
+    
     def add_recharge_module(self, **params):
         rech = params.get('rech', self.rech)
-        
         rch = mf.mf6.ModflowGwfrcha(self.gwf, recharge = rech) #8.11E-4 Actual recharge value, using 0.00364 m as precip input (daily average for May 2024)
         self.rch = rch
         print(f'recharge module created with r = {rech}')
@@ -366,7 +371,7 @@ class Config:
             pname = "tdis",
             time_units = tuni,
             nper = nper,
-            perioddata = [(perlen, nstp, tsmult)]
+            perioddata = [(perlen, nstp, tsmult) for _ in range(nper)]
         )
         self.tdis = tdis
         print(f'time discretization added. {nper} periods with {nstp} {tuni}')
@@ -443,21 +448,24 @@ class Config:
         print(f'model {name} loaded')
     
     def read_head_output(self, **params):
+        totim = params.get('totim', 1)
         try: 
-            self.heads = self.model.output.head().get_data(idx = 0)
+            self.heads = self.model.output.head().get_data(totim = totim)
         except AttributeError:
             self.load_model()
-            self.heads = self.model.output.head().get_data(idx = 0)
+            self.heads = self.model.output.head().get_data(totim = totim)
         self.heads[self.heads > 1e10] = np.nan #clean data by setting very high heads to nan 
         print('heads data read to heads')
     
-    def read_drain_discharge_output(self):
+    def read_drain_discharge_output(self, **params):
+        totim = params.get('totim', 1)
+
         try:
             bud = self.model.output.budget() #read budget
         except AttributeError:
             self.load_model()
             bud = self.model.output.budget() #read budget
-        drain_dis = bud.get_data(text='DRN')[0] #get drain discharge from budget
+        drain_dis = bud.get_data(text='DRN', totim = totim)[0] #get drain discharge from budget
         drain_spd = pd.DataFrame(self.model.get_package('drn').stress_period_data.get_data()[0]) #get drain spd
         dis_arr = np.zeros((self.nlay, self.nrow, self.ncol)) #make discharge array of size nlay x nrow x ncol
         drain_id = [id - 1 for (row, id, dis) in drain_dis] #get cell ids, subtract one to convert to 0-based indexing
