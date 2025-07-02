@@ -127,7 +127,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     #grid search
     i = 0
     for combo in combo_gen:        
-        run_name = f'{sim_dir}/creeks_{combo["C_creek"]}_springs_{combo["C_spring"]}_Kh_{combo["Kh_0"]}_{combo["Kh_1"]}_Kv_{combo["Kv_0"]}_{combo["Kv_1"]}'
+        run_name = f'{sim_dir}/creeks_{combo["C_creek"]}_springs_{combo["C_spring"]}_Kh_{combo["Kh_0"]}_{combo["Kh_1"]}_Kv_{combo["Kv_0"]}_{combo["Kv_1"]}_Khss_{combo['Kh_0_ss']}_{combo['Kh_1_ss']}_Kvss_{combo['Kv_0_ss']}_{combo["Kv_1_ss"]}'
         print_output(run_name, zero_only = True)
         if os.path.exists(run_name) and overwrite == False:
             print(f'run {combo} already completed, skipping', flush = True)
