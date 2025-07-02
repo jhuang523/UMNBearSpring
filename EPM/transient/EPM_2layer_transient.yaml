@@ -1,0 +1,77 @@
+# workspace / sim params 
+ws : 'model_runs/EPM_transient'
+name : 'EPM_transient'
+exe_name : 'mf6'
+# domain source files / params
+geojson:
+  watershed : '../../data/geo_data/HUC_12.geojson'
+  springshed : '../../data/geo_data/Bear_Springshed.geojson'
+  creeks : '../../data/geo_data/creeks_geoJSON.geojson'
+  subdomain : '../../data/geo_data/creek_subdomain.geojson'
+csv:
+  karst_features : '../../data/geo_data/karst_features.csv'
+  sinkholes : '../../data/geo_data/bear_sinkholes_coords.txt'
+  precip : '../../data/precip/BS_precip_5_1_24_5_30_24.csv'
+  recharge : '../../data/recharge/2018_recharge_zixuan.csv'
+npy: 
+  idomain: '../../data/geo_data/idomain.npy'
+DEM : '../../data/DEM/dem_1m_m.bil'
+crs : 'EPSG:32615'
+
+# grid discretization params
+
+delr : 25
+delc : 25
+top_config : 'DEM'
+lenuni : 2 #m 
+botm : 
+  - layer : 1 #topmost layer is 0 then numbering goes up as you move down layer.
+    layer_type : 'constant_slope' #constant_elev, constant_slope, custom
+    azimuth : 298.07 #degrees
+    dip : 0.58 #degrees
+    max_elev : 325.044 # top of decorah shale
+    # min_elev :  
+  - layer : 0
+    layer_type : 'constant_slope' #constant_elev, constant_slope, custom
+    azimuth : 298.07
+    dip : 0.58
+    max_elev : 381 #to represent possible conduit activation at higher elevations. based on observational data
+
+#time discretization
+tuni : 'DAYS'
+nper : 365 #The number of stress periods
+nstp : 1 #The number of timesteps
+perlen : 1.0 #The length of each stress period
+tsmult : 1.0 #length of successive timesteps
+
+#aquifer params
+Kh: #horizontal K, 1 for each layer
+  - 2.6 # 1.3 #m/d
+  - 1.3 #2.6 #m/d TODO: calibrate this value 
+Kv : #vertical K
+  - 2.6 #1.3
+  - 1.3 #2.6
+Kh_ss: 
+ - 500
+ - 200
+Kv_ss:
+ - 500
+ - 200
+
+
+# drains
+drain_data: #list of features to be represented as drains 
+  - name : 'creek'
+    C : 10
+  - name : 'spring'
+    C : 100
+
+# initial conditions
+dtw : 1.58 #depth to water table
+
+#recharge 
+rech : 0.0038
+
+
+
+
