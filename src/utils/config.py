@@ -352,7 +352,7 @@ class Config:
         tsmult = params.get('tsmult', self.tsmult)
         dtw = params.get('dtw', self.dtw)
         length_unit = 'FEET' if self.lenuni == 1 else 'METERS' if self.lenuni == 2 else 'CENTIMETERS' if self.lenuni == 3 else 'UNKNOWN'
-
+        self.ws = ws
         sim = params.get('sim', mf.mf6.MFSimulation(
             sim_name=name,
             sim_ws=ws,
