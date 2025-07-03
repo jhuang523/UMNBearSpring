@@ -174,10 +174,9 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
                     results['bs_q'] = np.nan
                     results['bs_error'] = np.nan
                     results['head_above_surface_error'] = np.nan
-                    for f in os.listdir(run_name): #delete files to save space
-                        os.remove(f'{run_name}/{f}')
                 run_data = pd.concat([run_data, pd.DataFrame([results])], axis = 0, ignore_index = True)
                 print(f'{run_name} done', flush = True)
+                os.rmdir(run.ws) #remove the files to save space
                 try: #save data after every run so that data is still preserved in crashes 
                     run_data.to_csv(f'{run_data_dir}/{run_data_fname}_{rank}.csv', index = False)
                     if rank == 0:
