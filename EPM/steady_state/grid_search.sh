@@ -8,8 +8,8 @@
 #SBATCH --mail-user=huan1428@umn.edu
 #SBATCH -p pkkang
 #SBATCH --nodes=2
-#SBATCH --output=calibration_%j.out
-#SBATCH --error=calibration_%j.err
+#SBATCH --output=logs/calibration_%j.out
+#SBATCH --error=logs/calibration_%j.err
 
 
 module load impi/2021/5.1

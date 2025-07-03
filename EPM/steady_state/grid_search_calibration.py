@@ -8,6 +8,8 @@ from itertools import product
 import tqdm
 import time
 import argparse
+from sklearn.model_selection import ParameterSampler
+import shutil
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../../src"))) #use this to be able to import local packages
 
 from utils.config import *
@@ -16,10 +18,6 @@ from utils.creeks import *
 from utils.calibration import * 
 
 
-    
-    
-
-#param space, specify here in dict form
 def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 1000, is_mpi = True, overwrite = False):
     def print_output(output, zero_only = False):
         if is_mpi:
@@ -27,20 +25,19 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
                 print(output, flush = True)
             elif zero_only == False:
                 print(output, flush = True)
-
-
-
+        else:
+            print(output)
     param_space = {
-        'Kh_0' : list(np.arange(0.1, 10.1, 1)),
-        'Kh_1' : list(np.arange(0.1, 5.1, 1)),
-        'Kv_0' : list(np.arange(0.1, 10.1, 1)),
-        'Kv_1' : list(np.arange(0.1, 5.1, 1)),
-        'Kh_0_ss' : list(np.arange(100, 550, 50)),
-        'Kv_0_ss' : list(np.arange(100, 550, 50)),
-        'Kh_1_ss' : list(np.arange(100, 550, 50)),
-        'Kv_1_ss' : list(np.arange(100, 550, 50)),
-        'C_spring' : list(np.arange(0.1, 10.1, 0.1)),
-        'C_creek' : list(np.arange(.1, 1.1, .1)),
+        'Kh_0' : np.arange(0.1, 10.1, 1),
+        'Kh_1' : np.arange(0.1, 5.1, 1),
+        'Kv_0' : np.arange(0.1, 10.1, 1),
+        'Kv_1' : np.arange(0.1, 5.1, 1),
+        'Kh_0_ss' : np.arange(100, 550, 50),
+        'Kv_0_ss' : np.arange(100, 550, 50),
+        'Kh_1_ss' : np.arange(100, 550, 50),
+        'Kv_1_ss' : np.arange(100, 550, 50),
+        'C_spring' : np.arange(100, 550, 50),
+        'C_creek' : np.arange(1, 10.1, 1),
     }
 
 
@@ -54,20 +51,22 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
         rank = 0
         size = 1000
 
+    param_subspace = ParameterSampler(param_space, n_iter=max_runs, random_state=rank)
+
     print_output(f'rank {rank} started')
 
     #generate valid combinations 
-    values = list(param_space.values())
-    keys = list(param_space.keys())
+    # values = list(param_space.values())
+    # keys = list(param_space.keys())
 
-    combo_gen = (
-        combo
-        for i, vals in enumerate(product(*values))
-        if (i % size == rank)
-        and (lambda combo: combo['Kh_1'] < combo['Kh_0'] and combo['Kv_1'] < combo['Kv_0'] and combo['Kh_0']== combo['C_spring'] and combo['Kh_1_ss'] < combo['Kh_0_ss'] and combo['Kv_1_ss'] < combo['Kv_0_ss'])(dict(zip(keys, vals)))
-        # returns the dict only if it passes the condition
-        for combo in [dict(zip(keys, vals))]
-    )
+    # combo_gen = (
+    #     combo
+    #     for i, vals in enumerate(product(*values))
+    #     if (i % size == rank)
+    #     and (lambda combo: combo['Kh_1'] < combo['Kh_0'] and combo['Kv_1'] < combo['Kv_0'] and combo['Kh_0_ss']== combo['C_spring'] and combo['Kh_1_ss'] < combo['Kh_0_ss'] and combo['Kv_1_ss'] < combo['Kv_0_ss'])(dict(zip(keys, vals)))
+    #     # returns the dict only if it passes the condition
+    #     for combo in [dict(zip(keys, vals))]
+    # )
 
     #set up model run base
     print_output('setting up config', zero_only=True)
@@ -125,71 +124,67 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     try:
         run_data = pd.read_csv(run_data_path)
     except FileNotFoundError:
-        run_data = pd.DataFrame(columns = keys + ['success', 'mrsw_head', 'mrsw_error', 'bs_q', 'bs_error', 'head_above_surface_error'])
+        run_data = pd.DataFrame(columns = list(param_space.keys()) + ['success', 'mrsw_head', 'mrsw_error', 'bs_q', 'bs_error', 'head_above_surface_error'])
     print_output('run data loaded', zero_only=True)
 
     #grid search
-    i = 0
-    for combo in combo_gen:        
+    for combo in param_subspace:        
         run_name = f'{sim_dir}/creeks_{combo["C_creek"]}_springs_{combo["C_spring"]}_Kh_{combo["Kh_0"]}_{combo["Kh_1"]}_Kv_{combo["Kv_0"]}_{combo["Kv_1"]}_Khss_{combo["Kh_0_ss"]}_{combo["Kh_1_ss"]}_Kvss_{combo["Kv_0_ss"]}_{combo["Kv_1_ss"]}'
         print_output(run_name, zero_only = True)
         if os.path.exists(run_name) and overwrite == False:
             print(f'run {combo} already completed, skipping', flush = True)
             continue
         else: 
-            if i >= max_runs:
-                break
+            i += 1
+            run.Kh = [combo['Kh_0'], combo['Kh_1']]
+            run.Kv = [combo['Kv_0'], combo['Kv_1']]
+            run.extract_K_values()
+            run.set_K_values(springshed_top, Kh = combo['Kh_0_ss'], Kv = combo['Kv_0_ss'])
+            run.set_K_values(springshed_botm, Kh = combo['Kh_1_ss'], Kv = combo['Kv_1_ss'])
+
+            for drain in run.drain_data:
+                if drain['name'] == 'creek':
+                    drain['C'] = combo['C_creek']
+                elif drain['name'] == 'spring':
+                    drain['C']= combo['C_spring']
+            drn_spd = run.extract_drain_spd()
+            run.make_sim(lenuni = "METER", ws = run_name)
+            run.add_npf_module()
+            run.add_recharge_module()
+            run.add_drains_module()
+            success, buff = run.run_sim()
+            if success: 
+                run.read_head_output()
+                run.read_drain_discharge_output()
+
+                results = combo
+                results['success'] = True
+                results['mrsw_head'] = run.heads[0][mrsw_cell_idx]
+                results['mrsw_error'] = mrsw.get_residual(results['mrsw_head'])
+                results['bs_q'] = run.drain_array[0][bs_cell_idx][0] * -1
+                results['bs_error'] = bs_q.get_residual(results['bs_q'])
+                results['head_above_surface_error'] = run.check_head_above_land_surface(return_type = 'count')
+
             else:
-                i += 1
-                run.Kh = [combo['Kh_0'], combo['Kh_1']]
-                run.Kv = [combo['Kv_0'], combo['Kv_1']]
-                run.extract_K_values()
-                run.set_K_values(springshed_top, Kh = combo['Kh_0_ss'], Kv = combo['Kv_0_ss'])
-                run.set_K_values(springshed_botm, Kh = combo['Kh_1_ss'], Kv = combo['Kv_1_ss'])
-
-                for drain in run.drain_data:
-                    if drain['name'] == 'creek':
-                        drain['C'] = combo['C_creek']
-                    elif drain['name'] == 'spring':
-                        drain['C']= combo['C_spring']
-                drn_spd = run.extract_drain_spd()
-                run.make_sim(lenuni = "METER", ws = run_name)
-                run.add_npf_module()
-                run.add_recharge_module()
-                run.add_drains_module()
-                success, buff = run.run_sim()
-                if success: 
-                    run.read_head_output()
-                    run.read_drain_discharge_output()
-
-                    results = combo
-                    results['success'] = True
-                    results['mrsw_head'] = run.heads[0][mrsw_cell_idx]
-                    results['mrsw_error'] = mrsw.get_residual(results['mrsw_head'])
-                    results['bs_q'] = run.drain_array[0][bs_cell_idx]
-                    results['bs_error'] = bs_q.get_residual(results['bs_q'])
-                    results['head_above_surface_error'] = run.check_head_above_land_surface(return_type = 'count')
-
-                else:
-                    results = combo
-                    results['success'] = False
-                    results['mrsw_head'] = np.nan
-                    results['mrsw_error'] = np.nan
-                    results['bs_q'] = np.nan
-                    results['bs_error'] = np.nan
-                    results['head_above_surface_error'] = np.nan
-                run_data = pd.concat([run_data, pd.DataFrame([results])], axis = 0, ignore_index = True)
-                print(f'{run_name} done', flush = True)
-                os.rmdir(run.ws) #remove the files to save space
-                try: #save data after every run so that data is still preserved in crashes 
-                    run_data.to_csv(run_data_path, index = False)
-                    if rank == 0:
-                        print(f'data saved to {run_data_fname}', flush = True)
-                except OSError:
-                    print("making directory")
-                    os.makedirs(run_data_dir)
-                    run_data.to_csv(run_data_path, index = False)
+                results = combo
+                results['success'] = False
+                results['mrsw_head'] = np.nan
+                results['mrsw_error'] = np.nan
+                results['bs_q'] = np.nan
+                results['bs_error'] = np.nan
+                results['head_above_surface_error'] = np.nan
+            run_data = pd.concat([run_data, pd.DataFrame([results])], axis = 0, ignore_index = True)
+            print(f'{run_name} done', flush = True)
+            shutil.rmtree(run.ws) #remove the files to save space
+            try: #save data after every run so that data is still preserved in crashes 
+                run_data.to_csv(run_data_path, index = False)
+                if rank == 0:
                     print(f'data saved to {run_data_fname}', flush = True)
+            except OSError:
+                print("making directory")
+                os.makedirs(run_data_dir)
+                run_data.to_csv(run_data_path, index = False)
+                print(f'data saved to {run_data_fname}', flush = True)
 
 
 if __name__ == '__main__':
