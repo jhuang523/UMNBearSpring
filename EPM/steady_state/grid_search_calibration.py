@@ -135,7 +135,6 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
             print(f'run {combo} already completed, skipping', flush = True)
             continue
         else: 
-            i += 1
             run.Kh = [combo['Kh_0'], combo['Kh_1']]
             run.Kv = [combo['Kv_0'], combo['Kv_1']]
             run.extract_K_values()
