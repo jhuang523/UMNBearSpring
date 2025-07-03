@@ -15,4 +15,4 @@
 module load impi/2021/5.1
 module load conda
 source activate modflow
-mpirun -np $SLURM_NTASKS python grid_search_calibration.py 
+mpirun -np $SLURM_NTASKS python grid_search_calibration.py --max_runs 1000
