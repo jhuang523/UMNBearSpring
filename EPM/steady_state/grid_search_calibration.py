@@ -51,7 +51,24 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
         rank = 0
         size = 1000
 
-    param_subspace = ParameterSampler(param_space, n_iter=max_runs, random_state=rank)
+    #parameter subspace 
+    if rank == 0:
+        param_subspace = list(ParameterSampler(param_space, n_iter=max_runs, random_state=0))
+        param_subspace = [combo for combo in param_subspace if combo['Kh_1'] < combo['Kh_0'] and combo['Kv_1'] < combo['Kv_0'] and combo['Kh_0_ss']== combo['C_spring'] and combo['Kh_1_ss'] < combo['Kh_0_ss'] and combo['Kv_1_ss'] < combo['Kv_0_ss']]
+    else:
+        param_subspace = None
+    if is_mpi:
+        param_subspace = comm.bcast(param_subspace, root=0)
+    
+    chunk_size = len(param_subspace) // size
+    remainder = len(param_subspace) % size
+    if rank < remainder:
+        start = rank * (chunk_size + 1)
+        end = start + (chunk_size + 1)
+    else:
+        start = rank * chunk_size + remainder
+        end = start + chunk_size
+    local_param_space = param_subspace[start:end]
 
     print_output(f'rank {rank} started')
 
@@ -128,7 +145,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     print_output('run data loaded', zero_only=True)
 
     #grid search
-    for combo in param_subspace:        
+    for combo in local_param_space:        
         run_name = f'{sim_dir}/creeks_{combo["C_creek"]}_springs_{combo["C_spring"]}_Kh_{combo["Kh_0"]}_{combo["Kh_1"]}_Kv_{combo["Kv_0"]}_{combo["Kv_1"]}_Khss_{combo["Kh_0_ss"]}_{combo["Kh_1_ss"]}_Kvss_{combo["Kv_0_ss"]}_{combo["Kv_1_ss"]}'
         print_output(run_name, zero_only = True)
         if os.path.exists(run_name) and overwrite == False:
