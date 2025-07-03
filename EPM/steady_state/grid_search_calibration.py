@@ -121,7 +121,11 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     bs_cell_idx = run.get_cell_id_from_coords(bs_UTME, bs_UTMN)
 
     #performance tracking 
-    run_data = pd.DataFrame(columns = keys + ['success', 'mrsw_head', 'mrsw_error', 'bs_q', 'bs_error', 'head_above_surface_error'])
+    run_data_path = f'{run_data_dir}/{run_data_fname}_{rank}.csv'
+    try:
+        run_data = pd.read_csv(run_data_path)
+    except FileNotFoundError:
+        run_data = pd.DataFrame(columns = keys + ['success', 'mrsw_head', 'mrsw_error', 'bs_q', 'bs_error', 'head_above_surface_error'])
 
 
     #grid search
@@ -178,13 +182,13 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
                 print(f'{run_name} done', flush = True)
                 os.rmdir(run.ws) #remove the files to save space
                 try: #save data after every run so that data is still preserved in crashes 
-                    run_data.to_csv(f'{run_data_dir}/{run_data_fname}_{rank}.csv', index = False)
+                    run_data.to_csv(run_data_path), index = False)
                     if rank == 0:
                         print(f'data saved to {run_data_fname}', flush = True)
                 except OSError:
                     print("making directory")
                     os.makedirs(run_data_dir)
-                    run_data.to_csv(f'{run_data_dir}/{run_data_fname}_{rank}.csv', index = False)
+                    run_data.to_csv(run_data_path, index = False)
                     print(f'data saved to {run_data_fname}', flush = True)
 
 
