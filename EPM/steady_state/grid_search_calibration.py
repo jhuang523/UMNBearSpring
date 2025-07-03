@@ -182,7 +182,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
                 print(f'{run_name} done', flush = True)
                 os.rmdir(run.ws) #remove the files to save space
                 try: #save data after every run so that data is still preserved in crashes 
-                    run_data.to_csv(run_data_path), index = False)
+                    run_data.to_csv(run_data_path, index = False)
                     if rank == 0:
                         print(f'data saved to {run_data_fname}', flush = True)
                 except OSError:
