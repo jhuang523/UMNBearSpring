@@ -119,7 +119,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     mrsw_cell_idx = run.get_cell_id_from_coords(mrsw.UTME, mrsw.UTMN)
     bs_UTME, bs_UTMN = run.spring[run.spring.ID == '55A00572'].UTME, run.spring[run.spring.ID == '55A00572'].UTMN
     bs_cell_idx = run.get_cell_id_from_coords(bs_UTME, bs_UTMN)
-
+    print_output('calibration data loaded', zero_only=True)
     #performance tracking 
     run_data_path = f'{run_data_dir}/{run_data_fname}_{rank}.csv'
     try:
