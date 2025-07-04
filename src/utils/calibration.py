@@ -35,6 +35,9 @@ class CalibrationData:
         self.data = index_to_date(self.data, datetime_col)
         print('updated data to time series')
 
+    def convert_data_to_daily(self, datetime_col = 'datetime'):
+        self.data = convert_hourly_to_daily(self.data, date_col = datetime_col)
+
     def set_cal_value(self, cal_value):
         self.cal_value = cal_value 
         print(f'calibration value set to {cal_value}')
