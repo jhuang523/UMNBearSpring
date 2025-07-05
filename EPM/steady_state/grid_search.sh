@@ -3,7 +3,7 @@
 #SBATCH --time=24:00:00
 #SBATCH --ntasks-per-node=64
 #SBATCH --mem=500gb
-#SBATCH --tmp=500g
+#SBATCH --tmp=200g
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=huan1428@umn.edu
 #SBATCH -p pkkang
