@@ -22,10 +22,10 @@ class CalibrationData:
 
     def load_data(self, data = None, filename = None, **params): 
         skiprows = params.get('skiprows')
-        if data: #if is data itself and not filename 
+        if data is not None: #if is data itself and not filename 
             self.data = data
             print('set data')
-        elif filename: #read data
+        elif filename is not None: #read data
             if filename.endswith('.csv'): 
                 self.data = pd.read_csv(filename, skiprows= skiprows)
                 print(f'read {filename} and set data')
@@ -44,6 +44,9 @@ class CalibrationData:
 
     def get_residual(self, val):
         return val - self.cal_value
+    
+    def get_relative_residual(self, val):
+        return self.get_residual(val)/self.cal_value
 
     def update_coordinates(self, UTME, UTMN):
         self.UTME = UTME
