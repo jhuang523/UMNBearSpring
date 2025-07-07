@@ -141,7 +141,9 @@ def convert_df_to_datetime(df, date_col):
 def convert_hourly_to_daily(df, date_col, agg = 'mean'):
     non_date_cols = list(df.columns)
     non_date_cols.remove(date_col)
-    return convert_df_to_datetime(df, date_col).groupby(df[date_col].dt.date)[non_date_cols].agg(agg).reset_index(drop = True)
+    df = convert_df_to_datetime(df, date_col).groupby(df[date_col].dt.date)[non_date_cols].agg(agg)
+    df.index = pd.to_datetime(df.index)
+    return df
 
 def index_to_date(df, date_col = 'DATE'):
     """sets index to date col"""

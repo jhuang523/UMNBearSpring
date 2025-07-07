@@ -16,10 +16,9 @@ from utils.config import *
 from utils.utils import *
 from utils.creeks import *
 from utils.calibration import * 
-from grid_search_params import * 
 
 
-def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 1000, is_mpi = True, overwrite = False):
+def transient_grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 1000, is_mpi = True, overwrite = False):
     def print_output(output, zero_only = False):
         if is_mpi:
             if zero_only == True and rank == 0:
@@ -28,6 +27,20 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
                 print(output, flush = True)
         else:
             print(output)
+    param_space = {
+        'Kh_0' : np.arange(0.1, 10.1, 1),
+        'Kh_1' : np.arange(0.1, 5.1, 1),
+        'Kv_0' : np.arange(0.1, 10.1, 1),
+        'Kv_1' : np.arange(0.1, 5.1, 1),
+        'Kh_0_ss' : np.arange(100, 550, 50),
+        'Kv_0_ss' : np.arange(100, 550, 50),
+        'Kh_1_ss' : np.arange(100, 550, 50),
+        'Kv_1_ss' : np.arange(100, 550, 50),
+        'C_spring' : np.arange(100, 550, 50),
+        'C_creek' : np.arange(1, 10.1, 1),
+    }
+
+
     #mpi configs
     if is_mpi: 
         from mpi4py import MPI
@@ -41,7 +54,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     #parameter subspace 
     if rank == 0:
         param_subspace = list(ParameterSampler(param_space, n_iter=max_runs, random_state=0))
-        param_subspace = [combo for combo in param_subspace if param_filter(combo)]
+        param_subspace = [combo for combo in param_subspace if combo['Kh_1'] < combo['Kh_0'] and combo['Kv_1'] < combo['Kv_0'] and combo['Kh_0_ss']== combo['C_spring'] and combo['Kh_1_ss'] < combo['Kh_0_ss'] and combo['Kv_1_ss'] < combo['Kv_0_ss']]
     else:
         param_subspace = None
     if is_mpi:
@@ -59,9 +72,22 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
 
     print_output(f'rank {rank} started')
 
+    #generate valid combinations 
+    # values = list(param_space.values())
+    # keys = list(param_space.keys())
+
+    # combo_gen = (
+    #     combo
+    #     for i, vals in enumerate(product(*values))
+    #     if (i % size == rank)
+    #     and (lambda combo: combo['Kh_1'] < combo['Kh_0'] and combo['Kv_1'] < combo['Kv_0'] and combo['Kh_0_ss']== combo['C_spring'] and combo['Kh_1_ss'] < combo['Kh_0_ss'] and combo['Kv_1_ss'] < combo['Kv_0_ss'])(dict(zip(keys, vals)))
+    #     # returns the dict only if it passes the condition
+    #     for combo in [dict(zip(keys, vals))]
+    # )
+
     #set up model run base
     print_output('setting up config', zero_only=True)
-    run = Config('EPM_2layer.yaml')
+    run = Config('EPM_2layer_transient.yaml')
     run.load_polygon('watershed', 'springshed', 'subdomain')
     run.merge_polygons('merged', 'watershed_polygon', 'springshed_polygon')
     run.load_creeks()
@@ -83,11 +109,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     run.extract_bottom_config()
     run.create_grid()
     print_output('grid set', zero_only=True)
-    start = time.time()
     run.import_idomain()
-    end = time.time()
-    run_time = end - start
-    print(f'time elapsed: {run_time:.3f} ')
     print_output('idomain set', zero_only=True)
     run.extract_creek_cells()
     springshed_cells = run.extract_polygon_cells(run.springshed_polygon)
