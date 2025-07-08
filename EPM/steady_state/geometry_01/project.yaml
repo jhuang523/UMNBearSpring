@@ -1,0 +1,28 @@
+name: geometry_01
+description: ''
+creation_date: 2025/07/08 17:49
+pykasso_version: 1.0.1
+grid:
+  x0: 0.0
+  y0: 0.0
+  z0: 0.0
+  nx: 100
+  ny: 50
+  nz: 50
+  dx: 10.0
+  dy: 10.0
+  dz: 10.0
+core:
+  locations:
+    root: c:\Users\huan1428\Documents\karst\UMNBearSpring\EPM\steady_state
+    project: c:\Users\huan1428\Documents\karst\UMNBearSpring\EPM\steady_state/geometry_01/
+  paths:
+    project_dir: geometry_01/
+    inputs_dir: geometry_01/inputs/
+    outputs_dir: geometry_01/outputs/
+  filenames:
+    parameters: parameters.yaml
+    project: project.yaml
+    log: project.log
+n_simulations: 0
+simulations: []
