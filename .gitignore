@@ -16,4 +16,5 @@ dem*
 *.shp
 *.shx
 auth*
+model_runs/
 
