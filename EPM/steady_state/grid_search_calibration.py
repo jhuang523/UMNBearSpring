@@ -149,7 +149,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
                 results['success'] = True
                 results['mrsw_head'] = run.heads[0][mrsw_cell_idx]
                 results['mrsw_error'] = mrsw.get_residual(results['mrsw_head'])
-                results['bs_q'] = (run.drain_array[0][bs_cell_idx][0] + run.drain_array[0][bs_of_idx][0]) * -1
+                results['bs_q'] = (run.drain_array[0][bs_cell_idx] + run.drain_array[0][bs_of_idx]) * -1
                 results['bs_error'] = bs_q.get_residual(results['bs_q'])
                 results['head_above_surface_error'] = run.check_head_above_land_surface(return_type = 'count')
 
