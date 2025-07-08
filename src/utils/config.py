@@ -39,6 +39,15 @@ class Config:
             csv_data[id] = csv
             print(f'loaded {id} csv')
         self.__dict__.update(**csv_data)
+    
+    def add_csv_data(self, **path_info):
+        csv_data = {}
+        for id, path in path_info.items(): 
+            csv = pd.read_csv(path)
+            csv_data[id] = csv
+        self.__dict__.update(**csv_data)
+
+
 
     def load_polygon(self, *geodata_id):
         """Load polygons given a geodata attr. Returns as an attribute to self. 
