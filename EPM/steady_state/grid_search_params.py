@@ -3,12 +3,12 @@ param_space = {
     'Kh_0' : np.arange(2, 10.1, 1),
     'Kh_1' : np.arange(1, 5.1, 1),
     'Kv_0' : np.arange(2, 10.1, 1),
-    'Kv_1' : np.arange(2, 5.1, 1),
-    'Kh_0_ss' : np.arange(400, 650, 50),
-    'Kv_0_ss' : np.arange(400, 650, 50),
-    'Kh_1_ss' : np.arange(100, 550, 50),
-    'Kv_1_ss' : np.arange(100, 550, 50),
-    'C_spring' : np.arange(100, 550, 50),
+    'Kv_1' : np.arange(1, 5.1, 1),
+    'Kh_0_ss' : np.arange(400, 1001, 100),
+    'Kv_0_ss' : np.arange(400, 1001, 100),
+    'Kh_1_ss' : np.arange(100, 550, 100),
+    'Kv_1_ss' : np.arange(100, 550, 100),
+    'C_spring' : np.arange(400, 1001, 100),
     'C_creek' : np.arange(2, 10.1, 1),
 }
 

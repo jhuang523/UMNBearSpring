@@ -83,11 +83,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     run.extract_bottom_config()
     run.create_grid()
     print_output('grid set', zero_only=True)
-    start = time.time()
     run.import_idomain()
-    end = time.time()
-    run_time = end - start
-    print(f'time elapsed: {run_time:.3f} ')
     print_output('idomain set', zero_only=True)
     run.extract_creek_cells()
     springshed_cells = run.extract_polygon_cells(run.springshed_polygon)
@@ -103,12 +99,14 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     mrsw.convert_data_to_timeseries()
     bs_q.convert_data_to_timeseries(datetime_col='date')
 
-    mrsw.set_cal_value(mrsw.data['gw_elev[m]'].mean())
+    mrsw.set_cal_value(mrsw.data[mrsw.data['gw_elev[m]'] > 0]['gw_elev[m]'].mean())
     bs_q.set_cal_value(bs_q.data.rolling(window = '7D').mean().mean()['m3/d'])
 
     mrsw_cell_idx = run.get_cell_id_from_coords(mrsw.UTME, mrsw.UTMN)
     bs_UTME, bs_UTMN = run.spring[run.spring.ID == '55A00572'].UTME, run.spring[run.spring.ID == '55A00572'].UTMN
+    bs_of_UTME, bs_of_UTMN = run.spring[run.spring.ID == '55A00446'].UTME.iloc[0], run.spring[run.spring.ID == '55A00446'].UTMN.iloc[0]
     bs_cell_idx = run.get_cell_id_from_coords(bs_UTME, bs_UTMN)
+    bs_of_idx = run.get_cell_id_from_coords(bs_of_UTME, bs_of_UTMN)
     print_output('calibration data loaded', zero_only=True)
     #performance tracking 
     run_data_path = f'{run_data_dir}/{run_data_fname}_{rank}.csv'
@@ -139,7 +137,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
                     drain['C']= combo['C_spring']
             drn_spd = run.extract_drain_spd()
             run.make_sim(lenuni = "METER", ws = run_name)
-            run.add_npf_module()
+            run.add_npf_module(icelltype = 1)
             run.add_recharge_module()
             run.add_drains_module()
             success, buff = run.run_sim()
@@ -151,7 +149,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
                 results['success'] = True
                 results['mrsw_head'] = run.heads[0][mrsw_cell_idx]
                 results['mrsw_error'] = mrsw.get_residual(results['mrsw_head'])
-                results['bs_q'] = run.drain_array[0][bs_cell_idx][0] * -1
+                results['bs_q'] = (run.drain_array[0][bs_cell_idx][0] + run.drain_array[0][bs_of_idx][0]) * -1
                 results['bs_error'] = bs_q.get_residual(results['bs_q'])
                 results['head_above_surface_error'] = run.check_head_above_land_surface(return_type = 'count')
 
