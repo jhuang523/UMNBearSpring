@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #SBATCH --job-name=grid_search_calibration
-#SBATCH --time=24:00:00
+#SBATCH --time=6:00:00
 #SBATCH --ntasks-per-node=64
 #SBATCH --mem=500gb
 #SBATCH --tmp=200g
