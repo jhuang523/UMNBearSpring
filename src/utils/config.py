@@ -323,11 +323,12 @@ class Config:
     def add_npf_module(self, **params): #add node property flow module to sim. assumes that sim has been created
         Kh = params.get('Kh', self.Kh_vals)
         Kv = params.get('Kv', self.Kv_vals)
+        icelltype = params.get('icelltype', 0)
         npf = mf.mf6.ModflowGwfnpf(
             self.gwf,
             k = Kh,
             k33 = Kv,
-            icelltype = 0,
+            icelltype = icelltype,
             save_specific_discharge = True
             )
         self.npf = npf 
@@ -335,6 +336,7 @@ class Config:
     def extract_recharge(self, **params):
         """takes recharge df and turns into spd compatible with recharge module for MF sim"""
         recharge = params.get('recharge', self.recharge)
+        recharge.index = range(len(recharge))
         self.rech = dict(recharge.items())
         return self.rech
     
@@ -343,6 +345,18 @@ class Config:
         rch = mf.mf6.ModflowGwfrcha(self.gwf, recharge = rech) #8.11E-4 Actual recharge value, using 0.00364 m as precip input (daily average for May 2024)
         self.rch = rch
         print(f'recharge module created with r = {rech}')
+
+    def add_storage_module(self, **params):
+        sy = params.get('sy', self.sy)
+        ss = params.get('ss', self.ss)
+        sto = mf.mf6.ModflowGwfsto(
+            self.gwf,
+            sy = sy,
+            ss_confined_only = False,
+            ss = ss
+        )
+        self.sto = sto
+        print(f'storage module added with Sy = {sy} and Ss = {ss}')
     def update_ws(self, ws):
         self.ws = ws
         self.make_sim()
@@ -456,6 +470,8 @@ class Config:
             self.heads = self.model.output.head().get_data(totim = totim)
         self.heads[self.heads > 1e10] = np.nan #clean data by setting very high heads to nan 
         print('heads data read to heads')
+
+        return self.heads
     
     def read_drain_discharge_output(self, verbose = False, **params):
         totim = params.get('totim', 1)
@@ -480,6 +496,25 @@ class Config:
         if verbose:
             print('read drain discharge to drain_spd and drain_array')
         return drain_spd, dis_arr
+    
+    def get_timeseries_discharge_single_cell(self, cell_id, **params):
+        layer = params.get('layer', 0)
+        dis_ts = pd.Series()
+        for i in range(self.nper):
+            self.read_drain_discharge_output(totim = i+1)
+            dis = self.drain_array[layer][cell_id]
+            dis_ts.loc[i] = dis
+        return dis_ts
+    
+    def get_timeseries_head_single_cell(self, cell_id, **params):
+        layer = params.get('layer', 0)
+        dis_ts = pd.Series()
+        for i in range(self.nper):
+            self.read_drain_discharge_output(totim = i+1)
+            dis = self.drain_array[layer][cell_id]
+            dis_ts.loc[i] = dis
+        return dis_ts
+        
     
     def check_head_above_land_surface(self, return_type = 'raw'): 
         if not hasattr(self, 'heads'): #read head output if not done already

@@ -125,8 +125,8 @@ def transient_grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max
     mrsw.convert_data_to_timeseries()
     bs_q.convert_data_to_timeseries(datetime_col='date')
 
-    mrsw.set_cal_value(mrsw.data['gw_elev[m]'].mean())
-    bs_q.set_cal_value(bs_q.data.rolling(window = '7D').mean().mean()['m3/d'])
+    mrsw.set_cal_value(mrsw.data['gw_elev[m]'][mrsw.data['gw_elev[m]'] > 0])
+    bs_q.set_cal_value(bs_q.data['m3/d'])
 
     mrsw_cell_idx = run.get_cell_id_from_coords(mrsw.UTME, mrsw.UTMN)
     bs_UTME, bs_UTMN = run.spring[run.spring.ID == '55A00572'].UTME, run.spring[run.spring.ID == '55A00572'].UTMN
