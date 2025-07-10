@@ -40,7 +40,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
 
     #parameter subspace 
     if rank == 0:
-        param_subspace = list(ParameterSampler(param_space, n_iter=max_runs, random_state=0))
+        param_subspace = list(ParameterSampler(param_space, n_iter=max_runs))
         param_subspace = [combo for combo in param_subspace if param_filter(combo)]
     else:
         param_subspace = None
@@ -60,14 +60,14 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     print_output(f'rank {rank} started')
 
     #set up model run base
-    print_output('setting up config', zero_only=True)
+    # print_output('setting up config', zero_only=True)
     run = Config('EPM_2layer.yaml')
     run.load_polygon('watershed', 'springshed', 'subdomain')
     run.merge_polygons('merged', 'watershed_polygon', 'springshed_polygon')
     run.load_creeks()
     run.set_domain('subdomain_polygon')
     run.apply_DEM_to_domain()
-    print_output('domain set', zero_only=True)
+    # print_output('domain set', zero_only=True)
     start = run.creeks.return_coordinates(186)[-1]
     nearest = get_nearest_point(start, run.merged_polygon)
     run.creeks.extend_creek(start, nearest)
@@ -75,23 +75,23 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     nearest = get_nearest_point(start, run.merged_polygon)
     run.creeks.extend_creek(start, nearest)
     run.creeks.clip_creek(run.domain, 10)
-    print_output('creeks set', zero_only=True)
+    # print_output('creeks set', zero_only=True)
 
     run.load_karst_features()
     run.extract_grid_params_from_domain()
     run.extract_top_config()
     run.extract_bottom_config()
     run.create_grid()
-    print_output('grid set', zero_only=True)
+    # print_output('grid set', zero_only=True)
     run.import_idomain()
-    print_output('idomain set', zero_only=True)
+    # print_output('idomain set', zero_only=True)
     run.extract_creek_cells()
     springshed_cells = run.extract_polygon_cells(run.springshed_polygon)
     springshed_top = np.hstack([np.zeros((springshed_cells.shape[0], 1)), springshed_cells])
     springshed_botm = np.hstack([np.ones((springshed_cells.shape[0], 1)), springshed_cells])
 
 
-    print_output('config complete', zero_only = True)
+    # print_output('config complete', zero_only = True)
     #calibration data 
     mrsw = CalibrationData(name = 'mrsw', filename = '../../data/MRSW/MRSW_head_CSV.csv', UTME = 557091, UTMN = 4867265)
     bs_q = CalibrationData(name = 'bs_q', filename = '../../data/discharge/discharge_2017_2020.csv')
@@ -107,21 +107,21 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     bs_of_UTME, bs_of_UTMN = run.spring[run.spring.ID == '55A00446'].UTME.iloc[0], run.spring[run.spring.ID == '55A00446'].UTMN.iloc[0]
     bs_cell_idx = run.get_cell_id_from_coords(bs_UTME, bs_UTMN)
     bs_of_idx = run.get_cell_id_from_coords(bs_of_UTME, bs_of_UTMN)
-    print_output('calibration data loaded', zero_only=True)
+    # print_output('calibration data loaded', zero_only=True)
     #performance tracking 
     run_data_path = f'{run_data_dir}/{run_data_fname}_{rank}.csv'
     try:
         run_data = pd.read_csv(run_data_path)
     except FileNotFoundError:
         run_data = pd.DataFrame(columns = list(param_space.keys()) + ['success', 'mrsw_head', 'mrsw_error', 'bs_q', 'bs_error', 'head_above_surface_error'])
-    print_output('run data loaded', zero_only=True)
+    # print_output(f'run data loaded', zero_only=True)
 
     #grid search
     for combo in local_param_space:        
         run_name = f'{sim_dir}/creeks_{combo["C_creek"]}_springs_{combo["C_spring"]}_Kh_{combo["Kh_0"]}_{combo["Kh_1"]}_Kv_{combo["Kv_0"]}_{combo["Kv_1"]}_Khss_{combo["Kh_0_ss"]}_{combo["Kh_1_ss"]}_Kvss_{combo["Kv_0_ss"]}_{combo["Kv_1_ss"]}'
-        print_output(run_name, zero_only = True)
+        # print_output(run_name, zero_only = True)
         if os.path.exists(run_name) and overwrite == False:
-            print(f'run {combo} already completed, skipping', flush = True)
+            # print(f'run {combo} already completed, skipping', flush = True)
             continue
         else: 
             run.Kh = [combo['Kh_0'], combo['Kh_1']]
@@ -149,7 +149,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
                 results['success'] = True
                 results['mrsw_head'] = run.heads[0][mrsw_cell_idx]
                 results['mrsw_error'] = mrsw.get_residual(results['mrsw_head'])
-                results['bs_q'] = (run.drain_array[0][bs_cell_idx] + run.drain_array[0][bs_of_idx]) * -1
+                results['bs_q'] = (run.drain_array[0][bs_cell_idx] + run.drain_array[0][bs_of_idx])[0] * -1
                 results['bs_error'] = bs_q.get_residual(results['bs_q'])
                 results['head_above_surface_error'] = run.check_head_above_land_surface(return_type = 'count')
 
@@ -169,7 +169,7 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
                 if rank == 0:
                     print(f'data saved to {run_data_fname}', flush = True)
             except OSError:
-                print("making directory")
+                # print("making directory")
                 os.makedirs(run_data_dir)
                 run_data.to_csv(run_data_path, index = False)
                 print(f'data saved to {run_data_fname}', flush = True)
