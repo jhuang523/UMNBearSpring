@@ -23,21 +23,21 @@ class Config:
         except: 
             print("can't display domain")
         return str(vars(self).keys())
-    def load_geojsons(self):
+    def load_geojsons(self, verbose = False):
         """Load geojsons provided in yaml file and adds the data (GeoDataFrame) as attributes keyed by their key in the yaml. 
         i.e. watershed : "file_name" will read in file_name and can be accessed as self.watershed """
         geo_data = {}
         for id, path in self.geojson.items():
             geodf = load_geojson(path, crs = self.crs)
             geo_data[id] = geodf
-            print(f'loaded {id} geojson')
-        self.__dict__.update(**geo_data)
+            print_verbose(f'loaded {id} geojson', verbose)
+        self.__dict__.update(**geo_data, verbose = False)
     def load_csvs(self):
         csv_data = {}
         for id, path in self.csv.items():
             csv = pd.read_csv(path)
             csv_data[id] = csv
-            print(f'loaded {id} csv')
+            print_verbose(f'loaded {id} csv', verbose)
         self.__dict__.update(**csv_data)
     
     def add_csv_data(self, **path_info):
@@ -49,7 +49,7 @@ class Config:
 
 
 
-    def load_polygon(self, *geodata_id):
+    def load_polygon(self, verbose = False, *geodata_id):
         """Load polygons given a geodata attr. Returns as an attribute to self. 
         i.e. self.load_polygon('watershed') will take self.watershed and extract the polygon data from it.
          polygon data can be accessed using self.watershed_polygon """
@@ -57,50 +57,50 @@ class Config:
             geodf = getattr(self, id)
             polygon = extract_polygon(geodf)
             setattr(self, f'{id}_polygon', polygon)
-            print (f"extracted {id} polygon")
+            print_verbose(f"extracted {id} polygon", verbose)
 
-    def load_external_polygon(self, polygon_id : str, polygon_data):
+    def load_external_polygon(self, polygon_id : str, polygon_data, verbose = False):
         """Take external polygon GeoDF and adds to self. keyed as {polygon_id}_polygon """
         setattr(self, f'{polygon_id}_polygon', polygon_data)
-        print (f'added {polygon_id}')
+        print_verbose(f'added {polygon_id}', verbose)
 
-    def merge_polygons(self, merged_polygon_id, *polygons):
+    def merge_polygons(self, merged_polygon_id, verbose = False, *polygons):
         """Takes existing polygons via ID and adds a merged polygon to config keyed under id.
         E.g. self.merge_polygons('merged', 'watershed', 'springshed') will merge the watershed and springshed
         and key it under merged_polygon"""
         polygon_data = [getattr(self, name) for name in polygons]
         merged_polygon = combine_polygons(*polygon_data)
         setattr(self, f'{merged_polygon_id}_polygon', merged_polygon)
-        print(f'merged {polygons}')
+        print_verbose(f'merged {polygons}', verbose)
 
-    def set_domain(self, polygon_id : str): 
+    def set_domain(self, polygon_id : str,  verbose = False): 
         """Takes polygon and returns gdf """
         polygon =  getattr(self, polygon_id)
         self.domain = gpd.GeoDataFrame(geometry = [polygon], crs = self.crs)
         self.total_bounds = self.domain.total_bounds
-        print(f'set domain to {polygon_id}')
+        print_verbose(f'set domain to {polygon_id}', verbose)
 
-    def apply_DEM_to_domain(self):
+    def apply_DEM_to_domain(self, verbose = False):
         try:
             self.dem_grid = apply_DEM_to_polygon(self.DEM, self.domain, self.delr, self.delc)
-            print(f'applied DEM {self.DEM} to domain')
+            print_verbose(f'applied DEM {self.DEM} to domain',  verbose)
         except(FileNotFoundError):
             print('error, file not found')
 
-    def load_karst_features(self):
+    def load_karst_features(self, verbose = False):
         try:
             features = self.karst_features
             for feature_type in features['Type'].unique():
                 setattr(self, feature_type, features[features['Type']==feature_type])
-                print (f'added {feature_type}')
+                print_verbose(f'added {feature_type}', verbose)
         except(KeyError) as e:
             print(e)        
-    def load_creeks(self):
+    def load_creeks(self, verbose = False):
         if isinstance(self.creeks, Creek):
             print('you already have loaded creeks')
         elif isinstance(self.creeks, gpd.GeoDataFrame):
             self.creeks = Creek(geodf = self.creeks)
-            print('loaded new Creek object from creeks data')
+            print_verbose('loaded new Creek object from creeks data', verbose)
         else:
             print('error')
     def plot_polygons(self, *polygon_names, ax = None, boundary = False, **params):
@@ -111,25 +111,25 @@ class Config:
             gpd.GeoDataFrame(geometry = polygons, crs = self.crs).boundary.plot(ax = ax, **params)
         else:
             gpd.GeoDataFrame(geometry = polygons, crs = self.crs).plot(ax = ax, **params)
-    def extract_grid_params_from_domain(self): 
+    def extract_grid_params_from_domain(self, verbose = False): 
         """creates structured grid parameters based """
         self.Lx = self.total_bounds[2] - self.total_bounds[0]
         self.Ly = self.total_bounds[3] - self.total_bounds[1]
         self.ncol = int(self.Lx/self.delc)
         self.nrow = int(self.Ly/self.delr)
         self.nlay = len(self.botm)
-        print(f"""extracted grid params: \nLx = {self.Lx}\nLy = {self.Ly}\nnrow = {self.nrow}\nncol = {self.ncol}\nnlay = {self.nlay}""")
+        print_verbose(f"""extracted grid params: \nLx = {self.Lx}\nLy = {self.Ly}\nnrow = {self.nrow}\nncol = {self.ncol}\nnlay = {self.nlay}""", verbose)
     
-    def extract_top_config(self):
+    def extract_top_config(self,  verbose = False):
         if self.top_config == 'DEM':
             self.top = self.dem_grid
-            print ('set top to DEM')
+            print_verbose('set top to DEM', verbose)
         elif self.top_config == 'constant':
             self.top = self.top_elev
-            print (f'set top to {self.top_elev}')
+            print_verbose(f'set top to {self.top_elev}', verbose)
         #TODO: add other configurations for custom top array reading in data ETC 
 
-    def extract_bottom_config(self):
+    def extract_bottom_config(self, verbose = False):
         botm_elev = np.zeros((self.nlay, self.nrow, self.ncol))
         for layer in self.botm:
             if layer['layer_type'] == 'constant_slope':
@@ -154,7 +154,7 @@ class Config:
                     exit
                 botm_elev[layer['layer']] = layer_array
         self.botm_elev = botm_elev
-        print(f'set bottom array')
+        print_verbose(f'set bottom array', verbose)
 
     def create_grid(self, type = 'structured'):
         try:
@@ -179,6 +179,7 @@ class Config:
             print (f"error, missing grid param: {e}")
         except e:
             print(e)
+
     def plot_model_grid_layers(self, var, **params):
         azim = params.get('azim', None)
         cmap = params.get('cmap', 'viridis')
@@ -219,26 +220,26 @@ class Config:
         idomain[:, :, :] = idomain_mask.astype(int)
         self.idomain = idomain
     
-    def export_idomain(self, path= None):
+    def export_idomain(self, path= None, verbose = False):
         if path is None:
             path = self.npy['idomain']
         np.save(path, self.idomain)
-        print(f'saved idomain to {path}')
+        print_verbose(f'saved idomain to {path}', verbose)
 
-    def import_idomain(self, path = None): 
+    def import_idomain(self, path = None, verbose = False): 
         if path is None:
             path = self.npy['idomain']
         self.idomain = np.load(path)
-        print(f'loaded idomain from {path}')
+        print_verbose(f'loaded idomain from {path}', verbose)
 
 
-    def update_idomain(self, layer, indices, update_val):
+    def update_idomain(self, layer, indices, update_val, verbose = False):
         row = indices[:,0]
         col = indices[:,1]
         self.idomain[layer][row, col] = update_val
-        print(f"updated idomain layer {layer} to {update_val}")
+        print_verbose(f"updated idomain layer {layer} to {update_val}", verbose)
 
-    def extract_K_values(self):
+    def extract_K_values(self, verbose = False):
         Kh_array = []
         Kv_array = []
         for K in self.Kh:
@@ -247,8 +248,8 @@ class Config:
         for K in self.Kv:
             Kv_array.append(np.ones((self.nrow, self.ncol)) * K)
         self.Kv_vals = np.stack(Kv_array, axis = 0)
-        print('extracted K values')
-    def set_K_values(self, cell_idx : list, Kh = None, Kv = None):
+        print_verbose('extracted K values', verbose)
+    def set_K_values(self, cell_idx : list, Kh = None, Kv = None, verbose = False):
         idx = np.array(cell_idx, dtype=int).T  # shape (3, N)
         layers, rows, cols = idx
         vals = ""
@@ -258,18 +259,20 @@ class Config:
         if Kv is not None:
             self.Kv_vals[layers, rows, cols] = Kv
             vals += f"Kv = {Kv}"
-        print(f'updated {len(cell_idx)} cells with {vals}')
+        print_verbose(f'updated {len(cell_idx)} cells with {vals}', verbose)
         #TODO deal with more variable K values
     # def assign_conduit_cells(self):
     #     return
-    def extract_creek_cells(self, **params):
+    def extract_creek_cells(self, verbose = False, **params):
         creeks = params.get('creeks', self.creeks)
         self.creek_cells =creeks.map_creek_to_grid(self.nrow, self.ncol, self.delr, self.delc, self.total_bounds[0], self.total_bounds[3])
         self.update_idomain(0, self.creek_cells,1)
-        print('extracted creek cells')
+        print_verbose('extracted creek cells', verbose)
         return self.creek_cells
+    
     def extract_polygon_cells(self, polygon):
         return map_geometry_to_grid([polygon], self.nrow, self.ncol, self.delr, self.delc, self.total_bounds[0], self.total_bounds[3])
+    
     def get_cell_elev(self, x, y, is_coordinate = False, **params):
         #given cell index or coordinate, return associated elevation in the elevation array. can handle single point (int or float coordinates) or multiple points (x : array, y : array)
         top = params.get('top', self.top)
@@ -278,9 +281,11 @@ class Config:
         else:
             i, j = x, y
         return top[i, j]
+    
     def get_cell_id_from_coords(self, UTME, UTMN):
         return get_cell_id_from_coords(UTME, UTMN, self.total_bounds[0], self.total_bounds[3], self.delc, self.delr)
-    def extract_drain_spd(self, **params):
+    
+    def extract_drain_spd(self, verbose = False, **params):
         drain_data = params.get('drain_data', self.drain_data)
         drain_spd = []
         for obj in drain_data:
@@ -292,7 +297,7 @@ class Config:
                 elev = self.get_cell_elev(row, col)
                 temp_spd = [(lay, r, c, e, C) for r,c,e in zip(row, col, elev)]
                 drain_spd += temp_spd
-                print('added creeks to drain spd')
+                print_verbose('added creeks to drain spd', verbose)
             elif obj['name'] == 'spring':
                 C = obj['C']
                 lay = 0
@@ -302,12 +307,12 @@ class Config:
                     row, col = self.get_cell_id_from_coords(utme, utmn)
                     elev = self.get_cell_elev(utme, utmn, True)
                     drain_spd += [(lay, row, col, elev, C)]
-                print ('added springs to drain spd')
+                print_verbose('added springs to drain spd', verbose)
             else: 
                 print(f"do not recognize {obj['name']}")
         self.drain_spd = drain_spd
         return drain_spd
-    def add_drains_module(self, **params):
+    def add_drains_module(self, verbose = False, **params):
         #each drain object needs to have cellID (layer, row, and col), elev, and conductance in format (lay, row, col, elev, C)
         gwf = params.get('gwf', self.gwf)
         drn_spd = params.get('drn_spd', self.drain_spd)
@@ -318,18 +323,19 @@ class Config:
             print_flows = True
         )
         self.drains = drn
-        print('drains added')
+        print_verbose('drains added', verbose)
         return drn
-    def set_water_table(self, dtw, **params):
+    def set_water_table(self, dtw, verbose = False, **params):
         top = params.get('top', self.top)
         nlay = params.get('nlay', self.nlay)
         idomain = params.get('idomain', self.idomain)
         water_table = top - dtw
         water_table[idomain[0] ==0] = 0
         self.water_table = np.stack([water_table] * nlay, axis = 0)
-        print(f'water table set with dtw = {dtw}')
+        print_verbose(f'water table set with dtw = {dtw}', verbose)
         return water_table
-    def add_npf_module(self, **params): #add node property flow module to sim. assumes that sim has been created
+    
+    def add_npf_module(self, verbose = False, **params): #add node property flow module to sim. assumes that sim has been created
         Kh = params.get('Kh', self.Kh_vals)
         Kv = params.get('Kv', self.Kv_vals)
         icelltype = params.get('icelltype', 0)
@@ -341,7 +347,8 @@ class Config:
             save_specific_discharge = True
             )
         self.npf = npf 
-        print('npf module created')
+        print_verbose('npf module created', verbose)
+
     def extract_recharge(self, **params):
         """takes recharge df and turns into spd compatible with recharge module for MF sim"""
         recharge = params.get('recharge', self.recharge)
@@ -349,13 +356,13 @@ class Config:
         self.rech = dict(recharge.items())
         return self.rech
     
-    def add_recharge_module(self, **params):
+    def add_recharge_module(self,verbose = False, **params):
         rech = params.get('rech', self.rech)
         rch = mf.mf6.ModflowGwfrcha(self.gwf, recharge = rech) #8.11E-4 Actual recharge value, using 0.00364 m as precip input (daily average for May 2024)
         self.rch = rch
-        print(f'recharge module created with r = {rech}')
+        print_verbose(f'recharge module created with r = {rech}', verbose)
 
-    def add_storage_module(self, **params):
+    def add_storage_module(self, verbose = False, **params):
         sy = params.get('sy', self.sy)
         ss = params.get('ss', self.ss)
         sto = mf.mf6.ModflowGwfsto(
@@ -365,12 +372,12 @@ class Config:
             ss = ss
         )
         self.sto = sto
-        print(f'storage module added with Sy = {sy} and Ss = {ss}')
+        print_verbose(f'storage module added with Sy = {sy} and Ss = {ss}', verbose)
     def update_ws(self, ws):
         self.ws = ws
         self.make_sim()
     
-    def make_sim(self, **params):
+    def make_sim(self, verbose = False, **params):
         name = params.get('name', self.name)
         ws = params.get('ws', self.ws) 
         tuni = params.get('tuni', self.tuni)
@@ -388,7 +395,7 @@ class Config:
             version = 'mf6'
         ))
         self.sim = sim
-        print("simulation created")
+        print_verbose("simulation created", verbose)
         tdis = mf.mf6.ModflowTdis(
             sim,
             pname = "tdis",
@@ -397,7 +404,7 @@ class Config:
             perioddata = [(perlen, nstp, tsmult) for _ in range(nper)]
         )
         self.tdis = tdis
-        print(f'time discretization added. {nper} periods with {nstp} {tuni}')
+        print_verbose(f'time discretization added. {nper} periods with {nstp} {tuni}', verbose)
 
         ims = mf.mf6.ModflowIms(
             sim,
@@ -411,7 +418,7 @@ class Config:
             outer_maximum = 50
         )
         self.ims = ims
-        print('iterative model solver added')
+        print_verbose('iterative model solver added', verbose)
 
         #Create the groundwater flow model
         gwf = mf.mf6.ModflowGwf(
@@ -421,7 +428,7 @@ class Config:
             newtonoptions = 'NEWTON UNDER_RELAXATION'
         )
         self.gwf = gwf
-        print('gwf module added')
+        print_verbose('gwf module added', verbose)
 
         #create the discretization package
         dis = mf.mf6.ModflowGwfdis(
@@ -439,12 +446,12 @@ class Config:
             length_units = length_unit
         )
         self.dis = dis
-        print ('discretization added')
+        print_verbose('discretization added', verbose)
 
         self.set_water_table(dtw)
         ic = mf.mf6.ModflowGwfic(gwf, strt = self.water_table)
         self.ic = ic
-        print('set initial conditions')
+        print_verbose('set initial conditions', verbose)
 
         oc = mf.mf6.ModflowGwfoc(gwf,
                             budget_filerecord=f"{name}.bud",
@@ -452,25 +459,26 @@ class Config:
                             printrecord=[('HEAD', 'ALL'), ('BUDGET', 'ALL')],
                             saverecord=[('HEAD', 'ALL'), ('BUDGET', 'ALL')])
         self.oc= oc
-        print ('output control added')
+        print_verbose('output control added', verbose)
+
     def run_sim(self, silent = False):
         self.sim.write_simulation(silent = False)
         success, buff = self.sim.run_simulation(silent = False)
         return success, buff
 
-    def load_sim(self, **params):
+    def load_sim(self, verbose = False, **params):
         ws = params.get('ws', self.ws)
         name = params.get('name', self.name)
         self.sim = mf.mf6.MFSimulation.load(sim_name=name, sim_ws=ws,exe_name='mf6',
             version = 'mf6')
-        print (f'simulation {ws} loaded')
+        print_verbose(f'simulation {ws} loaded', verbose)
     
-    def load_model(self, **params):
+    def load_model(self, verbose = False, **params):
         name = params.get('name', self.name)
         self.model = self.sim.get_model(name)
-        print(f'model {name} loaded')
+        print_verbose(f'model {name} loaded', verbose)
     
-    def read_head_output(self, **params):
+    def read_head_output(self, verbose = False, **params):
         totim = params.get('totim', 1)
         try: 
             self.heads = self.model.output.head().get_data(totim = totim)
@@ -478,13 +486,12 @@ class Config:
             self.load_model()
             self.heads = self.model.output.head().get_data(totim = totim)
         self.heads[self.heads > 1e10] = np.nan #clean data by setting very high heads to nan 
-        print('heads data read to heads')
+        print_verbose('heads data read to heads', verbose)
 
         return self.heads
     
     def read_drain_discharge_output(self, verbose = False, **params):
         totim = params.get('totim', 1)
-
         try:
             bud = self.model.output.budget() #read budget
         except AttributeError:

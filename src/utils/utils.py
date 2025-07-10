@@ -150,3 +150,7 @@ def index_to_date(df, date_col = 'DATE'):
     df = convert_df_to_datetime(df, date_col)
     df.index = df[date_col]
     return df.drop(date_col, axis = 1)
+
+def print_verbose(string, verbose):
+    if verbose:
+        print(string)
