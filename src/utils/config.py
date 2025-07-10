@@ -32,7 +32,7 @@ class Config:
             geo_data[id] = geodf
             print_verbose(f'loaded {id} geojson', verbose)
         self.__dict__.update(**geo_data, verbose = False)
-    def load_csvs(self):
+    def load_csvs(self, verbose = False):
         csv_data = {}
         for id, path in self.csv.items():
             csv = pd.read_csv(path)
