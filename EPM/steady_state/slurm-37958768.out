@@ -1,0 +1,4 @@
+Loading compiler version 2022.0.2
+  Load "debugger" to debug DPC++ applications with the gdb-oneapi debugger.
+  Load "dpl" for additional DPC++ APIs: https://github.com/oneapi-src/oneDPL
+Loading mpi version 2021.5.1
