@@ -90,6 +90,8 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     springshed_top = np.hstack([np.zeros((springshed_cells.shape[0], 1)), springshed_cells])
     springshed_botm = np.hstack([np.ones((springshed_cells.shape[0], 1)), springshed_cells])
 
+    if not run.validate_config(**validation_params):
+        raise ValueError("Validation failed.")
 
     # print_output('config complete', zero_only = True)
     #calibration data 
