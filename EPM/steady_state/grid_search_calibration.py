@@ -112,8 +112,10 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     run_data_path = f'{run_data_dir}/{run_data_fname}_{rank}.csv'
     try:
         run_data = pd.read_csv(run_data_path)
+        print_output(f'{run_data_path} loaded')
     except FileNotFoundError:
         run_data = pd.DataFrame(columns = list(param_space.keys()) + ['success', 'mrsw_head', 'mrsw_error', 'bs_q', 'bs_error', 'head_above_surface_error'])
+        print_output(f'{run_data_path} created')
     # print_output(f'run data loaded', zero_only=True)
 
     #grid search

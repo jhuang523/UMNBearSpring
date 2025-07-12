@@ -28,7 +28,7 @@ def combine_polygons(*polygons, crs = 'EPSG:32615'):
     return shp.ops.unary_union(polygons)
 
 
-def apply_DEM_to_polygon(dem_path : str, polygon_data, delr, delc, crs = 'EPSG:32615'):
+def apply_DEM_to_polygon(dem_path : str, polygon_data, delr, delc, crs = 'EPSG:32615', verbose = False):
     """Given DEM_path, polygon obj. and delr and delc, creates array of elevation values for the polygon. returns dem_grid"""
     if isinstance(polygon_data, shp.geometry.Polygon): 
         bounds = gpd.GeoDataFrame(geometry = [polygon_data]).total_bounds 
@@ -40,7 +40,7 @@ def apply_DEM_to_polygon(dem_path : str, polygon_data, delr, delc, crs = 'EPSG:3
         #define the window of useful data(in UTM coords) from the larger DEM shapefile
         window = rasterio.windows.from_bounds(bounds[0], bounds[1], bounds[2], bounds[3], transform=src.transform)
         extent = rasterio.windows.bounds(window, src.transform)#get window boundaries to confirm they are correct
-        print(extent)
+        print_verbose(extent, verbose)
         #convert all of the data to a grid so it can be used with the MODFLOW model
         # transform = rasterio.transform.from_bounds(*extent, width, height) #transform the data to the grid #TODO: what is this used for? 
         
