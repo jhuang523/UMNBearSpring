@@ -1,5 +1,5 @@
 #!/bin/bash -l
-MAX_RUNS=${1:-10}
+MAX_RUNS=${1:-1000}
 NP=${2:-10}
 DATA_DIR=$3
 
