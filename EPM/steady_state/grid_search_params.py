@@ -12,6 +12,13 @@ param_space = {
     'C_creek' : np.arange(2, 10.1, 1),
 }
 
+validation_params = {
+    'nrow' : 921,
+    'ncol' : 1692,
+    'nlay' : 2,
+
+}
+
 def param_filter(combo):
     return (combo['Kh_1'] < combo['Kh_0'] 
             and combo['Kv_1'] < combo['Kv_0'] 

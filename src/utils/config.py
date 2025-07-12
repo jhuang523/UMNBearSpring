@@ -49,7 +49,7 @@ class Config:
 
 
 
-    def load_polygon(self, verbose = False, *geodata_id):
+    def load_polygon(self, *geodata_id, verbose = False):
         """Load polygons given a geodata attr. Returns as an attribute to self. 
         i.e. self.load_polygon('watershed') will take self.watershed and extract the polygon data from it.
          polygon data can be accessed using self.watershed_polygon """
@@ -64,7 +64,7 @@ class Config:
         setattr(self, f'{polygon_id}_polygon', polygon_data)
         print_verbose(f'added {polygon_id}', verbose)
 
-    def merge_polygons(self, merged_polygon_id, verbose = False, *polygons):
+    def merge_polygons(self, merged_polygon_id, *polygons, verbose = False):
         """Takes existing polygons via ID and adds a merged polygon to config keyed under id.
         E.g. self.merge_polygons('merged', 'watershed', 'springshed') will merge the watershed and springshed
         and key it under merged_polygon"""
@@ -544,6 +544,14 @@ class Config:
         
     def check_calibration(self, cal_data : CalibrationData):
         return
+    
+    def validate_config(self, **validation_params):
+        for param, val in validation_params.items():
+            if getattr(self, param) == val: 
+                continue
+            else:
+                return False
+        return True 
     
 
 
