@@ -1,7 +1,5 @@
 #!/bin/bash -l
 
-timestamp=$(date +%Y%m%d_%H%M%S)
-
 #SBATCH --job-name=grid_search_calibration
 #SBATCH --time=6:00:00
 #SBATCH --ntasks-per-node=128
@@ -17,4 +15,4 @@ timestamp=$(date +%Y%m%d_%H%M%S)
 module load impi/2021/5.1
 module load conda
 source activate modflow
-mpirun -np $SLURM_NTASKS python grid_search_calibration.py --data_output_dir EPM_2layer_unconfined --max_runs 1000 > "$SLURM_OUTPUT" 2> "$SLURM_ERROR"
+mpirun -np $SLURM_NTASKS python grid_search_calibration.py --data_output_dir EPM_2layer_unconfined --max_runs 1000
