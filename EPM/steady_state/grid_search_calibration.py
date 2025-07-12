@@ -121,62 +121,63 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
     # print_output(f'run data loaded', zero_only=True)
 
     #grid search
-    for combo in local_param_space:        
-        run_name = f'{sim_dir}/creeks_{combo["C_creek"]}_springs_{combo["C_spring"]}_Kh_{combo["Kh_0"]}_{combo["Kh_1"]}_Kv_{combo["Kv_0"]}_{combo["Kv_1"]}_Khss_{combo["Kh_0_ss"]}_{combo["Kh_1_ss"]}_Kvss_{combo["Kv_0_ss"]}_{combo["Kv_1_ss"]}'
-        # print_output(run_name, zero_only = True)
-        if os.path.exists(run_name) and overwrite == False:
-            # print(f'run {combo} already completed, skipping', flush = True)
-            continue
-        else: 
-            run.Kh = [combo['Kh_0'], combo['Kh_1']]
-            run.Kv = [combo['Kv_0'], combo['Kv_1']]
-            run.extract_K_values()
-            run.set_K_values(springshed_top, Kh = combo['Kh_0_ss'], Kv = combo['Kv_0_ss'])
-            run.set_K_values(springshed_botm, Kh = combo['Kh_1_ss'], Kv = combo['Kv_1_ss'])
+    if not (is_mpi and rank == 0):
+        for combo in local_param_space:        
+            run_name = f'{sim_dir}/creeks_{combo["C_creek"]}_springs_{combo["C_spring"]}_Kh_{combo["Kh_0"]}_{combo["Kh_1"]}_Kv_{combo["Kv_0"]}_{combo["Kv_1"]}_Khss_{combo["Kh_0_ss"]}_{combo["Kh_1_ss"]}_Kvss_{combo["Kv_0_ss"]}_{combo["Kv_1_ss"]}'
+            # print_output(run_name, zero_only = True)
+            if os.path.exists(run_name) and overwrite == False:
+                # print(f'run {combo} already completed, skipping', flush = True)
+                continue
+            else: 
+                run.Kh = [combo['Kh_0'], combo['Kh_1']]
+                run.Kv = [combo['Kv_0'], combo['Kv_1']]
+                run.extract_K_values()
+                run.set_K_values(springshed_top, Kh = combo['Kh_0_ss'], Kv = combo['Kv_0_ss'])
+                run.set_K_values(springshed_botm, Kh = combo['Kh_1_ss'], Kv = combo['Kv_1_ss'])
 
-            for drain in run.drain_data:
-                if drain['name'] == 'creek':
-                    drain['C'] = combo['C_creek']
-                elif drain['name'] == 'spring':
-                    drain['C']= combo['C_spring']
-            drn_spd = run.extract_drain_spd()
-            run.make_sim(lenuni = "METER", ws = run_name)
-            run.add_npf_module(icelltype = 1)
-            run.add_recharge_module()
-            run.add_drains_module()
-            success, buff = run.run_sim()
-            if success: 
-                run.read_head_output()
-                run.read_drain_discharge_output()
+                for drain in run.drain_data:
+                    if drain['name'] == 'creek':
+                        drain['C'] = combo['C_creek']
+                    elif drain['name'] == 'spring':
+                        drain['C']= combo['C_spring']
+                drn_spd = run.extract_drain_spd()
+                run.make_sim(lenuni = "METER", ws = run_name)
+                run.add_npf_module(icelltype = 1)
+                run.add_recharge_module()
+                run.add_drains_module()
+                success, buff = run.run_sim()
+                if success: 
+                    run.read_head_output()
+                    run.read_drain_discharge_output()
 
-                results = combo
-                results['success'] = True
-                results['mrsw_head'] = run.heads[0][mrsw_cell_idx]
-                results['mrsw_error'] = mrsw.get_residual(results['mrsw_head'])
-                results['bs_q'] = (run.drain_array[0][bs_cell_idx] + run.drain_array[0][bs_of_idx])[0] * -1
-                results['bs_error'] = bs_q.get_residual(results['bs_q'])
-                results['head_above_surface_error'] = run.check_head_above_land_surface(return_type = 'count')
+                    results = combo
+                    results['success'] = True
+                    results['mrsw_head'] = run.heads[0][mrsw_cell_idx]
+                    results['mrsw_error'] = mrsw.get_residual(results['mrsw_head'])
+                    results['bs_q'] = (run.drain_array[0][bs_cell_idx] + run.drain_array[0][bs_of_idx])[0] * -1
+                    results['bs_error'] = bs_q.get_residual(results['bs_q'])
+                    results['head_above_surface_error'] = run.check_head_above_land_surface(return_type = 'count')
 
-            else:
-                results = combo
-                results['success'] = False
-                results['mrsw_head'] = np.nan
-                results['mrsw_error'] = np.nan
-                results['bs_q'] = np.nan
-                results['bs_error'] = np.nan
-                results['head_above_surface_error'] = np.nan
-            run_data = pd.concat([run_data, pd.DataFrame([results])], axis = 0, ignore_index = True)
-            print(f'{run_name} done', flush = True)
-            shutil.rmtree(run.ws) #remove the files to save space
-            try: #save data after every run so that data is still preserved in crashes 
-                run_data.to_csv(run_data_path, index = False)
-                if rank == 0:
+                else:
+                    results = combo
+                    results['success'] = False
+                    results['mrsw_head'] = np.nan
+                    results['mrsw_error'] = np.nan
+                    results['bs_q'] = np.nan
+                    results['bs_error'] = np.nan
+                    results['head_above_surface_error'] = np.nan
+                run_data = pd.concat([run_data, pd.DataFrame([results])], axis = 0, ignore_index = True)
+                print(f'{run_name} done', flush = True)
+                shutil.rmtree(run.ws) #remove the files to save space
+                try: #save data after every run so that data is still preserved in crashes 
+                    run_data.to_csv(run_data_path, index = False)
+                    if rank == 0:
+                        print(f'data saved to {run_data_fname}', flush = True)
+                except OSError:
+                    # print("making directory")
+                    os.makedirs(run_data_dir)
+                    run_data.to_csv(run_data_path, index = False)
                     print(f'data saved to {run_data_fname}', flush = True)
-            except OSError:
-                # print("making directory")
-                os.makedirs(run_data_dir)
-                run_data.to_csv(run_data_path, index = False)
-                print(f'data saved to {run_data_fname}', flush = True)
 
 
 if __name__ == '__main__':
