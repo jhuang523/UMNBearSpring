@@ -40,8 +40,11 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
 
     #parameter subspace 
     if rank == 0:
-        param_subspace = list(ParameterSampler(param_space, n_iter=max_runs))
-        param_subspace = [combo for combo in param_subspace if param_filter(combo)]
+        param_subspace = []
+        while len(param_subspace) < max_runs:
+            new_samples = list(ParameterSampler(param_space, n_iter=1000))
+            param_subspace.extend([s for s in new_samples if param_filter(s)])
+        param_subspace = param_subspace[:max_runs]
     else:
         param_subspace = None
     if is_mpi:
