@@ -56,8 +56,8 @@ def grid_search_calibration(run_data_dir, run_data_fname, sim_dir, max_runs = 10
         start = rank * chunk_size + remainder
         end = start + chunk_size
     local_param_space = param_subspace[start:end]
-
-    print_output(f'rank {rank} started')
+    print_output(f"rank: {rank}, {len(local_param_space)} iterations")
+    # print_output(f'rank {rank} started')
 
     #set up model run base
     # print_output('setting up config', zero_only=True)
