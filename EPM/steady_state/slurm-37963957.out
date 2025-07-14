@@ -1,9 +1,0 @@
-Loading compiler version 2022.0.2
-  Load "debugger" to debug DPC++ applications with the gdb-oneapi debugger.
-  Load "dpl" for additional DPC++ APIs: https://github.com/oneapi-src/oneDPL
-Loading mpi version 2021.5.1
-[mpiexec@acn164] i_np_fn (../../../../../src/pm/i_hydra/mpiexec/intel/i_mpiexec_params.h:938): process count should be > 0
-[mpiexec@acn164] match_arg (../../../../../src/pm/i_hydra/libhydra/arg/hydra_arg.c:83): match handler returned error
-[mpiexec@acn164] HYD_arg_parse_array (../../../../../src/pm/i_hydra/libhydra/arg/hydra_arg.c:128): argument matching returned error
-[mpiexec@acn164] mpiexec_get_parameters (../../../../../src/pm/i_hydra/mpiexec/mpiexec_params.c:1359): error parsing input array
-[mpiexec@acn164] main (../../../../../src/pm/i_hydra/mpiexec/mpiexec.c:1784): error parsing parameters

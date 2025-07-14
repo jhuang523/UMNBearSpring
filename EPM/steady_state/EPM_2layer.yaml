@@ -14,6 +14,7 @@ csv:
   precip : '../../data/precip/BS_precip_5_1_24_5_30_24.csv'
 npy: 
   idomain: '../../data/geo_data/idomain.npy'
+  conduit_network: 'conduit_network/bs_10.npy'
 DEM : '../../data/DEM/dem_1m_m.bil'
 crs : 'EPSG:32615'
 
@@ -56,6 +57,10 @@ Kh_ss:
 Kv_ss:
  - 500
  - 200
+Kh_conduit: 
+ - 1000
+Kv_conduit: 
+ - 500
 
 
 # drains
@@ -63,7 +68,7 @@ drain_data: #list of features to be represented as drains
   - name : 'creek'
     C : 10
   - name : 'spring'
-    C : 50
+    C : 500
 
 # initial conditions
 dtw : 1.58 #depth to water table

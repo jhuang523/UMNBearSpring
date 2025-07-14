@@ -18,15 +18,15 @@ cfp_exe : "C:/CFPv1.8.00-rel20110223/mf2005cfp.exe" #absolute path is best
 
 
 # Time discretization
-x0   : 0
-y0   : 0
-xnum : 120
-ynum : 80
-dx   : 30
-dy   : 30
+x0   : 552594.40655525
+y0   : 4866235.88072272
+xnum : 1692
+ynum : 921
+dx   : 5
+dy   : 5
 n_lays : 1
-delr : 30.0
-delc : 30.0
+delr : 5
+delc : 5
 
 # Layer elevations
 lay_elevs : [1000.0, 0.0]
@@ -52,10 +52,10 @@ polygon_data     : ''
 # 'import'    - import points
 # 'composite' - add n random points to imported points
 inlets_mode   : 'import'
-inlets_data   : 'C:/Users/huan1428/Documents/esci5331_hydro_modeling/final/inlets_simple.txt'
-inlets_number : 10
+inlets_data   : '../../data/geo_data/bear_sinkholes_coords.txt'
+inlets_number : 84
 inlets_shuffle : False
-inlets_per_outlet : [1]
+inlets_per_outlet : [50, 20, 14]
 inlets_importance : [1]
 
 ###Outlets
@@ -63,10 +63,10 @@ inlets_importance : [1]
 # 'import'    - import points
 # 'composite' - add n random points to imported points
 outlets_mode   : 'import'
-outlets_data   : [[210, 30]]
-outlets_number : 1
+outlets_data   : '../../data/geo_data/springs_coords.txt'
+outlets_number : 3
 outlets_shuffle : False
-outlets_importance : [1]
+outlets_importance : [1, 1, 1]
 
 ######################
 ### GeologyManager ###
