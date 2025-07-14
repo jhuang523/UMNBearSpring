@@ -285,6 +285,25 @@ class Config:
     def get_cell_id_from_coords(self, UTME, UTMN):
         return get_cell_id_from_coords(UTME, UTMN, self.total_bounds[0], self.total_bounds[3], self.delc, self.delr)
     
+    def import_conduit_network(self, path = None, verbose = False):
+        """Return bool array with location of conduit network"""
+        if path is None:
+            path = self.npy['conduit_network']
+        self.network = np.load(path)
+        print_verbose(f'loaded network from {path}', verbose)
+    
+    def set_conduit_K_vals(self, verbose = False, **params):
+        layer = params.get('layer', 0)
+        network = params.get('network', self.network)
+        Kh = params.get('Kh', self.Kh_conduit[0])
+        Kv = params.get('Kv', self.Kv_conduit[0])
+        adjust_idx = params.get('adjust_idx', True)
+        row, col = np.where(network == 1)
+        if adjust_idx: 
+            conduit_idx = [(layer, network.shape[0] - 1 - r, c) for r, c in zip(row, col)] 
+        else:
+            conduit_idx = [(layer, r, c) for r, c in zip(row, col)] 
+        self.set_K_values(conduit_idx, Kh = Kh, Kv = Kv, verbose =verbose)
     def extract_drain_spd(self, verbose = False, **params):
         drain_data = params.get('drain_data', self.drain_data)
         drain_spd = []
