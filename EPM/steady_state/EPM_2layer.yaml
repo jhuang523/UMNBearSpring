@@ -1,6 +1,6 @@
 # workspace / sim params 
-ws : 'EPM_steady_state'
-name : 'EPM_steady_state'
+ws : 'EPM_2l_cond'
+name : 'EPM_2l_cond'
 exe_name : 'mf6'
 # domain source files / params
 geojson:
@@ -14,7 +14,7 @@ csv:
   precip : '../../data/precip/BS_precip_5_1_24_5_30_24.csv'
 npy: 
   idomain: '../../data/geo_data/idomain.npy'
-  conduit_network: 'conduit_network/bs_10.npy'
+  conduit_network: '../../data/networks/output_5m/network_0.npy'
 DEM : '../../data/DEM/dem_1m_m.bil'
 crs : 'EPSG:32615'
 
@@ -68,7 +68,7 @@ drain_data: #list of features to be represented as drains
   - name : 'creek'
     C : 10
   - name : 'spring'
-    C : 500
+    C : 1000
 
 # initial conditions
 dtw : 1.58 #depth to water table
