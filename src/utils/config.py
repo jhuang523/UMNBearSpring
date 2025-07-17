@@ -47,8 +47,6 @@ class Config:
             csv_data[id] = csv
         self.__dict__.update(**csv_data)
 
-
-
     def load_polygon(self, *geodata_id, verbose = False):
         """Load polygons given a geodata attr. Returns as an attribute to self. 
         i.e. self.load_polygon('watershed') will take self.watershed and extract the polygon data from it.
@@ -263,6 +261,12 @@ class Config:
         #TODO deal with more variable K values
     # def assign_conduit_cells(self):
     #     return
+
+    def update_params(self, verbose = False, **params):
+        for param, val in params.items():
+            setattr(self, param, val)
+            print_verbose(f"updated {param} to {val}", verbose)
+    
     def extract_creek_cells(self, verbose = False, **params):
         creeks = params.get('creeks', self.creeks)
         self.creek_cells =creeks.map_creek_to_grid(self.nrow, self.ncol, self.delr, self.delc, self.total_bounds[0], self.total_bounds[3])
@@ -370,7 +374,7 @@ class Config:
 
     def extract_recharge(self, **params):
         """takes recharge df and turns into spd compatible with recharge module for MF sim"""
-        recharge = params.get('recharge', self.recharge)
+        recharge = params.get('recharge', self.recharge.iloc[:, 0])
         recharge.index = range(len(recharge))
         self.rech = dict(recharge.items())
         return self.rech
@@ -543,12 +547,12 @@ class Config:
     
     def get_timeseries_head_single_cell(self, cell_id, **params):
         layer = params.get('layer', 0)
-        dis_ts = pd.Series()
+        head_ts = pd.Series()
         for i in range(self.nper):
-            self.read_drain_discharge_output(totim = i+1)
-            dis = self.drain_array[layer][cell_id]
-            dis_ts.loc[i] = dis
-        return dis_ts
+            self.read_head_output(totim = i+1)
+            head = self.heads[layer][cell_id]
+            head_ts.loc[i] = head
+        return head_ts
         
     
     def check_head_above_land_surface(self, return_type = 'raw'): 
@@ -560,12 +564,23 @@ class Config:
             return self.heads[0] > self.dem_grid
         elif return_type == 'count':
             return np.sum(self.heads[0] > self.dem_grid)
+        elif return_type == 'time_avg': 
+            total = 0
+            for i in range(self.nper):
+                self.read_head_output(totim = i + 1)
+                total += np.sum(self.heads[0] > self.dem_grid)
+            return total / self.nper
         
     def check_calibration(self, cal_data : CalibrationData):
         return
     
     def validate_config(self, **validation_params):
         for param, val in validation_params.items():
+            if getattr(self, param) == val: 
+                continue
+            else:
+                return False
+        for param, val in self.validation_params.items():
             if getattr(self, param) == val: 
                 continue
             else:

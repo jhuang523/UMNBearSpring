@@ -13,20 +13,15 @@ cfp_exe : "C:/CFPv1.8.00-rel20110223/mf2005cfp.exe" #absolute path is best
 ### Grid ###
 ############
 
-
-
-
-
-# Time discretization
 x0   : 552594.40655525
 y0   : 4866235.88072272
-xnum : 1692
-ynum : 921
-dx   : 5
-dy   : 5
+xnum : 338
+ynum : 184
+dx   : 25
+dy   : 25
 n_lays : 1
-delr : 5
-delc : 5
+delr : 25
+delc : 25
 
 # Layer elevations
 lay_elevs : [1000.0, 0.0]

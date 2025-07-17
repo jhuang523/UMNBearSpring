@@ -38,12 +38,23 @@ class CalibrationData:
     def convert_data_to_daily(self, datetime_col = 'datetime'):
         self.data = convert_hourly_to_daily(self.data, date_col = datetime_col)
 
-    def set_cal_value(self, cal_value, verbose = False):
+    def set_cal_value(self, cal_value = None, verbose = False):
+        if cal_value is None:
+            cal_value = self.data
         self.cal_value = cal_value 
         print_verbose(f'calibration value set to {cal_value}',verbose)
 
     def get_residual(self, val):
-        return val - self.cal_value
+        if isinstance(self.cal_value, pd.DataFrame) and isinstance(val, pd.Series):
+            residual = pd.DataFrame(pd.DataFrame(val).to_numpy() - self.cal_value.to_numpy())
+            residual.index = self.cal_value.index
+            return residual
+        elif isinstance(self.cal_value, pd.Series) and isinstance(val, pd.DataFrame):
+            residual = pd.DataFrame(val.to_numpy() - pd.DataFrame(self.cal_value).to_numpy())
+            residual.index = self.cal_value.index
+            return residual
+        else:
+            return val - self.cal_value
     
     def get_relative_residual(self, val):
         return self.get_residual(val)/self.cal_value
