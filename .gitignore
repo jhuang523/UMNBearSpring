@@ -1,6 +1,8 @@
 *.bil
 dem*
 *.bud
+*.cpg
+*.dbf
 *.dis
 *.dis.grb
 *.drn
@@ -13,8 +15,13 @@ dem*
 *.oc
 *.rcha
 *.tdis
+*.prj
+*.sbn
+*.sbx
 *.shp
 *.shx
+*.npy
 auth*
+*.pickle
 model_runs/
 

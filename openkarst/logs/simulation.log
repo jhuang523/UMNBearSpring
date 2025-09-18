@@ -1,0 +1,946 @@
+2025-07-22 15:58:14,624 - FlowSimulation - INFO - Settings validated
+2025-07-22 15:58:14,624 - FlowSimulation - INFO - Settings applied
+2025-07-22 15:58:14,635 - FlowSimulation - INFO - Arrays initialized
+2025-07-22 15:58:14,636 - FlowSimulation - INFO - Conduit properties initialized
+2025-07-22 15:58:14,636 - FlowSimulation - INFO - FlowSimulation initialized with physical properties: PhysicalProperties(water_density=1000, gravity=9.81, dynamic_viscosity=0.001, geometry_channel=False, channel_type='infinite', channel_width=1.0, channel_manning=0.03)
+2025-07-22 15:58:14,636 - FlowSimulation - INFO - FlowSimulation initialized with solver settings: SolverSettings(relaxation_factor=0.6, max_iterations=20, picard_depth_tol=1e-07, ss_rel_l2tol=0.001, ss_rel_madtol=1e-08)
+2025-07-22 15:58:14,637 - FlowSimulation - INFO - FlowSimulation initialized with simulation settings: SimulationSettings(min_waterdepth=1e-10, min_flowrate=1e-10, courant=0.8, adaptive_timesteps=True, dt_init=0.001, dt_max=1.0, t_max=1000.0, steady_state=False, print_info_interval=1000)
+2025-07-22 15:58:14,638 - FlowSimulation - INFO - Results container created for: {'output_interval': 10.0, 'time': True, 'time_step_size': True, 'flowrates': True, 'water_depths': True, 'l2_norms': True, 'convergence_fails': True, 'reynolds_numbers': True}
+2025-07-22 15:58:52,580 - FlowSimulation - INFO - Maximum time reached: Simulation finished at time = 1000.01s
+2025-07-22 15:58:52,580 - FlowSimulation - INFO - Percentage convergence fails: 0.06
+2025-07-22 15:58:52,581 - FlowSimulation - INFO - Results stored.
+2025-07-22 15:58:55,318 - trame_server.utils.namespace - INFO - Translator(prefix=None)
+2025-07-22 15:58:55,755 - wslink.backends.aiohttp - INFO - awaiting runner setup
+2025-07-22 15:58:55,755 - wslink.backends.aiohttp - INFO - awaiting site startup
+2025-07-22 15:58:55,757 - wslink.backends.aiohttp - INFO - Print WSLINK_READY_MSG
+2025-07-22 15:58:55,757 - wslink.backends.aiohttp - INFO - Schedule auto shutdown with timout 0
+2025-07-22 15:58:55,757 - wslink.backends.aiohttp - INFO - awaiting running future
+2025-07-22 15:58:55,767 - trame_server.controller - INFO - trigger(trigger__1)
+2025-07-22 15:58:55,769 - trame_server.controller - INFO - trigger(trigger__2)
+2025-07-22 15:58:55,770 - trame_server.controller - INFO - trigger(P_0x15d62e68920_1Camera)
+2025-07-22 15:58:55,770 - trame_server.controller - INFO - trigger(P_0x15d62e68920_1AnimateStart)
+2025-07-22 15:58:55,770 - trame_server.controller - INFO - trigger(P_0x15d62e68920_1AnimateStop)
+2025-07-22 15:58:55,850 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,850 - trame_client.widgets.core - INFO - js_key = style
+2025-07-22 15:58:55,850 - trame_client.widgets.core - INFO - js_key = fluid
+2025-07-22 15:58:55,850 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,850 - trame_client.widgets.core - INFO - before: class = { 'rounded-circle': !P_0x15d62e68920_1_show_ui }
+2025-07-22 15:58:55,850 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,850 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,850 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,851 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,851 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,851 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,851 - trame_server.utils.namespace - INFO - (prefix=None) token rounded
+2025-07-22 15:58:55,851 - trame_server.state - INFO - has(rounded => rounded) = False
+2025-07-22 15:58:55,851 - trame_server.utils.namespace - INFO - (prefix=None) token -
+2025-07-22 15:58:55,851 - trame_server.state - INFO - has(- => -) = False
+2025-07-22 15:58:55,851 - trame_server.utils.namespace - INFO - (prefix=None) token circle
+2025-07-22 15:58:55,851 - trame_server.state - INFO - has(circle => circle) = False
+2025-07-22 15:58:55,851 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,851 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,851 - trame_server.utils.namespace - INFO - (prefix=None) token :
+2025-07-22 15:58:55,851 - trame_server.state - INFO - has(: => :) = False
+2025-07-22 15:58:55,851 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,851 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,851 - trame_server.utils.namespace - INFO - (prefix=None) token !
+2025-07-22 15:58:55,851 - trame_server.state - INFO - has(! => !) = False
+2025-07-22 15:58:55,851 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_show_ui
+2025-07-22 15:58:55,851 - trame_server.state - INFO - has(P_0x15d62e68920_1_show_ui => P_0x15d62e68920_1_show_ui) = True
+2025-07-22 15:58:55,851 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_show_ui
+2025-07-22 15:58:55,852 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,852 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,852 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,852 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,852 - trame_server.utils.namespace - INFO -  => { 'rounded-circle': !P_0x15d62e68920_1_show_ui }
+2025-07-22 15:58:55,852 - trame_client.widgets.core - INFO - after: class = { 'rounded-circle': !P_0x15d62e68920_1_show_ui }
+2025-07-22 15:58:55,852 - trame_client.widgets.core - INFO - js_key = style
+2025-07-22 15:58:55,852 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,852 - trame_client.widgets.core - INFO - js_key = style
+2025-07-22 15:58:55,852 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,852 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,852 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,852 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,852 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,853 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,853 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,853 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,853 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,853 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,853 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,853 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,853 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,853 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,853 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,853 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,853 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,853 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,853 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,853 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,853 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,854 - trame_client.widgets.core - INFO - js_key = icon
+2025-07-22 15:58:55,854 - trame_client.widgets.core - INFO - js_key = variant
+2025-07-22 15:58:55,854 - trame_client.widgets.core - INFO - js_key = size
+2025-07-22 15:58:55,854 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_show_ui=
+2025-07-22 15:58:55,854 - trame_server.state - INFO - has(P_0x15d62e68920_1_show_ui= => P_0x15d62e68920_1_show_ui=) = False
+2025-07-22 15:58:55,854 - trame_server.utils.namespace - INFO - (prefix=None) token !
+2025-07-22 15:58:55,854 - trame_server.state - INFO - has(! => !) = False
+2025-07-22 15:58:55,854 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_show_ui
+2025-07-22 15:58:55,854 - trame_server.state - INFO - has(P_0x15d62e68920_1_show_ui => P_0x15d62e68920_1_show_ui) = True
+2025-07-22 15:58:55,854 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_show_ui
+2025-07-22 15:58:55,854 - trame_server.utils.namespace - INFO -  => P_0x15d62e68920_1_show_ui=!P_0x15d62e68920_1_show_ui
+2025-07-22 15:58:55,854 - trame_server.utils.namespace - INFO -  token mdi-dots-vertical
+2025-07-22 15:58:55,855 - trame_server.utils.namespace - INFO -  token {
+2025-07-22 15:58:55,855 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,855 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,855 - trame_server.utils.namespace - INFO -  => {
+2025-07-22 15:58:55,855 - trame_server.utils.namespace - INFO -  token { P_0x15d62e68920_1_show_ui ? 'Hide' : 'Show' }
+2025-07-22 15:58:55,855 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,855 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,855 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,855 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,855 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_show_ui
+2025-07-22 15:58:55,855 - trame_server.state - INFO - has(P_0x15d62e68920_1_show_ui => P_0x15d62e68920_1_show_ui) = True
+2025-07-22 15:58:55,855 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_show_ui
+2025-07-22 15:58:55,855 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,855 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,855 - trame_server.utils.namespace - INFO - (prefix=None) token ?
+2025-07-22 15:58:55,855 - trame_server.state - INFO - has(? => ?) = False
+2025-07-22 15:58:55,855 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,855 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,856 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,856 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,856 - trame_server.utils.namespace - INFO - (prefix=None) token Hide
+2025-07-22 15:58:55,856 - trame_server.state - INFO - has(Hide => Hide) = False
+2025-07-22 15:58:55,856 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,856 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,856 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,856 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,856 - trame_server.utils.namespace - INFO - (prefix=None) token :
+2025-07-22 15:58:55,856 - trame_server.state - INFO - has(: => :) = False
+2025-07-22 15:58:55,856 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,856 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,856 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,856 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,856 - trame_server.utils.namespace - INFO - (prefix=None) token Show
+2025-07-22 15:58:55,856 - trame_server.state - INFO - has(Show => Show) = False
+2025-07-22 15:58:55,856 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,856 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,856 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,856 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,857 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,857 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,857 - trame_server.utils.namespace - INFO -  => { P_0x15d62e68920_1_show_ui ? 'Hide' : 'Show' }
+2025-07-22 15:58:55,857 - trame_server.utils.namespace - INFO -  token } menu
+2025-07-22 15:58:55,857 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,857 - trame_client.widgets.core - INFO - js_key = style
+2025-07-22 15:58:55,857 - trame_client.widgets.core - INFO - js_key = v-show
+2025-07-22 15:58:55,857 - trame_client.widgets.core - INFO - before: v-show = P_0x15d62e68920_1_show_ui
+2025-07-22 15:58:55,857 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_show_ui
+2025-07-22 15:58:55,857 - trame_server.state - INFO - has(P_0x15d62e68920_1_show_ui => P_0x15d62e68920_1_show_ui) = True
+2025-07-22 15:58:55,857 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_show_ui
+2025-07-22 15:58:55,857 - trame_server.utils.namespace - INFO -  => P_0x15d62e68920_1_show_ui
+2025-07-22 15:58:55,857 - trame_client.widgets.core - INFO - after: v-show = P_0x15d62e68920_1_show_ui
+2025-07-22 15:58:55,858 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,858 - trame_client.widgets.core - INFO - js_key = vertical
+2025-07-22 15:58:55,858 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,858 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,858 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,858 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,858 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,858 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,858 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,858 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,858 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,858 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,858 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,858 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,858 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,858 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,858 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,858 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,859 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,859 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,859 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,859 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,859 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,859 - trame_client.widgets.core - INFO - js_key = icon
+2025-07-22 15:58:55,859 - trame_client.widgets.core - INFO - js_key = variant
+2025-07-22 15:58:55,859 - trame_client.widgets.core - INFO - js_key = size
+2025-07-22 15:58:55,859 - trame_server.controller - INFO - trigger(trigger__3)
+2025-07-22 15:58:55,859 - trame_server.utils.namespace - INFO -  token mdi-arrow-expand-all
+2025-07-22 15:58:55,859 - trame_server.utils.namespace - INFO -  token Reset Camera
+2025-07-22 15:58:55,859 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,859 - trame_client.widgets.core - INFO - js_key = vertical
+2025-07-22 15:58:55,859 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,859 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,859 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,859 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,860 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,860 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,860 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,860 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,860 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,860 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,860 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,860 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,860 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,860 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,860 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,860 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,860 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,860 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,860 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,860 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,860 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,860 - trame_client.widgets.core - INFO - js_key = icon
+2025-07-22 15:58:55,860 - trame_client.widgets.core - INFO - js_key = variant
+2025-07-22 15:58:55,860 - trame_client.widgets.core - INFO - js_key = size
+2025-07-22 15:58:55,860 - trame_server.controller - INFO - trigger(trigger__4)
+2025-07-22 15:58:55,861 - trame_server.utils.namespace - INFO -  token mdi-axis-arrow
+2025-07-22 15:58:55,861 - trame_server.utils.namespace - INFO -  token Perspective view
+2025-07-22 15:58:55,861 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,861 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,861 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,861 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,861 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,861 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,861 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,861 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,861 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,861 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,861 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,861 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,861 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,861 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,861 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,861 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,861 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,861 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,861 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,861 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,861 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,861 - trame_client.widgets.core - INFO - js_key = icon
+2025-07-22 15:58:55,861 - trame_client.widgets.core - INFO - js_key = variant
+2025-07-22 15:58:55,862 - trame_client.widgets.core - INFO - js_key = size
+2025-07-22 15:58:55,862 - trame_server.controller - INFO - trigger(trigger__5)
+2025-07-22 15:58:55,862 - trame_server.utils.namespace - INFO -  token mdi-axis-x-arrow
+2025-07-22 15:58:55,862 - trame_server.utils.namespace - INFO -  token Reset Camera X
+2025-07-22 15:58:55,862 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,862 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,862 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,862 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,862 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,862 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,862 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,862 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,862 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,862 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,862 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,862 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,862 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,862 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,862 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,862 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,862 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,862 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,862 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,862 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,862 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,862 - trame_client.widgets.core - INFO - js_key = icon
+2025-07-22 15:58:55,863 - trame_client.widgets.core - INFO - js_key = variant
+2025-07-22 15:58:55,863 - trame_client.widgets.core - INFO - js_key = size
+2025-07-22 15:58:55,863 - trame_server.controller - INFO - trigger(trigger__6)
+2025-07-22 15:58:55,863 - trame_server.utils.namespace - INFO -  token mdi-axis-y-arrow
+2025-07-22 15:58:55,863 - trame_server.utils.namespace - INFO -  token Reset Camera Y
+2025-07-22 15:58:55,863 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,863 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,863 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,863 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,863 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,863 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,863 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,863 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,863 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,863 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,863 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,863 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,863 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,863 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,863 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,863 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,863 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,863 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,863 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,863 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,863 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,863 - trame_client.widgets.core - INFO - js_key = icon
+2025-07-22 15:58:55,863 - trame_client.widgets.core - INFO - js_key = variant
+2025-07-22 15:58:55,864 - trame_client.widgets.core - INFO - js_key = size
+2025-07-22 15:58:55,864 - trame_server.controller - INFO - trigger(trigger__7)
+2025-07-22 15:58:55,864 - trame_server.utils.namespace - INFO -  token mdi-axis-z-arrow
+2025-07-22 15:58:55,864 - trame_server.utils.namespace - INFO -  token Reset Camera Z
+2025-07-22 15:58:55,864 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,864 - trame_client.widgets.core - INFO - js_key = vertical
+2025-07-22 15:58:55,864 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,864 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,864 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,864 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,864 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,864 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,864 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,864 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,864 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,864 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,864 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,864 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,864 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,864 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,864 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,864 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,864 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,864 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,864 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,864 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,864 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,864 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,864 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,864 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,864 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,864 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,865 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,865 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,865 - trame_client.widgets.core - INFO - js_key = v-model
+2025-07-22 15:58:55,865 - trame_client.widgets.core - INFO - before: v-model = P_0x15d62e68920_1_edge_visibility
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_edge_visibility
+2025-07-22 15:58:55,865 - trame_server.state - INFO - has(P_0x15d62e68920_1_edge_visibility => P_0x15d62e68920_1_edge_visibility) = True
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_edge_visibility
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO -  => P_0x15d62e68920_1_edge_visibility
+2025-07-22 15:58:55,865 - trame_client.widgets.core - INFO - after: v-model = P_0x15d62e68920_1_edge_visibility
+2025-07-22 15:58:55,865 - trame_client.widgets.core - INFO - js_key = density
+2025-07-22 15:58:55,865 - trame_client.widgets.core - INFO - js_key = hideDetails
+2025-07-22 15:58:55,865 - trame_client.widgets.core - INFO - js_key = falseIcon
+2025-07-22 15:58:55,865 - trame_client.widgets.core - INFO - js_key = trueIcon
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO -  token Toggle edge visibility ({
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO -  token { P_0x15d62e68920_1_edge_visibility ? 'on' : 'off' }
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,865 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,865 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_edge_visibility
+2025-07-22 15:58:55,865 - trame_server.state - INFO - has(P_0x15d62e68920_1_edge_visibility => P_0x15d62e68920_1_edge_visibility) = True
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_edge_visibility
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,865 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) token ?
+2025-07-22 15:58:55,865 - trame_server.state - INFO - has(? => ?) = False
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,865 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,865 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) token on
+2025-07-22 15:58:55,865 - trame_server.state - INFO - has(on => on) = False
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,865 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,865 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,865 - trame_server.utils.namespace - INFO - (prefix=None) token :
+2025-07-22 15:58:55,865 - trame_server.state - INFO - has(: => :) = False
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,866 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,866 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO - (prefix=None) token off
+2025-07-22 15:58:55,866 - trame_server.state - INFO - has(off => off) = False
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,866 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,866 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,866 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO -  => { P_0x15d62e68920_1_edge_visibility ? 'on' : 'off' }
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO -  token })
+2025-07-22 15:58:55,866 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,866 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,866 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,866 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,866 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,866 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,866 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,866 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,866 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,866 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,866 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,866 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,866 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,866 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,866 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,866 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,866 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,867 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,867 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,867 - trame_client.widgets.core - INFO - js_key = v-model
+2025-07-22 15:58:55,867 - trame_client.widgets.core - INFO - before: v-model = P_0x15d62e68920_1_outline_visibility
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_outline_visibility
+2025-07-22 15:58:55,867 - trame_server.state - INFO - has(P_0x15d62e68920_1_outline_visibility => P_0x15d62e68920_1_outline_visibility) = True
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_outline_visibility
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO -  => P_0x15d62e68920_1_outline_visibility
+2025-07-22 15:58:55,867 - trame_client.widgets.core - INFO - after: v-model = P_0x15d62e68920_1_outline_visibility
+2025-07-22 15:58:55,867 - trame_client.widgets.core - INFO - js_key = density
+2025-07-22 15:58:55,867 - trame_client.widgets.core - INFO - js_key = hideDetails
+2025-07-22 15:58:55,867 - trame_client.widgets.core - INFO - js_key = falseIcon
+2025-07-22 15:58:55,867 - trame_client.widgets.core - INFO - js_key = trueIcon
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO -  token Toggle bounding box ({
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO -  token { P_0x15d62e68920_1_outline_visibility ? 'on' : 'off' }
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,867 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,867 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_outline_visibility
+2025-07-22 15:58:55,867 - trame_server.state - INFO - has(P_0x15d62e68920_1_outline_visibility => P_0x15d62e68920_1_outline_visibility) = True
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_outline_visibility
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,867 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) token ?
+2025-07-22 15:58:55,867 - trame_server.state - INFO - has(? => ?) = False
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,867 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,867 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) token on
+2025-07-22 15:58:55,867 - trame_server.state - INFO - has(on => on) = False
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,867 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,867 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) token :
+2025-07-22 15:58:55,867 - trame_server.state - INFO - has(: => :) = False
+2025-07-22 15:58:55,867 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,868 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,868 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO - (prefix=None) token off
+2025-07-22 15:58:55,868 - trame_server.state - INFO - has(off => off) = False
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,868 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,868 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,868 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO -  => { P_0x15d62e68920_1_outline_visibility ? 'on' : 'off' }
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO -  token })
+2025-07-22 15:58:55,868 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,868 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,868 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,868 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,868 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,868 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,868 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,868 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,868 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,868 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,868 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,868 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,868 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,868 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,868 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,868 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,868 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,869 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,869 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,869 - trame_client.widgets.core - INFO - js_key = v-model
+2025-07-22 15:58:55,869 - trame_client.widgets.core - INFO - before: v-model = P_0x15d62e68920_1_grid_visibility
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_grid_visibility
+2025-07-22 15:58:55,869 - trame_server.state - INFO - has(P_0x15d62e68920_1_grid_visibility => P_0x15d62e68920_1_grid_visibility) = True
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_grid_visibility
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO -  => P_0x15d62e68920_1_grid_visibility
+2025-07-22 15:58:55,869 - trame_client.widgets.core - INFO - after: v-model = P_0x15d62e68920_1_grid_visibility
+2025-07-22 15:58:55,869 - trame_client.widgets.core - INFO - js_key = density
+2025-07-22 15:58:55,869 - trame_client.widgets.core - INFO - js_key = hideDetails
+2025-07-22 15:58:55,869 - trame_client.widgets.core - INFO - js_key = falseIcon
+2025-07-22 15:58:55,869 - trame_client.widgets.core - INFO - js_key = trueIcon
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO -  token Toggle ruler ({
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO -  token { P_0x15d62e68920_1_grid_visibility ? 'on' : 'off' }
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,869 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,869 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_grid_visibility
+2025-07-22 15:58:55,869 - trame_server.state - INFO - has(P_0x15d62e68920_1_grid_visibility => P_0x15d62e68920_1_grid_visibility) = True
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_grid_visibility
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,869 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) token ?
+2025-07-22 15:58:55,869 - trame_server.state - INFO - has(? => ?) = False
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,869 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,869 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) token on
+2025-07-22 15:58:55,869 - trame_server.state - INFO - has(on => on) = False
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,869 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,869 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) token :
+2025-07-22 15:58:55,869 - trame_server.state - INFO - has(: => :) = False
+2025-07-22 15:58:55,869 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,870 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,870 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO - (prefix=None) token off
+2025-07-22 15:58:55,870 - trame_server.state - INFO - has(off => off) = False
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,870 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,870 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,870 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO -  => { P_0x15d62e68920_1_grid_visibility ? 'on' : 'off' }
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO -  token })
+2025-07-22 15:58:55,870 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,870 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,870 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,870 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,870 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,870 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,870 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,870 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,870 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,870 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,870 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,870 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,870 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,870 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,870 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,870 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,870 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,870 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,871 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,871 - trame_client.widgets.core - INFO - js_key = v-model
+2025-07-22 15:58:55,871 - trame_client.widgets.core - INFO - before: v-model = P_0x15d62e68920_1_axis_visiblity
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_axis_visiblity
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has(P_0x15d62e68920_1_axis_visiblity => P_0x15d62e68920_1_axis_visiblity) = True
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_axis_visiblity
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO -  => P_0x15d62e68920_1_axis_visiblity
+2025-07-22 15:58:55,871 - trame_client.widgets.core - INFO - after: v-model = P_0x15d62e68920_1_axis_visiblity
+2025-07-22 15:58:55,871 - trame_client.widgets.core - INFO - js_key = density
+2025-07-22 15:58:55,871 - trame_client.widgets.core - INFO - js_key = hideDetails
+2025-07-22 15:58:55,871 - trame_client.widgets.core - INFO - js_key = falseIcon
+2025-07-22 15:58:55,871 - trame_client.widgets.core - INFO - js_key = trueIcon
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO -  token Toggle axis ({
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO -  token { P_0x15d62e68920_1_axis_visiblity ? 'on' : 'off' }
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_axis_visiblity
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has(P_0x15d62e68920_1_axis_visiblity => P_0x15d62e68920_1_axis_visiblity) = True
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_axis_visiblity
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token ?
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has(? => ?) = False
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token on
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has(on => on) = False
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token :
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has(: => :) = False
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,871 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,871 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,872 - trame_server.utils.namespace - INFO - (prefix=None) token off
+2025-07-22 15:58:55,872 - trame_server.state - INFO - has(off => off) = False
+2025-07-22 15:58:55,872 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,872 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,872 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,872 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,872 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,872 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,872 - trame_server.utils.namespace - INFO -  => { P_0x15d62e68920_1_axis_visiblity ? 'on' : 'off' }
+2025-07-22 15:58:55,872 - trame_server.utils.namespace - INFO -  token })
+2025-07-22 15:58:55,872 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,872 - trame_client.widgets.core - INFO - js_key = vertical
+2025-07-22 15:58:55,872 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,872 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,872 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,872 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,872 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,872 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,872 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,873 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,873 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,873 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,873 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,873 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - js_key = v-model
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - before: v-model = P_0x15d62e68920_1_use_server_rendering
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_use_server_rendering
+2025-07-22 15:58:55,873 - trame_server.state - INFO - has(P_0x15d62e68920_1_use_server_rendering => P_0x15d62e68920_1_use_server_rendering) = True
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_use_server_rendering
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO -  => P_0x15d62e68920_1_use_server_rendering
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - after: v-model = P_0x15d62e68920_1_use_server_rendering
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - js_key = density
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - js_key = hideDetails
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - js_key = falseIcon
+2025-07-22 15:58:55,873 - trame_client.widgets.core - INFO - js_key = trueIcon
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO -  token Toggle rendering mode ({
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO -  token { P_0x15d62e68920_1_use_server_rendering ? 'remote' : 'local' }
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,873 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,873 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_use_server_rendering
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(P_0x15d62e68920_1_use_server_rendering => P_0x15d62e68920_1_use_server_rendering) = True
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_use_server_rendering
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token ?
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(? => ?) = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token remote
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(remote => remote) = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token :
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(: => :) = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token local
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(local => local) = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,874 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO -  => { P_0x15d62e68920_1_use_server_rendering ? 'remote' : 'local' }
+2025-07-22 15:58:55,874 - trame_server.utils.namespace - INFO -  token })
+2025-07-22 15:58:55,874 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,874 - trame_client.widgets.core - INFO - js_key = style
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - js_key = v-show
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - before: v-show = P_0x15d62e68920_1_use_server_rendering
+2025-07-22 15:58:55,875 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_use_server_rendering
+2025-07-22 15:58:55,875 - trame_server.state - INFO - has(P_0x15d62e68920_1_use_server_rendering => P_0x15d62e68920_1_use_server_rendering) = True
+2025-07-22 15:58:55,875 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_use_server_rendering
+2025-07-22 15:58:55,875 - trame_server.utils.namespace - INFO -  => P_0x15d62e68920_1_use_server_rendering
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - after: v-show = P_0x15d62e68920_1_use_server_rendering
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,875 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,875 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,875 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,875 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,875 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,875 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,875 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,875 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,875 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,875 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,875 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,875 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,875 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,875 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,875 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,875 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,875 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,875 - trame_client.widgets.core - INFO - js_key = class
+2025-07-22 15:58:55,876 - trame_client.widgets.core - INFO - js_key = v-model
+2025-07-22 15:58:55,876 - trame_client.widgets.core - INFO - before: v-model = P_0x15d62e68920_1_parallel_projection
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_parallel_projection
+2025-07-22 15:58:55,876 - trame_server.state - INFO - has(P_0x15d62e68920_1_parallel_projection => P_0x15d62e68920_1_parallel_projection) = True
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_parallel_projection
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO -  => P_0x15d62e68920_1_parallel_projection
+2025-07-22 15:58:55,876 - trame_client.widgets.core - INFO - after: v-model = P_0x15d62e68920_1_parallel_projection
+2025-07-22 15:58:55,876 - trame_client.widgets.core - INFO - js_key = density
+2025-07-22 15:58:55,876 - trame_client.widgets.core - INFO - js_key = hideDetails
+2025-07-22 15:58:55,876 - trame_client.widgets.core - INFO - js_key = falseIcon
+2025-07-22 15:58:55,876 - trame_client.widgets.core - INFO - js_key = trueIcon
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO -  token Toggle parallel projection ({
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO -  token { P_0x15d62e68920_1_parallel_projection ? 'on' : 'off' }
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,876 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,876 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) token P_0x15d62e68920_1_parallel_projection
+2025-07-22 15:58:55,876 - trame_server.state - INFO - has(P_0x15d62e68920_1_parallel_projection => P_0x15d62e68920_1_parallel_projection) = True
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) translated P_0x15d62e68920_1_parallel_projection
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,876 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) token ?
+2025-07-22 15:58:55,876 - trame_server.state - INFO - has(? => ?) = False
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,876 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,876 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) token on
+2025-07-22 15:58:55,876 - trame_server.state - INFO - has(on => on) = False
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,876 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,876 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) token :
+2025-07-22 15:58:55,876 - trame_server.state - INFO - has(: => :) = False
+2025-07-22 15:58:55,876 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,877 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,877 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO - (prefix=None) token off
+2025-07-22 15:58:55,877 - trame_server.state - INFO - has(off => off) = False
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,877 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,877 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,877 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO -  => { P_0x15d62e68920_1_parallel_projection ? 'on' : 'off' }
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO -  token })
+2025-07-22 15:58:55,877 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,877 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,877 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,877 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,877 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,877 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,877 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,877 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,877 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,877 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,877 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,877 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,877 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,877 - trame_client.widgets.core - INFO - js_key = icon
+2025-07-22 15:58:55,877 - trame_client.widgets.core - INFO - js_key = variant
+2025-07-22 15:58:55,877 - trame_client.widgets.core - INFO - js_key = size
+2025-07-22 15:58:55,877 - trame_server.utils.namespace - INFO - (prefix=None) token utils
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(utils => utils) = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token .
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(. => .) = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token download
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(download => download) = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token (
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(( => () = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token screenshot
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(screenshot => screenshot) = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token .
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(. => .) = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token png
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(png => png) = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token ,
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(, => ,) = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token trigger
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(trigger => trigger) = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token (
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(( => () = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token trigger__1
+2025-07-22 15:58:55,878 - trame_server.state - INFO - has(trigger__1 => trigger__1) = False
+2025-07-22 15:58:55,878 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token )
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has() => )) = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token ,
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has(, => ,) = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token image
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has(image => image) = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token /
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has(/ => /) = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token png
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has(png => png) = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token )
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has() => )) = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO -  => utils.download('screenshot.png', trigger('trigger__1'), 'image/png')
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO -  token mdi-file-png-box
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO -  token Save screenshot
+2025-07-22 15:58:55,879 - trame_client.widgets.core - INFO - js_key = location
+2025-07-22 15:58:55,879 - trame_client.widgets.core - INFO - js_key = v-slot:activator
+2025-07-22 15:58:55,879 - trame_client.widgets.core - INFO - before: v-slot:activator = { props }
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token {
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has({ => {) = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,879 - trame_server.utils.namespace - INFO - (prefix=None) token }
+2025-07-22 15:58:55,879 - trame_server.state - INFO - has(} => }) = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO -  => { props }
+2025-07-22 15:58:55,880 - trame_client.widgets.core - INFO - after: v-slot:activator = { props }
+2025-07-22 15:58:55,880 - trame_client.widgets.core - INFO - js_key = v-bind
+2025-07-22 15:58:55,880 - trame_client.widgets.core - INFO - before: v-bind = props
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token props
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(props => props) = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO -  => props
+2025-07-22 15:58:55,880 - trame_client.widgets.core - INFO - after: v-bind = props
+2025-07-22 15:58:55,880 - trame_client.widgets.core - INFO - js_key = icon
+2025-07-22 15:58:55,880 - trame_client.widgets.core - INFO - js_key = variant
+2025-07-22 15:58:55,880 - trame_client.widgets.core - INFO - js_key = size
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token utils
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(utils => utils) = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token .
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(. => .) = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token download
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(download => download) = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token (
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(( => () = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token scene
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(scene => scene) = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token -
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(- => -) = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token export
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(export => export) = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token .
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(. => .) = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token html
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(html => html) = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token ,
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(, => ,) = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,880 - trame_server.utils.namespace - INFO - (prefix=None) token trigger
+2025-07-22 15:58:55,880 - trame_server.state - INFO - has(trigger => trigger) = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token (
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has(( => () = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token trigger__2
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has(trigger__2 => trigger__2) = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token )
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has() => )) = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token ,
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has(, => ,) = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token  
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has(  =>  ) = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token application
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has(application => application) = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token /
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has(/ => /) = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token octet
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has(octet => octet) = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token -
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has(- => -) = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token stream
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has(stream => stream) = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token '
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has(' => ') = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO - (prefix=None) token )
+2025-07-22 15:58:55,881 - trame_server.state - INFO - has() => )) = False
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO -  => utils.download('scene-export.html', trigger('trigger__2'), 'application/octet-stream')
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO -  token mdi-download
+2025-07-22 15:58:55,881 - trame_server.utils.namespace - INFO -  token Export scene as HTML
+2025-07-22 15:58:55,881 - trame_client.widgets.core - INFO - js_key = stillRatio
+2025-07-22 15:58:55,881 - trame_client.widgets.core - INFO - js_key = ref
+2025-07-22 15:58:55,881 - trame_client.widgets.core - INFO - js_key = interactiveRatio
+2025-07-22 15:58:55,881 - trame_client.widgets.core - INFO - js_key = stillRatio
+2025-07-22 15:58:57,044 - FlowSimulation - INFO - Logger closed. Object deleted.
+
+2025-07-22 15:59:01,674 - aiohttp.access - INFO - 127.0.0.1 [22/Jul/2025:14:59:01 -0600] "GET /index.html?ui=P_0x15d62e68920_1&reconnect=auto HTTP/1.1" 200 237 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.102.0 Chrome/134.0.6998.205 Electron/35.6.0 Safari/537.36"
+2025-07-22 15:59:01,745 - aiohttp.access - INFO - 127.0.0.1 [22/Jul/2025:14:59:01 -0600] "GET /vue.global.js HTTP/1.1" 200 247 "http://localhost:58848/index.html?ui=P_0x15d62e68920_1&reconnect=auto" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.102.0 Chrome/134.0.6998.205 Electron/35.6.0 Safari/537.36"
+2025-07-22 15:59:01,766 - aiohttp.access - INFO - 127.0.0.1 [22/Jul/2025:14:59:01 -0600] "GET /assets/index-e80c1ba5.css HTTP/1.1" 200 236 "http://localhost:58848/index.html?ui=P_0x15d62e68920_1&reconnect=auto" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.102.0 Chrome/134.0.6998.205 Electron/35.6.0 Safari/537.36"
+2025-07-22 15:59:01,833 - aiohttp.access - INFO - 127.0.0.1 [22/Jul/2025:14:59:01 -0600] "GET /assets/index-5844b947.js HTTP/1.1" 200 247 "http://localhost:58848/index.html?ui=P_0x15d62e68920_1&reconnect=auto" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.102.0 Chrome/134.0.6998.205 Electron/35.6.0 Safari/537.36"
+2025-07-22 15:59:01,854 - aiohttp.access - INFO - 127.0.0.1 [22/Jul/2025:14:59:01 -0600] "POST /paraview/ HTTP/1.1" 405 209 "http://localhost:58848/index.html?ui=P_0x15d62e68920_1&reconnect=auto" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.102.0 Chrome/134.0.6998.205 Electron/35.6.0 Safari/537.36"
+2025-07-22 15:59:01,855 - aiohttp.access - INFO - 127.0.0.1 [22/Jul/2025:14:59:01 -0600] "GET /loading.tpl HTTP/1.1" 200 252 "http://localhost:58848/index.html?ui=P_0x15d62e68920_1&reconnect=auto" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.102.0 Chrome/134.0.6998.205 Electron/35.6.0 Safari/537.36"
+2025-07-22 15:59:02,177 - wslink.backends.aiohttp - INFO - client 9f9496a86b934a62af1452f309265901 connected
+2025-07-22 15:59:02,249 - aiohttp.access - INFO - 127.0.0.1 [22/Jul/2025:14:59:02 -0600] "GET /__trame_vuetify3_3.0.1/css/mdi.css HTTP/1.1" 200 240 "http://localhost:58848/index.html?ui=P_0x15d62e68920_1&reconnect=auto" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.102.0 Chrome/134.0.6998.205 Electron/35.6.0 Safari/537.36"
+2025-07-22 15:59:02,252 - aiohttp.access - INFO - 127.0.0.1 [22/Jul/2025:14:59:02 -0600] "GET /__trame_vuetify3_3.0.1/vuetify3.css HTTP/1.1" 200 240 "http://localhost:58848/index.html?ui=P_0x15d62e68920_1&reconnect=auto" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.102.0 Chrome/134.0.6998.205 Electron/35.6.0 Safari/537.36"
+2025-07-22 15:59:02,370 - aiohttp.access - INFO - 127.0.0.1 [22/Jul/2025:14:59:02 -0600] "GET /__trame_vuetify3_3.0.1/vuetify3.js HTTP/1.1" 200 247 "http://localhost:58848/index.html?ui=P_0x15d62e68920_1&reconnect=auto" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.102.0 Chrome/134.0.6998.205 Electron/35.6.0 Safari/537.36"
+2025-07-22 15:59:02,808 - aiohttp.access - INFO - 127.0.0.1 [22/Jul/2025:14:59:02 -0600] "GET /__trame_vtk/trame-vtk.js HTTP/1.1" 200 249 "http://localhost:58848/index.html?ui=P_0x15d62e68920_1&reconnect=auto" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.102.0 Chrome/134.0.6998.205 Electron/35.6.0 Safari/537.36"
+2025-07-22 15:59:03,299 - aiohttp.access - INFO - 127.0.0.1 [22/Jul/2025:14:59:03 -0600] "GET /__trame_vuetify3_3.0.1/fonts/materialdesignicons-webfont.woff2?v=7.4.47 HTTP/1.1" 200 256 "http://localhost:58848/__trame_vuetify3_3.0.1/css/mdi.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.102.0 Chrome/134.0.6998.205 Electron/35.6.0 Safari/537.36"
+2025-07-22 16:06:12,175 - wslink.backends.aiohttp - INFO - client 9f9496a86b934a62af1452f309265901 disconnected
+2025-07-22 16:06:12,175 - wslink.backends.aiohttp - INFO - No more connections, scheduling shutdown
+2025-07-22 16:06:12,176 - aiohttp.access - INFO - 127.0.0.1 [22/Jul/2025:14:59:02 -0600] "GET /ws HTTP/1.1" 101 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.102.0 Chrome/134.0.6998.205 Electron/35.6.0 Safari/537.36"

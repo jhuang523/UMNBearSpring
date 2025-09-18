@@ -12,7 +12,7 @@ from utils.utils import *
 from utils.creeks import *
 from utils.calibration import * 
 
-def main(config_file, verbose = False, transient = False, **model_params):
+def main(config_file, verbose = False, transient = False, conduits= True, **model_params):
     """run model, compare to calibration points, export data"""
     start_time = time.time()
     run = Config(config_file)
@@ -42,8 +42,9 @@ def main(config_file, verbose = False, transient = False, **model_params):
     run.extract_K_values()
     run.set_K_values(springshed_top, Kh = run.Kh_ss[0], Kv = run.Kv_ss[0])
     run.set_K_values(springshed_botm, Kh = run.Kh_ss[1], Kv =run.Kv_ss[1])
-    run.import_conduit_network(verbose = verbose)
-    run.set_conduit_K_vals(verbose = verbose)
+    if conduits: 
+        run.import_conduit_network(verbose = verbose)
+        run.set_conduit_K_vals(verbose = verbose)
     drn_spd = run.extract_drain_spd()
     run.make_sim(lenuni = "METER")
     run.add_npf_module(icelltype = 1)
@@ -57,18 +58,20 @@ def main(config_file, verbose = False, transient = False, **model_params):
         'nlay' : run.nlay,
         'n_idomain' : np.argwhere(run.idomain == 1).shape[0],
         'n_springshed_cells' : springshed_cells.shape[0],
-        'n_conduit_cells' : np.argwhere(run.network == 1).shape[0],
         'Kh' : run.Kh,
         'Kv' : run.Kv,
         'Kh_ss' : run.Kh_ss,
         'Kv_ss' : run.Kv_ss,
-        'Kh_conduit' : run.Kh_conduit,
-        'Kv_conduit' : run.Kv_conduit,
         'drain_data' : run.drain_data,
         'network_file' : run.npy['conduit_network'],
         'idomain_file' : run.npy['idomain'],
         'recharge' : run.rech
     }
+    if conduits:
+        results['n_conduit_cells'] =  np.argwhere(run.network == 1).shape[0]
+        results['Kh_conduit']= run.Kh_conduit
+        results['Kv_conduit'] = run.Kv_conduit
+
     if transient:
         results['ss'] = run.ss
         results['sy'] = run.sy
@@ -87,16 +90,18 @@ def main(config_file, verbose = False, transient = False, **model_params):
         for k, v in results.items():
             file.write(f"{k}: {v}\n")
         print_verbose('run data saved', verbose)
+    return run, success
     
 if __name__ == '__main__': 
     parser = argparse.ArgumentParser()
     parser.add_argument('--config_file', type = str, help = 'settings file path')
     parser.add_argument('--verbose', action = 'store_true')
+    parser.add_argument('--conduits', action = 'store_true')
     parser.add_argument('--transient', action = 'store_true')
     parser.add_argument("--params", nargs='*', help="key=value pairs")
     args = parser.parse_args()
     model_params = dict(param.split("=", 1) for param in args.params or [])
-    main(args.config_file, verbose=args.verbose, transient= args.transient, **model_params)
+    main(args.config_file, verbose=args.verbose, transient= args.transient, conduits = args.conduits, **model_params)
 
 
     

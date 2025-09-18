@@ -1,0 +1,33 @@
+name: simple_test
+description: ''
+creation_date: 2025/09/11 09:04
+pykasso_version: 1.0.1
+grid:
+  x0: 557546.0
+  y0: 4867231.0
+  z0: 370.0
+  nx: 588
+  ny: 475
+  nz: 6
+  dx: 5.0
+  dy: 5.0
+  dz: 5.0
+core:
+  locations:
+    root: c:\Users\huan1428\Documents\karst\UMNBearSpring\openkarst\conduits
+    project: c:\Users\huan1428\Documents\karst\UMNBearSpring\openkarst\conduits/simple_test/
+  paths:
+    project_dir: simple_test/
+    inputs_dir: simple_test/inputs/
+    outputs_dir: simple_test/outputs/
+  filenames:
+    parameters: parameters.yaml
+    project: project.yaml
+    log: project.log
+n_simulations: 5
+simulations:
+- simple_test/outputs/simulation_1/
+- simple_test/outputs/simulation_2/
+- simple_test/outputs/simulation_3/
+- simple_test/outputs/simulation_4/
+- simple_test/outputs/simulation_5/

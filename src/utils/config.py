@@ -1,4 +1,8 @@
-# helper functions go here
+"""Config class reads in model configuration from yaml file, 
+sets up model grid, modflow simulation obj, and runs and stores output.
+Can also test output against calibration poitns
+"""
+
 import numpy as np
 import geopandas as gpd
 import pandas as pd
@@ -7,16 +11,24 @@ import shapely as shp
 from utils.utils import *
 from utils.creeks import * 
 from utils.calibration import *
+from utils.geos import * 
 import time
 
 class Config:
     """reads config info from yaml file. contains domain and aquifer properties. stores all relevant model params + objects"""
-    def __init__(self, yaml_file, **config):
+    def __init__(self, yaml_file, **params):
         config = load_yaml(yaml_file)
         self.__dict__.update(**config)
+        self.update_params(**params)
         print(f"new config loaded from {yaml_file}")
-        self.load_geojsons()
-        self.load_csvs()
+        try: 
+            self.load_geojsons()
+        except:
+            print("error loading geojsons")
+        try: 
+            self.load_csvs()
+        except: 
+            print("error loading csvs")
     def __repr__(self):
         try:
             self.domain.plot()
@@ -289,6 +301,9 @@ class Config:
     def get_cell_id_from_coords(self, UTME, UTMN):
         return get_cell_id_from_coords(UTME, UTMN, self.total_bounds[0], self.total_bounds[3], self.delc, self.delr)
     
+    def get_coords_from_cell_id(self, idx_list):
+        return convert_cell_id_to_coordinates(idx_list, self.delr, self.delc, xmin = self.total_bounds[0], ymax = self.total_bounds[3])
+    
     def import_conduit_network(self, path = None, verbose = False):
         """Return bool array with location of conduit network"""
         if path is None:
@@ -311,9 +326,8 @@ class Config:
     def extract_drain_spd(self, verbose = False, **params):
         drain_data = params.get('drain_data', self.drain_data)
         drain_spd = []
-        for obj in drain_data:
-            if obj['name'] == 'creek':
-                C = obj['C']
+        for name, C in drain_data.items():
+            if name == 'creek':
                 row = self.creek_cells[:,0]
                 col = self.creek_cells[:,1]
                 lay = 0
@@ -321,8 +335,7 @@ class Config:
                 temp_spd = [(lay, r, c, e, C) for r,c,e in zip(row, col, elev)]
                 drain_spd += temp_spd
                 print_verbose('added creeks to drain spd', verbose)
-            elif obj['name'] == 'spring':
-                C = obj['C']
+            elif name == 'spring':
                 lay = 0
                 for idx, spring in self.spring.iterrows():
                     utme = spring.UTME
@@ -332,7 +345,7 @@ class Config:
                     drain_spd += [(lay, row, col, elev, C)]
                 print_verbose('added springs to drain spd', verbose)
             else: 
-                print(f"do not recognize {obj['name']}")
+                print(f"do not recognize {name}")
         self.drain_spd = drain_spd
         return drain_spd
     def add_drains_module(self, verbose = False, **params):

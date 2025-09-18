@@ -57,20 +57,18 @@ Kh_ss:
  - 200
  - 100
 Kv_ss:
- - 200
- - 100
+ - 20
+ - 10
 Kh_conduit: 
- - 500
+ - 300
 Kv_conduit: 
- - 500
+ - 30
 
 
 # drains
 drain_data: #list of features to be represented as drains 
-  - name : 'creek'
-    C : 1
-  - name : 'spring'
-    C : 500
+  creek: 1
+  spring: 300
 
 # initial conditions
 dtw : 1.58 #depth to water table
@@ -89,15 +87,15 @@ validation_params :
   'nlay' : 2
 
 calibration_data:
-  # - name: 'bs'
-  #   type: 'discharge'
-  #   data: '../../data/discharge/calibration_discharge_2018.csv'
-  #   UTME: 
-  #     - 557714
-  #     - 557689
-  #   UTMN: 
-  #     - 4869606
-  #     - 4869553
+  - name: 'bs'
+    type: 'discharge'
+    data: '../../data/discharge/calibration_discharge_2018.csv'
+    UTME: 
+      - 557714
+      - 557689
+    UTMN: 
+      - 4869606
+      - 4869553
   - name: 'mrsw'
     type: 'head'
     data: '../../data/MRSW/calibration_head_2018.csv'
