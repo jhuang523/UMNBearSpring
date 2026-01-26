@@ -1,0 +1,7 @@
+id,x,y,z,type
+0,0,0,0,inlet
+1,500,0,0,junction
+2,1000,0,0,outlet
+3,0,0,5,inlet
+4,500,0,5,junction
+5,1000,0,5,outlet

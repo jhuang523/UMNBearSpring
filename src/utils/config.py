@@ -8,11 +8,10 @@ import geopandas as gpd
 import pandas as pd
 import flopy as mf
 import shapely as shp
-from utils.utils import *
+from utils.common import load_yaml, print_verbose
 from utils.creeks import * 
-from utils.calibration import *
+from utils.calibration import * 
 from utils.geos import * 
-import time
 
 class Config:
     """reads config info from yaml file. contains domain and aquifer properties. stores all relevant model params + objects"""

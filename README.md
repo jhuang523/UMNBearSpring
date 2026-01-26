@@ -14,3 +14,13 @@ Repo for modeling work for Bear Spring project.
 ## Making changes
 - Check out a user branch (i.e. "Charlie" or "Jenny") and start pull request when making changes. Merge with main after discussing changes.
 - main will contain the most up-to-date version of the modeling work. 
+
+## Authenticating 
+- $ ssh-keygen -t ed25519 -C "your_email@example.com"
+- use default location, no passphrase (just press enter through settings)
+- $ vim ~/.ssh/id_ed25519.pub 
+    - copy the contents
+    - paste contents in github.com -> settings -> SSH keys -> add new SSH key
+- $ ssh -T git@github.com
+    - you should see "Hi [user]! You've successfully authenticated, but GitHub does not provide shell access."
+    

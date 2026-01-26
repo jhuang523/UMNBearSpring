@@ -9,7 +9,7 @@ from argparse import ArgumentParser
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../../src"))) #use this to be able to import local packages
 
 from utils.config import *
-from utils.utils import *
+from utils.common import *
 from utils.creeks import *
 from utils.calibration import * 
 import scripts.run_model as run_model
