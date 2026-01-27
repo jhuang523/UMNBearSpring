@@ -12,8 +12,8 @@ from utils.config import *
 from utils.common import *
 from utils.creeks import *
 from utils.calibration import * 
-import scripts.run_model as run_model
-import scripts.check_outputs as check_outputs
+import scripts.EPM.run_model as run_model
+import scripts.EPM.check_outputs as check_outputs
 
 def main(config_file, max_iter = 10, ws = 'calibration', conduits = True, run_name = 'run', alpha = 1):
     def dict_less_than(dict1, dict2):
