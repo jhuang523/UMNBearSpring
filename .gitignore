@@ -26,8 +26,4 @@ auth*
 model_runs/
 *.npz
 *.pkl
-<<<<<<< HEAD
-
-=======
->>>>>>> 59baf1a (mpi openkarst)
 *.log
