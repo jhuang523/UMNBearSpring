@@ -5,7 +5,9 @@ import pandas as pd
 import yaml
 import rasterio
 import os
-from utils.geos import * 
+from utils.geos import *
+import pickle
+
 
 def load_yaml(path : str):
     with open(path, 'r') as file:
@@ -17,7 +19,15 @@ def write_yaml(path: str, data : dict):
         for k, v in data.items():
             file.write(f'{k}: {v}')
 
+def load_pickle(path: str):
+    with open(path, 'rb') as f:
+        data = pickle.load(f)
+    return data
 
+def write_pickle(path: str, data):
+    with open(path, 'wb') as f:
+        pickle.dump(data, f)
+        
 def convert_df_to_datetime(df, date_col):
     df[date_col] = pd.to_datetime(df[date_col])
     return df
