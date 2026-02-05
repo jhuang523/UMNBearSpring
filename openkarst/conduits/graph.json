@@ -1,0 +1,127 @@
+{
+  "nodes": {
+    "a": {
+      "data": {
+        "id": "a"
+      },
+      "position": {
+        "x": 277.60146854119176,
+        "y": 430.1216989829464
+      }
+    },
+    "b": {
+      "data": {
+        "id": "b"
+      },
+      "position": {
+        "x": 100.75068416085911,
+        "y": 277.0698932906268
+      }
+    },
+    "c": {
+      "data": {
+        "id": "c"
+      },
+      "position": {
+        "x": -152.34787737888482,
+        "y": 275.33286511349434
+      }
+    },
+    "A": {
+      "data": {
+        "id": "A"
+      },
+      "position": {
+        "x": 469.6130733178403,
+        "y": 435.6345268594791
+      }
+    },
+    "B": {
+      "data": {
+        "id": "B"
+      },
+      "position": {
+        "x": 688.7914494711428,
+        "y": 434.3709913347143
+      }
+    },
+    "C": {
+      "data": {
+        "id": "C"
+      },
+      "position": {
+        "x": 97.79106649391939,
+        "y": 546.9045370696487
+      }
+    },
+    "D": {
+      "data": {
+        "id": "D"
+      },
+      "position": {
+        "x": -163.7902194070415,
+        "y": 549.8182857178488
+      }
+    }
+  },
+  "edges": {
+    "ab": {
+      "data": {
+        "id": "ab",
+        "source": "a",
+        "target": "b"
+      },
+      "source": "a",
+      "target": "b"
+    },
+    "bc": {
+      "data": {
+        "id": "bc",
+        "source": "b",
+        "target": "c"
+      },
+      "source": "b",
+      "target": "c"
+    },
+    "edge-A-a": {
+      "data": {
+        "id": "edge-A-a",
+        "source": "A",
+        "target": "a",
+        "directed": false
+      },
+      "source": "A",
+      "target": "a"
+    },
+    "edge-B-A": {
+      "data": {
+        "id": "edge-B-A",
+        "source": "B",
+        "target": "A",
+        "directed": false
+      },
+      "source": "B",
+      "target": "A"
+    },
+    "edge-a-C": {
+      "data": {
+        "id": "edge-a-C",
+        "source": "a",
+        "target": "C",
+        "directed": false
+      },
+      "source": "a",
+      "target": "C"
+    },
+    "edge-C-D": {
+      "data": {
+        "id": "edge-C-D",
+        "source": "C",
+        "target": "D",
+        "directed": false
+      },
+      "source": "C",
+      "target": "D"
+    }
+  }
+}

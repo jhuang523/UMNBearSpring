@@ -2,15 +2,13 @@
 Geospatial util functions for handling shapefiles, 
 geojson, DEM data, and geometric operations.
 """
-from utils import *
 import geopandas as gpd
 import shapely as shp
 import numpy as np
 import pandas as pd 
 import rasterio
 import os
-from pyproj import Transformer 
-
+from utils.common import * 
 crs = 'EPSG:26915'
 
 def load_geojson(path : str, crs = crs):
@@ -147,3 +145,20 @@ def get_cell_id_from_coords(x, y, x0, ymax, dx, dy):
 def transform_coordinates(x, y, from_crs, to_crs):
     transformer = Transformer.from_crs(from_crs, to_crs, always_xy=True)
     return transformer.transform(x, y)
+
+def create_sloped_array(nx, ny, dx, dy, azimuth = 0, dip = 0, z0 = None, z1 = None):
+    """Given discretization parameters, will return a ny x nx array with elevations sloping in a given azimuth and dip """
+    dip = np.radians(dip)
+    slope = np.tan(dip)
+    azimuth_rad = np.radians(azimuth)
+    dz_dx = slope * np.cos(azimuth_rad)  # Change in Z per unit X
+    dz_dy = slope * np.sin(azimuth_rad)  # Change in Z per unit Y
+    x, y = np.meshgrid(np.arange(nx), np.arange(ny))  # Column (X) and Row (Y) indices
+    # Compute bottom elevation, subtracting elevation change from max elevation
+    if z1 is not None: 
+        z = z1
+        layer_array = z - ((nx - x-1)* dx * dz_dx) + ((ny - y-1) * dy * dz_dy)
+    elif z0 is not None:
+        z = z0
+        layer_array = z0 + (x * dx * dz_dx) + (y * dy * dz_dy)
+    return layer_array

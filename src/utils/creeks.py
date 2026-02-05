@@ -3,7 +3,7 @@ import numpy as np
 import shapely as shp
 import matplotlib.pyplot as plt 
 import flopy as mf
-from utils.utils import *
+from utils.common import *
 from rasterio import features
 
 class Creek:

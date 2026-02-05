@@ -1,0 +1,39 @@
+2026-02-04 12:48:42,379 - FlowSimulation - INFO - Settings validated
+2026-02-04 12:48:42,379 - FlowSimulation - INFO - Settings applied
+2026-02-04 12:48:42,380 - FlowSimulation - INFO - Arrays initialized
+2026-02-04 12:48:42,380 - FlowSimulation - INFO - Conduit properties initialized
+2026-02-04 12:48:42,380 - FlowSimulation - INFO - FlowSimulation initialized with physical properties: PhysicalProperties(water_density=1000, gravity=9.81, dynamic_viscosity=0.001, geometry_channel=False, channel_type='infinite', channel_width=1.0, channel_manning=0.03, friction_model='hybrid')
+2026-02-04 12:48:42,380 - FlowSimulation - INFO - FlowSimulation initialized with solver settings: SolverSettings(relaxation_factor=0.6, max_iterations=20, picard_depth_tol=1e-05, ss_rel_l2tol=0.001, ss_rel_madtol=1e-08)
+2026-02-04 12:48:42,381 - FlowSimulation - INFO - FlowSimulation initialized with simulation settings: SimulationSettings(min_waterdepth=1e-10, min_flowrate=1e-10, courant=0.8, adaptive_timesteps=True, dt_init=1.0, dt_max=1000.0, t_max=86400.0, steady_state=False, print_info_interval=1000)
+2026-02-04 12:48:42,382 - FlowSimulation - INFO - Results container created for: ['time', 'time_step_size', 'flowrates', 'water_depths', 'l2_norms', 'convergence_fails', 'reynolds_numbers']
+2026-02-04 12:52:47,864 - FlowSimulation - INFO - Maximum time reached: Simulation finished at time = 86400.18s
+2026-02-04 12:52:47,864 - FlowSimulation - INFO - Percentage convergence fails: 0.00
+2026-02-04 12:52:47,880 - FlowSimulation - INFO - Results stored.
+2026-02-04 12:52:48,003 - FlowSimulation - INFO - Logger closed. Object deleted.
+
+2026-02-04 16:52:35,000 - FlowSimulation - INFO - Settings validated
+2026-02-04 16:52:35,000 - FlowSimulation - INFO - Settings applied
+2026-02-04 16:52:35,000 - FlowSimulation - INFO - Arrays initialized
+2026-02-04 16:52:35,000 - FlowSimulation - INFO - Conduit properties initialized
+2026-02-04 16:52:35,000 - FlowSimulation - INFO - FlowSimulation initialized with physical properties: PhysicalProperties(water_density=1000, gravity=9.81, dynamic_viscosity=0.001, geometry_channel=False, channel_type='infinite', channel_width=1.0, channel_manning=0.03, friction_model='hybrid')
+2026-02-04 16:52:35,000 - FlowSimulation - INFO - FlowSimulation initialized with solver settings: SolverSettings(relaxation_factor=0.6, max_iterations=20, picard_depth_tol=1e-05, ss_rel_l2tol=0.001, ss_rel_madtol=1e-08)
+2026-02-04 16:52:35,000 - FlowSimulation - INFO - FlowSimulation initialized with simulation settings: SimulationSettings(min_waterdepth=1e-10, min_flowrate=1e-10, courant=0.8, adaptive_timesteps=True, dt_init=1.0, dt_max=1000.0, t_max=86400.0, steady_state=False, print_info_interval=1000)
+2026-02-04 16:52:35,007 - FlowSimulation - INFO - Results container created for: ['time', 'time_step_size', 'flowrates', 'water_depths', 'l2_norms', 'convergence_fails', 'reynolds_numbers']
+2026-02-04 16:57:10,773 - FlowSimulation - INFO - Maximum time reached: Simulation finished at time = 86400.18s
+2026-02-04 16:57:10,773 - FlowSimulation - INFO - Percentage convergence fails: 0.00
+2026-02-04 16:57:10,792 - FlowSimulation - INFO - Results stored.
+2026-02-04 16:57:10,898 - FlowSimulation - INFO - Logger closed. Object deleted.
+
+2026-02-04 17:00:15,613 - FlowSimulation - INFO - Settings validated
+2026-02-04 17:00:15,613 - FlowSimulation - INFO - Settings applied
+2026-02-04 17:00:15,614 - FlowSimulation - INFO - Arrays initialized
+2026-02-04 17:00:15,614 - FlowSimulation - INFO - Conduit properties initialized
+2026-02-04 17:00:15,614 - FlowSimulation - INFO - FlowSimulation initialized with physical properties: PhysicalProperties(water_density=1000, gravity=9.81, dynamic_viscosity=0.001, geometry_channel=False, channel_type='infinite', channel_width=1.0, channel_manning=0.03, friction_model='hybrid')
+2026-02-04 17:00:15,615 - FlowSimulation - INFO - FlowSimulation initialized with solver settings: SolverSettings(relaxation_factor=0.6, max_iterations=20, picard_depth_tol=1e-05, ss_rel_l2tol=0.001, ss_rel_madtol=1e-08)
+2026-02-04 17:00:15,615 - FlowSimulation - INFO - FlowSimulation initialized with simulation settings: SimulationSettings(min_waterdepth=1e-10, min_flowrate=1e-10, courant=0.8, adaptive_timesteps=True, dt_init=1.0, dt_max=1000.0, t_max=86400.0, steady_state=False, print_info_interval=1000)
+2026-02-04 17:00:15,617 - FlowSimulation - INFO - Results container created for: ['time', 'time_step_size', 'flowrates', 'water_depths', 'l2_norms', 'convergence_fails', 'reynolds_numbers']
+2026-02-04 17:04:35,564 - FlowSimulation - INFO - Maximum time reached: Simulation finished at time = 86400.18s
+2026-02-04 17:04:35,564 - FlowSimulation - INFO - Percentage convergence fails: 0.00
+2026-02-04 17:04:35,580 - FlowSimulation - INFO - Results stored.
+2026-02-04 17:04:36,052 - FlowSimulation - INFO - Logger closed. Object deleted.
+

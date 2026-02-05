@@ -4,7 +4,7 @@ sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../../src"))) #use th
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../src"))) #use this to be able to import local packages
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "src"))) #use this to be able to import local packages
 
-from utils.utils import print_verbose
+from utils.common import print_verbose
 from utils.conduits import * 
 
 from argparse import ArgumentParser
