@@ -7,6 +7,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import json
 import networkx as nx
 import openkarst.models
 importlib.reload(openkarst.models)
@@ -15,6 +16,7 @@ from utils.openkarst_network import OpenKarstNetwork as OKN
 from openkarst.network_generation import compute_conduit_lengths
 from openkarst.visualization.animation_pyvista import animate_network
 from openkarst.models import FlowSimulation
+from argparse import ArgumentParser
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../../src"))) #use this to be able to import local packages
 
 def load_network_data(nodes_file, edges_file, diameters_file = None, debug = False, **params):
@@ -25,9 +27,9 @@ def load_network_data(nodes_file, edges_file, diameters_file = None, debug = Fal
     inlets, outlets = network.extract_boundary_nodes(node_keys, debug = debug)
     return network
 def load_recharge_data(recharge_file):
-    """Load recharge data from csv file"""
-    rech_df = pd.read_csv(recharge_file)
-    return rech_df
+    """Load recharge data from json file with structure {(node,) : {flow : [], time : []}}"""
+    rech_dict = json.load(open(recharge_file))
+    return rech_dict
 
 def load_validation_data(validation_file):
     """Load validation data from csv file"""
@@ -42,9 +44,9 @@ def load_metadata(metadata_file):
     with open(metadata_file, 'rb') as f:
         metadata = pickle.load(f)
     return metadata
-def run_openkarst_simulation(network : OKN, base_dir = '.', cn_params = None, initial_flowrate = None, initial_water_depth = None, inflow_boundary = {}, head_boundary ={}, steady_state = True, t_max = 1000, inflow_type = 'constant', head_type = 'constant', **params):
-    
-    # base_dir = os.path.dirname(os.path.abspath(__file__))
+def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate = None, initial_water_depth = None, inflow_boundary = {}, head_boundary ={}, steady_state = True, t_max = 1000, inflow_type = 'constant', head_type = 'constant', **params):
+    save_path = params.get("save_path")
+
     adaptive_timesteps = params.get('adaptive_timesteps', True)
     # Setup flow simulation parameters
     physical_properties = {
@@ -88,7 +90,7 @@ def run_openkarst_simulation(network : OKN, base_dir = '.', cn_params = None, in
     }
     
     logging_settings = {
-        'base_dir': base_dir,
+        'base_dir': save_path if save_path is not None else '.',
         'log_file': 'simulation.log'
     }
     
@@ -171,7 +173,6 @@ def run_openkarst_simulation(network : OKN, base_dir = '.', cn_params = None, in
                     y_history=y_history, 
                     t_history=t_history, 
                     **animation_settings)
-    save_path = params.get("save_path")
     if save_path is not None:
         try:
             os.makedirs(save_path, exist_ok=False)
@@ -200,4 +201,18 @@ def run_openkarst_simulation(network : OKN, base_dir = '.', cn_params = None, in
     return results
 
 if __name__ == "__main__":
+    parser = ArgumentParser(description="Run OpenKarst simulation on a given network")
+    parser.add_argument('--network_dir', type=str, required=True, help='Directory containing network files')
+    parser.add_argument('--nodes_file', type=str, default='nodes.csv', help='CSV file for nodes')
+    parser.add_argument('--edges_file', type=str, default='edges.csv', help='CSV file for edges')
+    parser.add_argument('--diameters_file', type=str, default=None, help='CSV file for diameters')
+    parser.add_argument('--diffuse_inlets', action='store_true', help='Flag to extract diffuse inlets')
+    parser.add_argument('save_path', type=str, help='Path to save simulation results')
+    parser.add_argument('recharge_file', type=str, help='CSV file for recharge data')
+
+    args = parser.parse_args()
+    network_dir = args.network_dir
     pass
+network_dir = '../../data/networks/single_conduit/pykasso_n58'
+network = load_network_data(f'{network_dir}/nodes.csv', f'{network_dir}/edges.csv')
+network.extract_diffuse_inlets()

@@ -124,9 +124,22 @@ class OpenKarstNetwork:
                     for line in file:
                         node_id, x, y, z = line.strip().split(';')
                         G.add_node(int(node_id), coords=[float(x), float(y), float(z)])
-            self.update_network(nodes=nodes)
-            
-                
+        # Load diameters from the file, skipping the header
+        if self.diameters is not None:
+            node_diameters = self.diameters.set_index('id').to_dict()['d']
+            nodes['d'] = nodes['id'].map(node_diameters)
+        elif self.diameters_file is not None:
+            node_diameters = {}
+            with open(self.diameters_file, 'r') as file:
+                next(file)  # Skip the header line
+                for line in file:
+                    node_id, cswidth, csheight = line.strip().split(';')
+                    average_diameter = (float(cswidth) + float(csheight)) / 2
+                    node_diameters[int(node_id)] = average_diameter
+            nodes['d'] = nodes['id'].map(node_diameters)
+        else:
+            node_diameters = nodes['d'].to_dict()
+        self.update_network(nodes=nodes, diameters = node_diameters)       
         
         # Load edges from the file, skipping the header
         if self.edges is not None:
@@ -151,18 +164,7 @@ class OpenKarstNetwork:
                         G.add_edge(node_a, node_b)
             self.update_network(edges=edges)
         
-        # Load diameters from the file, skipping the header
-        if self.diameters is not None:
-            node_diameters = self.diameters.set_index('id').to_dict()['d']
-        elif self.diameters_file is not None:
-            with open(self.diameters_file, 'r') as file:
-                next(file)  # Skip the header line
-                for line in file:
-                    node_id, cswidth, csheight = line.strip().split(';')
-                    average_diameter = (float(cswidth) + float(csheight)) / 2
-                    node_diameters[int(node_id)] = average_diameter
-        else:
-            node_diameters = nodes['d'].to_dict()
+
 
         
         # Assign average diameters to each edge by averaging diameters of connected nodes
