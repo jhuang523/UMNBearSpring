@@ -13,6 +13,7 @@ import networkx as nx
 import openpnm as op
 import numpy as np
 import pandas as pd
+import utils.conduits as conduits
 
 class OpenKarstNetwork:
     """
@@ -208,4 +209,14 @@ class OpenKarstNetwork:
         self.diffuse_inlets += tuple(node_dict['diffuse_inlets'])
         print ("Point inlets:", self.point_inlets)
         print ("Diffuse inlets:", self.diffuse_inlets)
-        
+    
+    def plot_3D_network(self, **params):
+        node_color = params.get('node_color', None)
+        edge_color = params.get('edge_color', None)
+        node_colormap = params.get('node_colormap', 'viridis')
+        edge_colormap = params.get('edge_colormap', 'viridis')
+        conduits.plot_3D_network(self.nodes, self.edges, 
+                        node_color=node_color, 
+                        edge_color=edge_color,
+                        node_colormap=node_colormap,
+                        edge_colormap=edge_colormap)
