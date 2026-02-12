@@ -1,5 +1,5 @@
 """Works with pykasso v1 for 3D conduit generation"""
-import pykasso as pk
+# import pykasso as pk
 import numpy as np 
 import pandas as pd 
 import os
@@ -9,12 +9,12 @@ import plotly.graph_objects as go
 from utils.common import print_verbose
 
 
-#TODO fix this is still V0 
-def generate_network(settings_file):
-    catchment = pk.SKS(settings_file)
-    catchment.compute_karst_network()
-    network = catchment.karst_simulations[-1]
-    return network
+# #TODO fix this is still V0 
+# def generate_network(settings_file):
+#     catchment = pk.SKS(settings_file)
+#     catchment.compute_karst_network()
+#     network = catchment.karst_simulations[-1]
+#     return network
 
 def plot_network(network):
     plt.imshow(network)
