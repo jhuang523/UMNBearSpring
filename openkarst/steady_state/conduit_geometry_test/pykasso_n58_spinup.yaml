@@ -1,0 +1,13 @@
+#will contain recharge, initial conditions, boundary conditions 
+
+network_dir: 'networks/pykasso_n58'
+output_dir: 'pykasso_n58_spin_up'
+inflow_type : 'timeseries'  # 'constant', 'timeseries', 'ramp'
+inflow_file : 'input_data/pykasso_n58_ss/inflow_boundary.pkl'
+head_boundary_type : 'constant'  # 'constant', 'timeseries', 'ramp'
+head_boundary_file:  'input_data/pykasso_n58_ss/head_boundary.pkl' #file with dict containing {(node,) : head_val}
+initial_conditions_file : None  # file containing initial flowrate and water depth info
+steady_state: False 
+dt_max: 3600
+t_max: 86400  # fix so that if None, it tries the max timeseries or a default value
+

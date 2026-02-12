@@ -8,6 +8,6 @@ head_boundary_type : 'constant'  # 'constant', 'timeseries', 'ramp'
 head_boundary_file:  'head_boundary.pkl' #file with dict containing {(node,) : head_val}
 initial_conditions_file : 'initial_conditions.pkl'  # file containing initial flowrate and water depth info
 steady_state: False 
-dt_max: 1000
+dt_max: 3600
 t_max: 86400  # fix so that if None, it tries the max timeseries or a default value
 
