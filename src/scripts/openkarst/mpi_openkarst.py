@@ -20,7 +20,7 @@ def run_openkarst_mpi(sim_list, verbose = False):
     size = comm.Get_size()
 
     if rank == 0: # broadcast the input data files
-        comm.broadcast(sim_list) 
+        comm.bcast(sim_list) 
     input_data_file = sim_list[rank]
     run_from_yaml(input_data_file, verbose = verbose)
 
