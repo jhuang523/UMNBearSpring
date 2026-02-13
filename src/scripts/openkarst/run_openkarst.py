@@ -234,10 +234,10 @@ def run_from_yaml(
     else:
         initial_flowrate = 0.0
         initial_water_depth = 0.0
-    print_verbose(f'inflow: {inflow_data}', args.verbose)
-    print_verbose(f'head boundary: {head_boundary_data}', args.verbose)
-    print_verbose(f'init conditions: {init_conditions}', args.verbose)
-    print_verbose(f't_max: {t_max}', args.verbose)
+    print_verbose(f'inflow: {inflow_data}', verbose)
+    print_verbose(f'head boundary: {head_boundary_data}', verbose)
+    print_verbose(f'init conditions: {init_conditions}', verbose)
+    print_verbose(f't_max: {t_max}', verbose)
     run_openkarst_simulation(network, 
                                 cn_params = cn_params, 
                                 initial_flowrate = initial_flowrate, 
