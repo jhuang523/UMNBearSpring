@@ -19,10 +19,10 @@ def run_openkarst_mpi(sim_list, verbose = False):
     rank = comm.Get_rank()
     size = comm.Get_size()
 
-    if rank == 0: # broadcast the input data files
-        comm.bcast(sim_list) 
-    input_data_file = sim_list[rank]
-    run_from_yaml(input_data_file, verbose = verbose)
+    sim_list = comm.bcast(sim_list, root=0)
+    if rank < len(sim_list):
+        input_data_file = sim_list[rank]
+        run_from_yaml(input_data_file, verbose = verbose)
 
 def main():
     parser = ArgumentParser(description="Run OpenKarst simulation on a given network")
