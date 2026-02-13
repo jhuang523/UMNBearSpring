@@ -26,7 +26,7 @@ def run_openkarst_mpi(sim_list, verbose = False):
 
 def main():
     parser = ArgumentParser(description="Run OpenKarst simulation on a given network")
-    parser.add_argument("--sim_list_file", type = "str", help = "File containing list of input data yamls to run")
+    parser.add_argument("--sim_list_file", type = str, help = "File containing list of input data yamls to run")
     parser.add_argument('--verbose', action='store_true', help='Enable verbose output')
 
     args = parser.parse_args()
