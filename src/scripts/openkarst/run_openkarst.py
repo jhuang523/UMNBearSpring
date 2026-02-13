@@ -227,7 +227,7 @@ def run_from_yaml(
     network = load_network_data(f'{network_dir}/{nodes_file}', f'{network_dir}/{edges_file}', diameters_file=diameters_file)
     inflow_data = load_pickle(inflow_file)
     head_boundary_data = load_pickle(head_boundary_file)
-    if init_conditions_file is not None:
+    if init_conditions_file not in [None, 'None']:
         init_conditions = load_initial_conditions(init_conditions_file)
         initial_flowrate = init_conditions['initial_flowrate']
         initial_water_depth = init_conditions['initial_water_depth']
