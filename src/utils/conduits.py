@@ -120,7 +120,7 @@ def densify_edges(nodes, edges, density_factor=3):
     dense_edges = extract_edge_coordinates(dense_nodes, dense_edges)
 
     return dense_nodes, dense_edges
-    
+
 def plot_3D_network(
     nodes,
     edges,

@@ -209,6 +209,31 @@ class OpenKarstNetwork:
         self.diffuse_inlets += tuple(node_dict['diffuse_inlets'])
         print ("Point inlets:", self.point_inlets)
         print ("Diffuse inlets:", self.diffuse_inlets)
+
+    def plot_network_flow(self, Q, h,  **params): #Q and h are arrays that match the number of edges (Q) and number of nodes (h)
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        from matplotlib.collections import LineCollection
+
+        axes = params.get("axes", ("x", "y"))
+        segments = self.edges[[f'{axes[0]}_0', f'{axes[1]}_0', f'{axes[0]}_1', f'{axes[1]}_1']].values.reshape(-1, 2, 2)
+        norm = plt.Normalize(vmin=Q.min(), vmax=Q.max())
+
+        # Get palette
+        palette = params.get("palette", "coolwarm")
+        cmap = sns.color_palette(palette, as_cmap=True)
+
+        lc = LineCollection(segments, cmap=cmap, norm=norm)
+        lc.set_array(Q)
+
+        fig, ax = plt.subplots(figsize=(6, 6))
+        ax.add_collection(lc)
+        ax.autoscale()  # Needed for LineCollection to be visible
+        sns.scatterplot(self.nodes, x = axes[0], y = axes[1], hue = h, ax = ax, palette = 'viridis')
+        plt.colorbar(lc, ax=ax, label="Flowrate (m³/s)")
+        plt.grid(True)
+        plt.legend(title = "Head")
+
     
     def plot_3D_network(self, **params):
         node_color = params.get('node_color', None)
