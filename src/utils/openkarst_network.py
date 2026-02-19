@@ -125,24 +125,8 @@ class OpenKarstNetwork:
                     for line in file:
                         node_id, x, y, z = line.strip().split(';')
                         G.add_node(int(node_id), coords=[float(x), float(y), float(z)])
-        # Load diameters from the file, skipping the header
-        if self.diameters is not None:
-            node_diameters = self.diameters.set_index('id').to_dict()['d']
-            nodes['d'] = nodes['id'].map(node_diameters)
-        elif self.diameters_file is not None:
-            node_diameters = {}
-            with open(self.diameters_file, 'r') as file:
-                next(file)  # Skip the header line
-                for line in file:
-                    node_id, cswidth, csheight = line.strip().split(';')
-                    average_diameter = (float(cswidth) + float(csheight)) / 2
-                    node_diameters[int(node_id)] = average_diameter
-            nodes['d'] = nodes['id'].map(node_diameters)
-        else:
-            node_diameters = nodes['d'].to_dict()
-        self.update_network(nodes=nodes, diameters = node_diameters)       
-        
-        # Load edges from the file, skipping the header
+
+        #load edges
         if self.edges is not None:
             edges = self.edges
             edge_data = edges[['from_id', 'to_id']].astype(int).itertuples(index=False, name=None)
@@ -163,11 +147,31 @@ class OpenKarstNetwork:
                     for line in file:
                         node_a, node_b = map(int, line.strip().split(';'))
                         G.add_edge(node_a, node_b)
-            self.update_network(edges=edges)
         
-
+        #check node numbering is regular 
+        self.update_network(nodes = nodes, edges=edges)
+        
+        # Load diameters from the file, skipping the header
+        if self.diameters is not None:
+            node_diameters = self.diameters.set_index('id').to_dict()['d']
+            nodes['d'] = nodes['id'].map(node_diameters)
+        elif self.diameters_file is not None: #to do fix this so it can take in CSV
+            node_diameters = {}
+            with open(self.diameters_file, 'r') as file:
+                next(file)  # Skip the header line
+                for line in file:
+                    node_id, cswidth, csheight = line.strip().split(';')
+                    average_diameter = (float(cswidth) + float(csheight)) / 2
+                    node_diameters[int(node_id)] = average_diameter
+            nodes['d'] = nodes['id'].map(node_diameters)
+        else:
+            node_diameters = nodes.set_index('id')['d'].to_dict()
+        self.update_network(nodes=nodes, diameters = node_diameters)       
+        
+        # Load edges from the file, skipping the header
 
         
+        ## check edges, nodes, diameters 
         # Assign average diameters to each edge by averaging diameters of connected nodes
         edge_diameters = {}
         for node_a, node_b in G.edges():

@@ -67,6 +67,15 @@ def extract_edge_coordinates(nodes, edges):
 
     return edges
 
+def reset_node_ids(nodes, edges):
+    """Resets the node ids such that there are no gaps in the numbering"""
+    node_map = {old_node : new_node for new_node, old_node in nodes.id.to_dict().items()}
+    #replace from and to ids in edges
+    edges['from_id'] = edges.from_id.map(node_map)
+    edges['to_id'] = edges.to_id.map(node_map)
+    nodes['id'] = nodes.id.map(node_map)
+    return nodes, edges
+
 def densify_edges(nodes, edges, density_factor=3):
     """
     Densify a 3D graph network by adding density_factor evenly spaced
