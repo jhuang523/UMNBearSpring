@@ -129,6 +129,133 @@ def densify_edges(nodes, edges, density_factor=3):
     dense_edges = extract_edge_coordinates(dense_nodes, dense_edges)
 
     return dense_nodes, dense_edges
+def reduce_edge_density(nodes, edges, epsilon):
+    import networkx as nx
+    import rdp
+
+    # Build graph
+    G = nx.Graph()
+    for _, row in nodes.iterrows():
+        G.add_node(row['id'],
+                   pos=np.array([row['x'], row['y'], row['z']]),
+                   type=row['type'])
+
+    for _, row in edges.iterrows():
+        G.add_edge(row['from_id'], row['to_id'])
+
+    # Extract polylines
+    def get_polylines(G):
+        polylines = []
+        visited = set()
+
+        for node in G.nodes():
+            if G.degree(node) != 2:  # endpoints and junctions
+                for nbr in G.neighbors(node):
+
+                    if (node, nbr) in visited:
+                        continue
+
+                    path = [node, nbr]
+                    visited.add((node, nbr))
+
+                    prev, curr = node, nbr
+
+                    while G.degree(curr) == 2:
+                        nxt = [n for n in G.neighbors(curr) if n != prev][0]
+
+                        if (curr, nxt) in visited:
+                            break
+
+                        path.append(nxt)
+                        visited.add((curr, nxt))
+                        prev, curr = curr, nxt
+
+                    polylines.append(path)
+
+        return polylines
+
+    polylines = get_polylines(G)
+
+    # Simplify polylines while preserving endpoints
+    simplified_polylines = []
+
+    for path in polylines:
+
+        coords = np.array([G.nodes[n]['pos'] for n in path])
+
+        simplified_coords = rdp.rdp(coords, epsilon=epsilon)
+
+        simplified_polylines.append(simplified_coords)
+
+    # Rebuild graph WITHOUT duplicating shared nodes
+    coord_to_id = {}
+    new_nodes = []
+    new_edges = []
+    node_id = 0
+
+    def get_or_create_node(coord):
+
+        nonlocal node_id
+
+        key = tuple(np.round(coord, 8))
+
+        if key not in coord_to_id:
+
+            coord_to_id[key] = node_id
+
+            new_nodes.append([
+                node_id,
+                coord[0],
+                coord[1],
+                coord[2],
+                'junction'
+            ])
+
+            node_id += 1
+
+        return coord_to_id[key]
+
+    for poly in simplified_polylines:
+
+        prev_id = None
+
+        for coord in poly:
+
+            curr_id = get_or_create_node(coord)
+
+            if prev_id is not None:
+                new_edges.append([prev_id, curr_id])
+
+            prev_id = curr_id
+
+    nodes_df = pd.DataFrame(
+        new_nodes,
+        columns=['id', 'x', 'y', 'z', 'type']
+    )
+
+    edges_df = pd.DataFrame(
+        new_edges,
+        columns=['from_id', 'to_id']
+    )
+
+    # Restore inlet/outlet types using nearest match
+    original_special = nodes[nodes['type'] != 'junction']
+
+    for _, row in original_special.iterrows():
+
+        coord = np.array([row['x'], row['y'], row['z']])
+
+        dists = np.linalg.norm(
+            nodes_df[['x','y','z']].values - coord,
+            axis=1
+        )
+
+        idx = np.argmin(dists)
+
+        nodes_df.loc[idx, 'type'] = row['type']
+    edges_df = extract_edge_coordinates(nodes_df, edges_df)
+    return nodes_df, edges_df
+
 
 def plot_3D_network(
     nodes,

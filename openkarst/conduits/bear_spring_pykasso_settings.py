@@ -32,8 +32,8 @@ model_parameters = {
         'subdomain'  : 'domain_surface',
     },
     'inlets' : {
-         'number'     : 5,
-        'data'       : '../../../../data/geo_data/sinkholes/sinkholes_dye_trace_2d.txt',#[[558515.0, 4867230.0]], #'../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace.txt',
+         'number'     : 1,
+        'data'       : '../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace_2D.txt',#[[558515.0, 4867230.0]], #'../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace.txt',
         'subdomain'  : 'domain_surface',
         'importance' : [1]
     },
