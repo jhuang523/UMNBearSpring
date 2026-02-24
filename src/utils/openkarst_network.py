@@ -149,7 +149,7 @@ class OpenKarstNetwork:
                         G.add_edge(node_a, node_b)
         
         #check node numbering is regular 
-        self.update_network(nodes = nodes, edges=edges)
+        self.update_network(nodes = nodes, edges=edges, graph = G)
         
         # Load diameters from the file, skipping the header
         if self.diameters is not None:
@@ -167,10 +167,6 @@ class OpenKarstNetwork:
         else:
             node_diameters = nodes.set_index('id')['d'].to_dict()
         self.update_network(nodes=nodes, diameters = node_diameters)       
-        
-        # Load edges from the file, skipping the header
-
-        
         ## check edges, nodes, diameters 
         # Assign average diameters to each edge by averaging diameters of connected nodes
         edge_diameters = {}
@@ -190,7 +186,7 @@ class OpenKarstNetwork:
         
         # # Assign conduit diameters to openPNM geometry object
         cn_geometry['throat.diameters'] = [edge_diameters[tuple(sorted(edge))] for edge in cn_geometry['throat.conns']]
-        self.geometry = cn_geometry
+        self.update_network(geometry = cn_geometry)
         return cn_geometry
     
     def extract_boundary_nodes(self, node_keys = {'inlet':['inlet'], 'outlet': ['outfall', 'outlet']}, debug = False):
@@ -213,6 +209,23 @@ class OpenKarstNetwork:
         self.diffuse_inlets += tuple(node_dict['diffuse_inlets'])
         print ("Point inlets:", self.point_inlets)
         print ("Diffuse inlets:", self.diffuse_inlets)
+
+    def update_diameters(self, d): 
+        edge_diameters = {}
+        #assign constant value
+        if isinstance(d, float) or isinstance(d, int): 
+            diameters = dict.fromkeys(self.diameters.keys(), d)
+        elif isinstance(d, pd.DataFrame):
+            diameters = d.set_index('id')['d'].to_dict()
+        elif isinstance(d, dict):
+            diameters = d
+        self.update_network(diameters = diameters)
+        self.nodes['d'] = self.nodes.id.map(diameters)
+        for node_a, node_b in self.graph.edges():
+            avg_diameter = (self.diameters[node_a] + self.diameters[node_b]) / 2
+            edge_diameters[tuple(sorted((node_a, node_b)))] = avg_diameter
+        self.geometry['throat.diameters'] = [edge_diameters[tuple(sorted(edge))] for edge in self.geometry['throat.conns']]
+        return self.geometry
 
     def plot_network_flow(self, Q, h,  **params): #Q and h are arrays that match the number of edges (Q) and number of nodes (h)
         import matplotlib.pyplot as plt

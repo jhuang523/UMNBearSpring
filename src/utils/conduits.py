@@ -256,7 +256,8 @@ def reduce_edge_density(nodes, edges, epsilon):
     edges_df = extract_edge_coordinates(nodes_df, edges_df)
     return nodes_df, edges_df
 
-
+def gaussian_diameter_distribution(nodes, edges, d):
+    return
 def plot_3D_network(
     nodes,
     edges,
