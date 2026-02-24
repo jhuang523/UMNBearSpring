@@ -1,10 +1,4 @@
-input_files/straight_conduit_n62_point_high_eta.yaml
-input_files/straight_conduit_n62_diffuse_high_eta.yaml
-input_files/straight_conduit_n62_gauss_high_eta.yaml
-input_files/pykasso_n58_point_high_eta.yaml
-input_files/pykasso_n58_diffuse_high_eta.yaml
-input_files/pykasso_n58_gauss_high_eta.yaml
-input_files/branching_straight_network_point_high_eta.yaml
-input_files/branching_straight_network_diffuse_high_eta.yaml
-input_files/branching_straight_network_gauss_high_eta.yaml
-input_files/single_conduit_vert_tort_spinup.yaml
+input_files/spinup/d_5/straight_conduit_n62.yaml
+input_files/spinup/d_5/pykasso_n58.yaml
+input_files/spinup/d_5/branching_straight_network.yaml
+input_files/spinup/d_5/single_conduit_vert_tort.yaml
