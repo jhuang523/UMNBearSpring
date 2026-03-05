@@ -1,4 +1,2 @@
-input_files/spinup/d_5/straight_conduit_n62.yaml
-input_files/spinup/d_5/pykasso_n58.yaml
-input_files/spinup/d_5/branching_straight_network.yaml
+input_files/high_eta/straight_conduit_n62_point_high_eta.yaml
 input_files/spinup/d_5/single_conduit_vert_tort.yaml
