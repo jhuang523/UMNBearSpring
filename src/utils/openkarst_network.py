@@ -14,6 +14,7 @@ import openpnm as op
 import numpy as np
 import pandas as pd
 import utils.conduits as conduits
+from utils.common import print_verbose
 
 class OpenKarstNetwork:
     """
@@ -188,7 +189,10 @@ class OpenKarstNetwork:
         cn_geometry['throat.diameters'] = [edge_diameters[tuple(sorted(edge))] for edge in cn_geometry['throat.conns']]
         self.update_network(geometry = cn_geometry)
         return cn_geometry
-    
+    def extract_edge_coordinates(self, debug = False):
+        edges = conduits.extract_edge_coordinates(self.nodes, self.edges)
+        self.update_network(edges = edges)
+        print_verbose("edges updated", debug)
     def extract_boundary_nodes(self, node_keys = {'inlet':['inlet'], 'outlet': ['outfall', 'outlet']}, debug = False):
         if self.nodes is not None: 
             nodes = self.nodes
@@ -227,30 +231,29 @@ class OpenKarstNetwork:
         self.geometry['throat.diameters'] = [edge_diameters[tuple(sorted(edge))] for edge in self.geometry['throat.conns']]
         return self.geometry
 
-    def plot_network_flow(self, Q, h,  **params): #Q and h are arrays that match the number of edges (Q) and number of nodes (h)
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-        from matplotlib.collections import LineCollection
+    # def plot_network_flow(self, Q, h,  **params): #Q and h are arrays that match the number of edges (Q) and number of nodes (h)
+    #     import matplotlib.pyplot as plt
+    #     import seaborn as sns
+    #     from matplotlib.collections import LineCollection
 
-        axes = params.get("axes", ("x", "y"))
-        segments = self.edges[[f'{axes[0]}_0', f'{axes[1]}_0', f'{axes[0]}_1', f'{axes[1]}_1']].values.reshape(-1, 2, 2)
-        norm = plt.Normalize(vmin=Q.min(), vmax=Q.max())
+    #     axes = params.get("axes", ("x", "y"))
+    #     segments = self.edges[[f'{axes[0]}_0', f'{axes[1]}_0', f'{axes[0]}_1', f'{axes[1]}_1']].values.reshape(-1, 2, 2)
+    #     norm = plt.Normalize(vmin=Q.min(), vmax=Q.max())
 
-        # Get palette
-        palette = params.get("palette", "coolwarm")
-        cmap = sns.color_palette(palette, as_cmap=True)
+    #     # Get palette
+    #     palette = params.get("palette", "coolwarm")
+    #     cmap = sns.color_palette(palette, as_cmap=True)
 
-        lc = LineCollection(segments, cmap=cmap, norm=norm)
-        lc.set_array(Q)
+    #     lc = LineCollection(segments, cmap=cmap, norm=norm)
+    #     lc.set_array(Q)
 
-        fig, ax = plt.subplots(figsize=(6, 6))
-        ax.add_collection(lc)
-        ax.autoscale()  # Needed for LineCollection to be visible
-        sns.scatterplot(self.nodes, x = axes[0], y = axes[1], hue = h, ax = ax, palette = 'viridis')
-        plt.colorbar(lc, ax=ax, label="Flowrate (m³/s)")
-        plt.grid(True)
-        plt.legend(title = "Head")
-
+    #     fig, ax = plt.subplots(figsize=(6, 6))
+    #     ax.add_collection(lc)
+    #     ax.autoscale()  # Needed for LineCollection to be visible
+    #     sns.scatterplot(self.nodes, x = axes[0], y = axes[1], hue = h, ax = ax, palette = 'viridis')
+    #     plt.colorbar(lc, ax=ax, label="Flowrate (m³/s)")
+    #     plt.grid(True)
+    #     plt.legend(title = "Head")
     
     def plot_3D_network(self, **params):
         node_color = params.get('node_color', None)
@@ -262,3 +265,124 @@ class OpenKarstNetwork:
                         edge_color=edge_color,
                         node_colormap=node_colormap,
                         edge_colormap=edge_colormap)
+    def plot_network_flow(self, Q, h, **params):
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        from matplotlib.collections import LineCollection
+
+        axes = params.get("axes", ("x", "y"))
+        ax = params.get("ax", None)
+        lc = params.get("lc", None)
+        sc = params.get("sc", None)
+
+        segments = self.edges[
+            [f'{axes[0]}_0', f'{axes[1]}_0',
+            f'{axes[0]}_1', f'{axes[1]}_1']
+        ].values.reshape(-1, 2, 2)
+
+        palette = params.get("palette", "coolwarm")
+        cmap = sns.color_palette(palette, as_cmap=True)
+
+        norm = plt.Normalize(vmin=params.get("vmin_q", Q.min()), vmax=params.get("vmax_q", Q.max()))
+        norm_h = plt.Normalize(vmin=params.get("vmin_h", h.min()), vmax=params.get("vmax_h", h.max()))
+
+        # ---------- INIT MODE ----------
+        if lc is None:
+            lc = LineCollection(segments, cmap=cmap, norm=norm)
+            lc.set_array(Q)
+            ax.add_collection(lc)
+            ax.autoscale()
+
+            # sc = ax.scatter(
+            #     self.nodes[axes[0]],
+            #     self.nodes[axes[1]],
+            #     c=h,
+            #     cmap="viridis",
+            #     norm=norm_h,
+            #     s=30
+            # )
+            sns.scatterplot(self.nodes, x = axes[0], y = axes[1], hue = h, ax = ax, palette = 'viridis')
+            plt.colorbar(lc, ax=ax, label="Flowrate (m³/s)")
+            plt.grid(True)
+            plt.legend(title = "Head")
+
+            return lc, sc
+        # ---------- UPDATE MODE ----------
+        lc.set_array(Q)
+        sc.set_array(h)
+        return lc, sc
+    
+    
+    def animate_network_flow(self, Q, h, t, Q_out, **params): #Q and h are arrays that match the number of edges (Q) and number of nodes (h)
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        from matplotlib.collections import LineCollection
+        from matplotlib.animation import FuncAnimation
+        save_path = params.get('save_path', None)
+
+        #get timesteps
+        dt = params.get('dt', 3600)
+        t0 = t[0]
+        frame_indices = []
+
+        target_time = t0
+        i = 0
+
+        while i < len(t):
+            if t[i] >= target_time:
+                frame_indices.append(i)
+                target_time += dt
+            i += 1
+
+        #INITIALIZE Figure    
+        fig, ax = plt.subplots(2, 1, figsize=(6,10))
+        ax[0].set_aspect('equal')
+        ax[0].set_axis_off()
+
+        # global limits (important!)
+        params = dict(
+            ax=ax[0],
+            vmin_q=Q.min(),
+            vmax_q=Q.max(),
+            vmin_h=h.min(),
+            vmax_h=h.max(),
+        )
+
+        # initialize using your function
+        lc, sc = self.plot_network_flow(
+            Q[0],
+            h[0],
+            **params
+        )
+        line, = ax[1].plot(t, Q_out, lw=2, label="Outlet flowrate")
+        dot, = ax[1].plot([], [], 'ro', markersize=8)
+        spring_ylims = params.get("spring_ylims", (Q_out.min() - Q_out.mean() * 0.1, Q_out.max() + Q_out.mean() * 0.1))
+        ax[1].set_xlim(t[0], t[-1])
+        ax[1].set_ylim(spring_ylims[0], spring_ylims[1])
+        ax[1].legend()
+        ax[1].grid(True)
+        def update(idx):
+
+            self.plot_network_flow(
+                Q[idx],
+                h[idx],
+                ax=ax[0],
+                lc=lc,
+                sc=sc,
+                params = params
+            )
+
+            ax[0].set_title(f"t = {t[idx]}")
+            dot.set_data([t[idx]], [Q_out[idx]])
+
+            return lc, sc, dot
+        ani = FuncAnimation(
+            fig,
+            update,
+            frames=frame_indices,
+            interval=200,
+            blit=False
+        )
+        if save_path is not None:
+            ani.save(save_path, writer="pillow", fps=15)
+        plt.show()

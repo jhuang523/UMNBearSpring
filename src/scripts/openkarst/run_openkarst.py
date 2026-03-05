@@ -36,16 +36,6 @@ def load_initial_conditions(initial_conditions_file):
         print("No initial water depth specified, setting to 0.0")
     return init_cond
 
-
-def load_validation_data(validation_file):
-    """Load validation data from csv file"""
-    val_df = pd.read_csv(validation_file)
-    return val_df
-
-def load_results(results_npz):
-    results = np.load(results_npz)
-    return results
-
 def load_metadata(metadata_file):
     with open(metadata_file, 'rb') as f:
         metadata = pickle.load(f)
@@ -223,8 +213,11 @@ def run_from_yaml(
     t_max = float(input_data.get('t_max', 10000))
     head_type = input_data.get('head_boundary_type', 'constant')
     inflow_type = input_data.get('inflow_type', 'constant')
-
-    network = load_network_data(f'{network_dir}/{nodes_file}', f'{network_dir}/{edges_file}', diameters_file=diameters_file)
+    try: 
+        network = load_network_data(f'{network_dir}/{nodes_file}', f'{network_dir}/{edges_file}', diameters_file=diameters_file)
+    except FileNotFoundError as e:
+        print(f"File couldn't be found: {e}. Skipping {input_data_file}")
+        return
     inflow_data = load_pickle(inflow_file)
     head_boundary_data = load_pickle(head_boundary_file)
     if init_conditions_file not in [None, 'None']:

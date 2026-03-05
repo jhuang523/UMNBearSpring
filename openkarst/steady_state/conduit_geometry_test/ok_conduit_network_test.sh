@@ -7,11 +7,12 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=huan1428@umn.edu
 #SBATCH -p pkkang
-#SBATCH --nodes=1
-#SBATCH --output=output/job_%j.out
-#SBATCH --error=output/job_%j.err
+#SBATCH --nodes=2
+#SBATCH --output=output/logs/job_%j.out
+#SBATCH --error=output/logs/job_%j.err
 
 module load impi/2021/5.1
 module load conda
 source activate openkarst
-mpirun -np $SLURM_NTASKS python  ../../../src/scripts/openkarst/mpi_openkarst.py --sim_list_file sim_list.txt --verbose #put in task here 
+mpirun -np $SLURM_NTASKS python  ../../../src/scripts/openkarst/mpi_openkarst.py --sim_list_file sim_list.txt --log_path "simulation_$(date +%Y%m%d_%H%M%S).log"
+)#put in task here 
