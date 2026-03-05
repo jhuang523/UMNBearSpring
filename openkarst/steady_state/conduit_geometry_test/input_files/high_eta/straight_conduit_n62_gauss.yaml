@@ -5,8 +5,10 @@ output_dir: 'output/straight_conduit_n62_gauss_high_eta'
 inflow_type : 'timeseries'  # 'constant', 'timeseries', 'ramp'
 inflow_file : 'input_data/inflow_boundary/high_eta/straight_conduit_n62_gauss.pkl'
 head_boundary_type : 'constant'  # 'constant', 'timeseries', 'ramp'
-head_boundary_file:  'input_data/head_boundary/straight_conduit_n62.pkl' #file with dict containing {(node,) : head_val}
-initial_conditions_file : 'input_data/init_conditions/straight_conduit_n62_IC.pkl'  # file containing initial flowrate and water depth info
+head_boundary_file:  'input_data/head_boundary/straight_conduit_n62
+.pkl' #file with dict containing {(node,) : head_val}
+initial_conditions_file : 'input_data/init_conditions/straight_conduit_n62
+_IC.pkl'  # file containing initial flowrate and water depth info
 steady_state: False 
 dt_max: 3600
 t_max: 2160000  # fix so that if None, it tries the max timeseries or a default value
