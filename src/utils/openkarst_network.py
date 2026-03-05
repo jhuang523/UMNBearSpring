@@ -288,6 +288,8 @@ class OpenKarstNetwork:
 
         # ---------- INIT MODE ----------
         if lc is None:
+            if ax is None:
+                fig, ax = plt.subplots()
             lc = LineCollection(segments, cmap=cmap, norm=norm)
             lc.set_array(Q)
             ax.add_collection(lc)
