@@ -1,0 +1,14 @@
+#will contain recharge, initial conditions, boundary conditions 
+
+network_dir: 'networks/single_conduit_vert_tort'
+nodes_file : 'nodes_0.1m.csv'
+output_dir: 'output/spinup/d_0.1m/single_conduit_vert_tort'
+inflow_type : 'timeseries'  # 'constant', 'timeseries', 'ramp'
+inflow_file : 'input_data/inflow_boundary/single_conduit_vert_tort_ss.pkl'
+head_boundary_type : 'constant'  # 'constant', 'timeseries', 'ramp'
+head_boundary_file:  'input_data/head_boundary/single_conduit_vert_tort.pkl' #file with dict containing {(node,) : head_val}
+initial_conditions_file : None  # file containing initial flowrate and water depth info
+steady_state: False 
+dt_max: 3600
+t_max: 2592000  # fix so that if None, it tries the max timeseries or a default value
+
