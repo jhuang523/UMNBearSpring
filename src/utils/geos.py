@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd 
 import rasterio
 import os
-from utils.common import * 
+from utils.common import *
 crs = 'EPSG:26915'
 
 def load_geojson(path : str, crs = crs):
