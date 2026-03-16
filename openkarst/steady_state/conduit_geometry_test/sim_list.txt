@@ -1,6 +1,4 @@
-input_files/d_0.1m/branching_straight_network_gauss.yaml
-input_files/d_0.1m/branching_straight_network_point.yaml
-input_files/d_0.1m/pykasso_n58_gauss.yaml
-input_files/d_0.1m/pykasso_n58_point.yaml
-input_files/d_0.1m/straight_conduit_n62_gauss.yaml
-input_files/d_0.1m/straight_conduit_n62_point.yaml
+input_files/spinup/d_pinch/branching_straight_network
+input_files/spinup/d_pinch/pykasso_n58
+input_files/spinup/d_pinch/single_conduit_vert_tort
+input_files/spinup/d_pinch/straight_conduit_n62
