@@ -105,7 +105,6 @@ model_parameters = {
             'importance' : [1]
         },
         'domain' : {
-            'topography' : dem_grid_path,
             'water_level' : np.ones((grid_parameters['ny'], grid_parameters['nx'])) * 375.464,  # flat water table at z=375.464m
         },
         'sks' : {'algorithm' : 'Isotropic3'},

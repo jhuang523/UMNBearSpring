@@ -69,7 +69,7 @@ def extract_edge_coordinates(nodes, edges):
 
 def reset_node_ids(nodes, edges):
     """Resets the node ids such that there are no gaps in the numbering"""
-    node_map = {old_node : new_node for new_node, old_node in nodes.id.to_dict().items()}
+    node_map = {old_id: new_id for new_id, old_id in enumerate(nodes.id)}
     #replace from and to ids in edges
     edges['from_id'] = edges.from_id.map(node_map)
     edges['to_id'] = edges.to_id.map(node_map)
@@ -256,6 +256,15 @@ def reduce_edge_density(nodes, edges, epsilon):
     edges_df = extract_edge_coordinates(nodes_df, edges_df)
     return nodes_df, edges_df
 
+def conduit_lengths(nodes, edges): 
+    #extract edge coordinates if not already existing
+    for coord in ['x_0', 'x_1', 'y_0', 'y_1', 'z_0', 'z_1']:
+        if coord not in edges.columns:
+            edges = extract_edge_coordinates(nodes, edges)
+            break
+    edges['length'] = ((edges.x_0 - edges.x_1)**2 + (edges.y_0 - edges.y_1)**2 + (edges.z_0 - edges.z_1)**2)**0.5
+    return edges 
+            
 def gaussian_diameter_distribution(nodes, edges, d):
     return
 def plot_3D_network(

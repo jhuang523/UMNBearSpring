@@ -193,6 +193,12 @@ class OpenKarstNetwork:
         edges = conduits.extract_edge_coordinates(self.nodes, self.edges)
         self.update_network(edges = edges)
         print_verbose("edges updated", debug)
+        
+    def conduit_lengths(self, debug = False): 
+        edges = conduits.conduit_lengths(self.nodes, self.edges)
+        self.update_network(edges = edges)
+        print_verbose("conduit lengths calculated", debug)
+
     def extract_boundary_nodes(self, node_keys = {'inlet':['inlet'], 'outlet': ['outfall', 'outlet']}, debug = False):
         if self.nodes is not None: 
             nodes = self.nodes

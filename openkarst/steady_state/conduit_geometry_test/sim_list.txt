@@ -2,3 +2,6 @@ input_files/spinup/d_pinch/branching_straight_network
 input_files/spinup/d_pinch/pykasso_n58
 input_files/spinup/d_pinch/single_conduit_vert_tort
 input_files/spinup/d_pinch/straight_conduit_n62
+input_files/spinup/slope/slope_0008.yaml
+input_files/spinup/slope/slope_004.yaml
+
