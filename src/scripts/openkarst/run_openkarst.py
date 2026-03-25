@@ -208,7 +208,7 @@ def run_from_yaml(
     steady_state = input_data.get('steady_state', False)
     print_verbose(f'steady state set to {steady_state}', verbose)
     cn_params = input_data.get('cn_params', None)
-
+    adaptive_timesteps = input_data.get('adaptive_timesteps', True)
     dt_max = float(input_data.get('dt_max', 1000))
     t_max = float(input_data.get('t_max', 10000))
     head_type = input_data.get('head_boundary_type', 'constant')
@@ -240,6 +240,7 @@ def run_from_yaml(
                                 steady_state = steady_state, 
                                 dt_max = dt_max, 
                                 t_max = t_max,
+                                adaptive_timesteps = adaptive_timesteps,
                                 inflow_type = inflow_type, 
                                 head_type = head_type, 
                                 save_path = output_dir)

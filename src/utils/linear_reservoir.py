@@ -54,8 +54,6 @@ def linear_reservoir_model(R_l, R_h, t, alpha_l, alpha_h, **params):
     
         V_h[i] = V_h[i - 1] + (R_h_t + Q_l[i]- Q_h[i]) * dt
 
-
-
     results = pd.DataFrame({'date': t, 'R_l [V/T]': R_l, 'R_h [V/T]': R_h, 'V_l [V]': V_l, 'V_h [V]': V_h, 'Q_l [V/T]': Q_l, 'Q_h [V/T]': Q_h})
     return results
 
