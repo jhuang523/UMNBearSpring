@@ -9,6 +9,7 @@ head_boundary_type : 'constant'  # 'constant', 'timeseries', 'ramp'
 head_boundary_file:  'input_data/straight_conduit_n62_ss/head_boundary.pkl' #file with dict containing {(node,) : head_val}
 initial_conditions_file : None  # file containing initial flowrate and water depth info
 steady_state: False 
-dt_max: 3600
-t_max: 2592000  # fix so that if None, it tries the max timeseries or a default value
+adaptive_timesteps: False 
+dt_max: 100
+t_max: 1476000  # fix so that if None, it tries the max timeseries or a default value
 
