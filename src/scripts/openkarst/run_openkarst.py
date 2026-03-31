@@ -216,8 +216,7 @@ def run_from_yaml(
     try: 
         network = load_network_data(f'{network_dir}/{nodes_file}', f'{network_dir}/{edges_file}', diameters_file=diameters_file)
     except FileNotFoundError as e:
-        print(f"File couldn't be found: {e}. Skipping {input_data_file}")
-        return
+        raise Exception(f"Error loading network data: {e}. Skipping")
     inflow_data = load_pickle(inflow_file)
     head_boundary_data = load_pickle(head_boundary_file)
     if init_conditions_file not in [None, 'None']:

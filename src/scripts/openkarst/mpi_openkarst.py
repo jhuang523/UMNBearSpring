@@ -43,11 +43,13 @@ def run_openkarst_mpi(sim_list, log_path, verbose=False):
         for input_data_file in sub_list:
             start = time.strftime("%Y-%m-%d %H:%M:%S")
             comm.send(f"[Rank {rank:03d}] START: {input_data_file} at {start}\n", dest=0, tag=0)
-
-            run_from_yaml(input_data_file, verbose=verbose)
-
-            end = time.strftime("%Y-%m-%d %H:%M:%S")
-            comm.send(f"[Rank {rank:03d}] END:   {input_data_file} at {end}\n", dest=0, tag=0)
+            try: 
+                run_from_yaml(input_data_file, verbose=verbose)
+                end = time.strftime("%Y-%m-%d %H:%M:%S")
+                comm.send(f"[Rank {rank:03d}] END:   {input_data_file} at {end}\n", dest=0, tag=0)
+            except Exception as e:
+                end = time.strftime("%Y-%m-%d %H:%M:%S")
+                comm.send(f"[Rank {rank:03d}] ERROR: {input_data_file} at {end} with error {e}\n", dest=0, tag=0)
 
 def main():
     parser = ArgumentParser(description="Run OpenKarst simulation on a given network")

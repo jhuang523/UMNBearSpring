@@ -5,7 +5,7 @@ x0 = 557546
 x1 = 560487
 y0 = 4867231
 y1 = 4869606
-z0 = 370
+z0 = 390
 z1 = 400
 dx = 5
 dy = 5
@@ -101,15 +101,26 @@ model_parameters = {
             'subdomain'  : 'domain_surface',
         },
         'inlets' : {
-            'number'     : 5,
-            'data'       : '../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace_2D.txt',#[[558515.0, 4867230.0]], #'../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace.txt',
+            'number'     : 40,
+            # 'data'       : '../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace_2D.txt',#[[558515.0, 4867230.0]], #'../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace.txt',
             'subdomain'  : 'domain_surface',
-            'importance' : [1]
+            'importance' : (2* np.ones(20)).tolist()
         },
         'domain' : {
             'water_level' : np.ones((grid_parameters['ny'], grid_parameters['nx'])) * 375.464,  # flat water table at z=375.464m
         },
-        'sks' : {'algorithm' : 'Riemann3', 'ratio' : 2},
+        'sks' : {'algorithm' : 'Riemann3',
+                #  'ratio' : 2,
+                'karst' : 0.01,
+                'geology' : 0.8,
+                'fracture' : 0.1,
+                'ratio' : 0.1},
+        'fractures' : {'generate': 
+                    {'family_01':{ 'density' : 0.0005 , 'orientation' : 135 , 'dip' : 90, 'length' : 300, 'cost' : 0.1 },  
+                        'family_02': { 'density' : 0.0005 , 'orientation' : 45, 'dip' : 90, 'length' : 500, 'cost' : 0.1}
+                    }
+        
+        }
         },
             'single_inlet_anastomotic' : 
         {'outlets' : {
@@ -144,7 +155,7 @@ model_parameters = {
             'number'     : 5,
             'data'       : '../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace_2D.txt',#[[558515.0, 4867230.0]], #'../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace.txt',
             'subdomain'  : 'domain_surface',
-            'importance' : [1]
+            'importance' : [1, 1, 1, 1,1]
         },
         'domain' : {
             'topography' : np.ones((grid_parameters['ny'], grid_parameters['nx'])) * 380,
