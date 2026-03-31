@@ -1,8 +1,4 @@
-input_files/spinup/d_pinch/branching_straight_network.yaml
-input_files/spinup/d_pinch/pykasso_n58.yaml
-input_files/spinup/d_pinch/single_conduit_vert_tort.yaml
-input_files/spinup/d_pinch/straight_conduit_n62.yaml
-input_files/slope/slope_0008/slope_0008_diffuse_only.yaml
-input_files/slope/slope_0008/slope_0008_point_only.yaml
-input_files/spinup/slope/slope_004.yaml
+
+input_files/slope_0008/slope_0008_diffuse_only.yaml
+input_files/slope_0008/slope_0008_point_only.yaml
 
