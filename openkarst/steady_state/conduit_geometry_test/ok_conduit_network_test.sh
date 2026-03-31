@@ -1,6 +1,6 @@
 #!/bin/bash -l        
 #SBATCH --job-name=ok_conduit_network_test
-#SBATCH --time=144:00:00
+#SBATCH --time=11:00:00
 #SBATCH --ntasks=10
 #SBATCH --mem=500gb
 #SBATCH --tmp=200g
