@@ -1,3 +1,6 @@
-input_files/slope_0008/slope_0008_diffuse_only.yaml
-input_files/slope_0008/slope_0008_point_only.yaml
-
+input_files/d_0.1m/branching_straight_network_gauss.yaml
+input_files/d_0.1m/branching_straight_network_point.yaml
+input_files/d_0.1m/pykasso_n58_gauss.yaml
+input_files/d_0.1m/pykasso_n58_point.yaml
+input_files/d_0.1m/straight_conduit_n62_gauss.yaml
+input_files/d_0.1m/straight_conduit_n62_point.yaml
