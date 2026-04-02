@@ -267,6 +267,63 @@ def conduit_lengths(nodes, edges):
             
 def gaussian_diameter_distribution(nodes, edges, d):
     return
+
+def plot_2D_network(nodes, 
+                    edges, 
+                    node_color=None, 
+                    edge_color=None, 
+                    node_colormap='viridis', 
+                    edge_colormap='viridis', **params):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    from matplotlib.collections import LineCollection
+
+    axes = params.get("axes", ("x", "y"))
+    ax = params.get("ax", None)
+    lc = params.get("lc", None)
+    sc = params.get("sc", None)
+    grid = params.get("grid", True)
+
+    segments = edges[
+        [f'{axes[0]}_0', f'{axes[1]}_0',
+        f'{axes[0]}_1', f'{axes[1]}_1']
+    ].values.reshape(-1, 2, 2)
+
+    palette = params.get("palette", "coolwarm")
+    cmap = sns.color_palette(palette, as_cmap=True)
+    if node_color is not None: 
+        norm_node = plt.Normalize(vmin=params.get("vmin_node", node_color.min()), vmax=params.get("vmax_node", node_color.max()))
+    if edge_color is not None:
+        norm_edge = plt.Normalize(vmin=params.get("vmin_edge", edge_color.min()), vmax=params.get("vmax_edge", edge_color.max()))
+
+    # ---------- INIT MODE ----------
+    if lc is None:
+        if ax is None:
+            fig, ax = plt.subplots()
+        if edge_color is not None: 
+            lc = LineCollection(segments, cmap=cmap, norm=norm_edge)
+            lc.set_array(edge_color)
+
+        else:
+            lc = LineCollection(segments, color = 'black')
+        ax.add_collection(lc)
+        ax.autoscale()
+
+        # sc = ax.scatter(
+        #     self.nodes[axes[0]],
+        #     self.nodes[axes[1]],
+        #     c=h,
+        #     cmap="viridis",
+        #     norm=norm_h,
+        #     s=30
+        # )
+        if node_color is not None:
+            sns.scatterplot(nodes, x = axes[0], y = axes[1], hue = node_color, ax = ax, palette = 'viridis')
+        plt.colorbar(lc, ax=ax)
+        plt.grid(grid)
+
+        return ax
+
 def plot_3D_network(
     nodes,
     edges,
