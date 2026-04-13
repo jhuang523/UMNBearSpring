@@ -97,7 +97,7 @@ model_parameters = {
         'dye_trace' : 
         {'outlets' : {
             'number'     : 1,
-            'data'       : [[557766.245118, 4869436.0]], #'../../../../data/cave_data/cave_sump.csv',
+            'data'       : [[557689.0, 4869553.0]], #'../../../../data/cave_data/cave_sump.csv',
             'subdomain'  : 'domain_surface',
         },
         'inlets' : {
@@ -112,7 +112,35 @@ model_parameters = {
         'sks' : {'algorithm' : 'Riemann3',
                 #  'ratio' : 2,
                 'karst' : 0.01,
-                'geology' : 0.8,
+                'geology' : 0.5,
+                'fracture' : 0.1,
+                'ratio' : 0.1},
+        'fractures' : {'generate': 
+                    {'family_01':{ 'density' : 0.0005 , 'orientation' : 135 , 'dip' : 90, 'length' : 300, 'cost' : 0.1 },  
+                        'family_02': { 'density' : 0.0005 , 'orientation' : 45, 'dip' : 90, 'length' : 500, 'cost' : 0.1}
+                    }
+        
+        }
+        },
+        'all_sinkholes' : 
+        {'outlets' : {
+            'number'     : 1,
+            'data'       : [[557689.0, 4869553.0]], #'../../../../data/cave_data/cave_sump.csv',
+            'subdomain'  : 'domain_surface',
+        },
+        'inlets' : {
+            'number'     : 84,
+            'data'       : '../../../../data/geo_data/sinkholes/sinkholes_dye_trace_2D.txt',#[[558515.0, 4867230.0]], #'../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace.txt',
+            'subdomain'  : 'domain_surface',
+            'importance' : (7 * np.ones(12)).tolist()
+        },
+        'domain' : {
+            'water_level' : np.ones((grid_parameters['ny'], grid_parameters['nx'])) * 375.464,  # flat water table at z=375.464m
+        },
+        'sks' : {'algorithm' : 'Riemann3',
+                #  'ratio' : 2,
+                'karst' : 0.01,
+                'geology' : 0.5,
                 'fracture' : 0.1,
                 'ratio' : 0.1},
         'fractures' : {'generate': 

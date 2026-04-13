@@ -55,6 +55,7 @@ class OpenKarstNetwork:
         self.edges = data.get('edges')
         self.diameters = data.get('diameters')
         self.geometry = None
+        self.graph = None
         self.inlets = ()
         self.diffuse_inlets = ()
         self.point_inlets = ()
@@ -66,7 +67,16 @@ class OpenKarstNetwork:
                 setattr(self, key, value)
             except Exception as e:
                 print(f"Failed to set attribute {key}: {e}")
-  
+    def save_data(self, save_path, **params):
+        nodes_file = params.get('nodes_file', 'nodes.csv')
+        edges_file = params.get('edges_file', 'edges.csv')
+
+        """Save network data to a specified path in CSV format."""
+        if self.nodes is not None:
+            self.nodes.to_csv(f"{save_path}/nodes.csv", index=False)
+        if self.edges is not None:
+            self.edges.to_csv(f"{save_path}/edges.csv", index=False)
+        print_verbose(f"Data saved to {save_path}", params.get('debug', False))
     def load_cave_data(self,debug = False, **params):
         """
         Loads the cave data from the CSV files and constructs a NetworkX graph.
@@ -149,8 +159,6 @@ class OpenKarstNetwork:
                         node_a, node_b = map(int, line.strip().split(';'))
                         G.add_edge(node_a, node_b)
         
-        #check node numbering is regular 
-        self.update_network(nodes = nodes, edges=edges, graph = G)
         
         # Load diameters from the file, skipping the header
         if self.diameters is not None:
@@ -166,8 +174,11 @@ class OpenKarstNetwork:
                     node_diameters[int(node_id)] = average_diameter
             nodes['d'] = nodes['id'].map(node_diameters)
         else:
-            node_diameters = nodes.set_index('id')['d'].to_dict()
-        self.update_network(nodes=nodes, diameters = node_diameters)       
+            try:
+                node_diameters = nodes.set_index('id')['d'].to_dict()
+            except KeyError:
+                node_diameters = nodes['d'].to_dict()
+        self.update_network(nodes=nodes, edges= edges, diameters = node_diameters, graph = G)       
         ## check edges, nodes, diameters 
         # Assign average diameters to each edge by averaging diameters of connected nodes
         edge_diameters = {}
@@ -193,7 +204,15 @@ class OpenKarstNetwork:
         edges = conduits.extract_edge_coordinates(self.nodes, self.edges)
         self.update_network(edges = edges)
         print_verbose("edges updated", debug)
-        
+    
+    def degree(self, debug = False):
+        if self.graph is None:
+            self.load_cave_data(debug = debug)
+
+        degree_df = pd.DataFrame(self.graph.degree(), columns = ['id', 'degree'])
+        degree_df = degree_df.set_index('id') 
+        self.update_network(degree = degree_df)
+        print_verbose("node degrees calculated", debug)
     def conduit_lengths(self, debug = False): 
         edges = conduits.conduit_lengths(self.nodes, self.edges)
         self.update_network(edges = edges)
@@ -247,7 +266,9 @@ class OpenKarstNetwork:
         edge_color = params.get('edge_color', None)
         node_colormap = params.get('node_colormap', 'viridis')
         edge_colormap = params.get('edge_colormap', 'viridis')
-        conduits.plot_3D_network(self.nodes, self.edges, 
+        show_nodes = params.get('show_nodes', True)
+        return conduits.plot_3D_network(self.nodes, self.edges, 
+                                        show_nodes=show_nodes,
                         node_color=node_color, 
                         edge_color=edge_color,
                         node_colormap=node_colormap,

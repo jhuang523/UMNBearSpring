@@ -129,45 +129,53 @@ def densify_edges(nodes, edges, density_factor=3):
     dense_edges = extract_edge_coordinates(dense_nodes, dense_edges)
 
     return dense_nodes, dense_edges
-def reduce_edge_density(nodes, edges, epsilon):
+def reduce_node_density(nodes, edges, epsilon):
+    import numpy as np
+    import pandas as pd
     import networkx as nx
     import rdp
 
-    # Build graph
+    # --- Build graph ---
     G = nx.Graph()
+
     for _, row in nodes.iterrows():
-        G.add_node(row['id'],
-                   pos=np.array([row['x'], row['y'], row['z']]),
-                   type=row['type'])
+        G.add_node(
+            row['id'],
+            pos=np.array([row['x'], row['y'], row['z']]),
+            type=row['type']
+        )
 
     for _, row in edges.iterrows():
         G.add_edge(row['from_id'], row['to_id'])
 
-    # Extract polylines
+    # --- Find polylines (same as before, but cleaner tracking) ---
     def get_polylines(G):
         polylines = []
-        visited = set()
+        visited_edges = set()
 
         for node in G.nodes():
-            if G.degree(node) != 2:  # endpoints and junctions
+            if G.degree(node) != 2:  # endpoints/junctions
                 for nbr in G.neighbors(node):
 
-                    if (node, nbr) in visited:
+                    edge = tuple(sorted((node, nbr)))
+                    if edge in visited_edges:
                         continue
 
                     path = [node, nbr]
-                    visited.add((node, nbr))
+                    visited_edges.add(edge)
 
                     prev, curr = node, nbr
 
                     while G.degree(curr) == 2:
                         nxt = [n for n in G.neighbors(curr) if n != prev][0]
+                        edge = tuple(sorted((curr, nxt)))
 
-                        if (curr, nxt) in visited:
+                        if edge in visited_edges:
                             break
 
                         path.append(nxt)
-                        visited.add((curr, nxt))
+                        visited_edges.add(edge)
+
                         prev, curr = curr, nxt
 
                     polylines.append(path)
@@ -176,84 +184,72 @@ def reduce_edge_density(nodes, edges, epsilon):
 
     polylines = get_polylines(G)
 
-    # Simplify polylines while preserving endpoints
-    simplified_polylines = []
+    # --- Decide which nodes to keep ---
+    nodes_to_keep = set()
 
     for path in polylines:
-
         coords = np.array([G.nodes[n]['pos'] for n in path])
 
-        simplified_coords = rdp.rdp(coords, epsilon=epsilon)
+        simplified = rdp.rdp(coords, epsilon=epsilon)
 
-        simplified_polylines.append(simplified_coords)
+        # force exact endpoints
+        simplified[0] = coords[0]
+        simplified[-1] = coords[-1]
 
-    # Rebuild graph WITHOUT duplicating shared nodes
-    coord_to_id = {}
-    new_nodes = []
-    new_edges = []
-    node_id = 0
+        # map simplified coords back to original node IDs
+        for simp_pt in simplified:
+            dists = np.linalg.norm(coords - simp_pt, axis=1)
+            idx = np.argmin(dists)
+            nodes_to_keep.add(path[idx])
 
-    def get_or_create_node(coord):
+    # always keep non-degree-2 nodes
+    for n in G.nodes():
+        if G.degree(n) != 2:
+            nodes_to_keep.add(n)
 
-        nonlocal node_id
+    # --- Build reduced graph ---
+    H = nx.Graph()
 
-        key = tuple(np.round(coord, 8))
+    for n in nodes_to_keep:
+        H.add_node(n, **G.nodes[n])
 
-        if key not in coord_to_id:
+    # reconnect edges by walking original graph
+    for u in nodes_to_keep:
+        for v in G.neighbors(u):
 
-            coord_to_id[key] = node_id
+            if v not in nodes_to_keep:
+                # walk until next kept node
+                prev, curr = u, v
 
-            new_nodes.append([
-                node_id,
-                coord[0],
-                coord[1],
-                coord[2],
-                'junction'
-            ])
+                while curr not in nodes_to_keep:
+                    nxt = [n for n in G.neighbors(curr) if n != prev][0]
+                    prev, curr = curr, nxt
 
-            node_id += 1
+                H.add_edge(u, curr)
 
-        return coord_to_id[key]
+            else:
+                H.add_edge(u, v)
 
-    for poly in simplified_polylines:
+    # --- Convert back to DataFrames ---
+    nodes_out = []
+    for n, data in H.nodes(data=True):
+        x, y, z = data['pos']
+        nodes_out.append([n, x, y, z, data['type']])
 
-        prev_id = None
-
-        for coord in poly:
-
-            curr_id = get_or_create_node(coord)
-
-            if prev_id is not None:
-                new_edges.append([prev_id, curr_id])
-
-            prev_id = curr_id
+    edges_out = []
+    for u, v in H.edges():
+        edges_out.append([u, v])
 
     nodes_df = pd.DataFrame(
-        new_nodes,
+        nodes_out,
         columns=['id', 'x', 'y', 'z', 'type']
     )
 
     edges_df = pd.DataFrame(
-        new_edges,
+        edges_out,
         columns=['from_id', 'to_id']
     )
-
-    # Restore inlet/outlet types using nearest match
-    original_special = nodes[nodes['type'] != 'junction']
-
-    for _, row in original_special.iterrows():
-
-        coord = np.array([row['x'], row['y'], row['z']])
-
-        dists = np.linalg.norm(
-            nodes_df[['x','y','z']].values - coord,
-            axis=1
-        )
-
-        idx = np.argmin(dists)
-
-        nodes_df.loc[idx, 'type'] = row['type']
-    edges_df = extract_edge_coordinates(nodes_df, edges_df)
+    edges_df = edges_df.drop_duplicates(subset=['from_id', 'to_id']).reset_index(drop=True) # remove any duplicate edges that may have been created
     return nodes_df, edges_df
 
 def conduit_lengths(nodes, edges): 
@@ -327,6 +323,7 @@ def plot_2D_network(nodes,
 def plot_3D_network(
     nodes,
     edges,
+    show_nodes=True,
     node_color=None,
     edge_color=None,
     node_colormap='viridis',
@@ -373,37 +370,41 @@ def plot_3D_network(
     # --------------------
     # NODES
     # --------------------
-    if isinstance(node_color, str) and node_color in nodes.columns:
-        # color nodes by column
-        if nodes[node_color].dtype == 'O':
-            node_vals = nodes[node_color].astype('category').cat.codes
+    if show_nodes:
+        if isinstance(node_color, str) and node_color in nodes.columns:
+            # color nodes by column
+            if nodes[node_color].dtype == 'O':
+                node_vals = nodes[node_color].astype('category').cat.codes
+            else:
+                node_vals = nodes[node_color]
+            showscale = True
+
         else:
-            node_vals = nodes[node_color]
-        showscale = True
+            # single color (default or explicit)
+            node_vals = node_color if node_color is not None else 'red'
+            showscale = False
 
-    else:
-        # single color (default or explicit)
-        node_vals = node_color if node_color is not None else 'red'
-        showscale = False
-
-    scatter = go.Scatter3d(
-        x=nodes.x,
-        y=nodes.y,
-        z=nodes.z,
-        mode='markers',
-        marker=dict(
-            size=5,
-            color=node_vals,
-            colorscale=node_colormap,
-            showscale=showscale
-        ),
-        showlegend=False
-    )
+        scatter = go.Scatter3d(
+            x=nodes.x,
+            y=nodes.y,
+            z=nodes.z,
+            mode='markers',
+            marker=dict(
+                size=5,
+                color=node_vals,
+                colorscale=node_colormap,
+                showscale=showscale
+            ),
+            showlegend=False
+        )
+        scatter_trace = [scatter]
+    else: 
+        scatter_trace = []
 
     # --------------------
     # FIGURE
     # --------------------
-    fig = go.Figure(data=line_traces + [scatter])
+    fig = go.Figure(data=line_traces + scatter_trace)
     fig.update_layout(
         scene=dict(
             xaxis_title='X',
@@ -413,5 +414,5 @@ def plot_3D_network(
         margin=dict(l=0, r=0, b=0, t=0)
     )
 
-    fig.show()
+    return fig
 
