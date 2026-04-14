@@ -129,7 +129,7 @@ def densify_edges(nodes, edges, density_factor=3):
     dense_edges = extract_edge_coordinates(dense_nodes, dense_edges)
 
     return dense_nodes, dense_edges
-def reduce_node_density(nodes, edges, epsilon):
+def reduce_node_density(nodes, edges, epsilon, protected_types = ['inlet', 'outlet']):
     import numpy as np
     import pandas as pd
     import networkx as nx
@@ -190,23 +190,21 @@ def reduce_node_density(nodes, edges, epsilon):
     for path in polylines:
         coords = np.array([G.nodes[n]['pos'] for n in path])
 
-        simplified = rdp.rdp(coords, epsilon=epsilon)
+        mask = rdp.rdp(coords, epsilon=epsilon, return_mask=True)
 
         # force exact endpoints
-        simplified[0] = coords[0]
-        simplified[-1] = coords[-1]
+        mask[0] = True
+        mask[-1] = True
+
 
         # map simplified coords back to original node IDs
-        for simp_pt in simplified:
-            dists = np.linalg.norm(coords - simp_pt, axis=1)
-            idx = np.argmin(dists)
-            nodes_to_keep.add(path[idx])
-
-    # always keep non-degree-2 nodes
-    for n in G.nodes():
-        if G.degree(n) != 2:
-            nodes_to_keep.add(n)
-
+        for i, keep in enumerate(mask):
+            if G.nodes[path[i]]['type'] in protected_types:
+                mask[i] = True
+                nodes_to_keep.add(path[i])
+            elif keep:
+                nodes_to_keep.add(path[i])
+            
     # --- Build reduced graph ---
     H = nx.Graph()
 
@@ -216,7 +214,6 @@ def reduce_node_density(nodes, edges, epsilon):
     # reconnect edges by walking original graph
     for u in nodes_to_keep:
         for v in G.neighbors(u):
-
             if v not in nodes_to_keep:
                 # walk until next kept node
                 prev, curr = u, v
