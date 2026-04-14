@@ -9,5 +9,5 @@ head_boundary_file:  'input_data/head_boundary/anastomotic_network_n_1366.pkl' #
 initial_conditions_file : None  # file containing initial flowrate and water depth info
 steady_state: False 
 dt_max: 3600
-t_max: 86400  # fix so that if None, it tries the max timeseries or a default value
+t_max: 604800  # fix so that if None, it tries the max timeseries or a default value
 
