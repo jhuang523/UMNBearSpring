@@ -1,2 +1,1 @@
-input_files/spinup/optimization/branching_straight_network_n12.yaml
-input_files/spinup/optimization/branching_straight_network_n37.yaml
+input_files/spinup/anastomotic_n_1366_spinup.yaml

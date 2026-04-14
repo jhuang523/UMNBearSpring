@@ -1,6 +1,6 @@
 name: simple_test
 description: ''
-creation_date: 2026/04/09 18:58
+creation_date: 2026/04/13 23:30
 pykasso_version: 1.0.1
 grid:
   x0: 557546.0
@@ -24,5 +24,6 @@ core:
     parameters: parameters.yaml
     project: project.yaml
     log: project.log
-n_simulations: 0
-simulations: []
+n_simulations: 1
+simulations:
+- simple_test/outputs/simulation_1/
