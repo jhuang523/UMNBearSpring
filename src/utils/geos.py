@@ -137,10 +137,17 @@ def bres(row1, col1, row2, col2):
     cells.append((row2, col2))  # Add the last cell
     return cells
 
-def get_cell_id_from_coords(x, y, x0, ymax, dx, dy): 
-    j = ((x-x0)/dx) + 1
-    i = ((ymax-y)/dy) 
-    return i.astype(int), j.astype(int)
+def get_cell_id_from_coords(x, y, x0, y1, dx, dy): 
+    j = np.floor((x-x0)/dx).astype(int)
+    i = np.floor((y1-y)/dy).astype(int)
+
+    return i,j
+def get_elev_from_coords(x, y, grid, x0, y1, dx, dy):
+    nx, ny = grid.shape[1], grid.shape[0]
+    i, j = get_cell_id_from_coords(x, y, x0, y1, dx, dy)
+    j[j == nx] = nx - 1
+    i[i == ny] = ny - 1
+    return grid[i,j]
 
 def transform_coordinates(x, y, from_crs, to_crs):
     transformer = Transformer.from_crs(from_crs, to_crs, always_xy=True)
@@ -161,4 +168,6 @@ def create_sloped_array(nx, ny, dx, dy, azimuth = 0, dip = 0, z0 = None, z1 = No
     elif z0 is not None:
         z = z0
         layer_array = z0 + (x * dx * dz_dx) + (y * dy * dz_dy)
+    else: #no reference elevation provided
+        layer_array = (x * dx * dz_dx) + (y * dy * dz_dy)
     return layer_array
