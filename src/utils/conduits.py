@@ -48,7 +48,9 @@ def generate_n_networks(n_iter, settings_file, output_dir, fname, verbose = Fals
 
 def extract_edge_coordinates(nodes, edges):
     """Given a df with nodes with x, y, z coordinates and edges df with to_id and from_id, return appended edges df with x_0, y_0, z_0, x_1, y_1, z_1 columns"""
-    edges = edges.merge(
+    if 'id' not in nodes.columns: #id is index
+        nodes.reset_index(inplace=True)
+    edges = edges[['from_id', 'to_id']].merge(
     nodes[['id', 'x', 'y', 'z']],
     left_on='from_id',
     right_on='id',
@@ -63,8 +65,6 @@ def extract_edge_coordinates(nodes, edges):
     right_on='id',
     how='left'
     ).rename(columns={'x': 'x_1', 'y': 'y_1', 'z': 'z_1'}).drop(columns='id')
-
-
     return edges
 
 def reset_node_ids(nodes, edges):
@@ -257,7 +257,29 @@ def conduit_lengths(nodes, edges):
             break
     edges['length'] = ((edges.x_0 - edges.x_1)**2 + (edges.y_0 - edges.y_1)**2 + (edges.z_0 - edges.z_1)**2)**0.5
     return edges 
-            
+
+def conduit_slopes(nodes, edges):
+    for coord in ['x_0', 'x_1', 'y_0', 'y_1', 'z_0', 'z_1']:
+        if coord not in edges.columns:
+            edges = extract_edge_coordinates(nodes, edges)
+            break
+    if 'length' not in edges.columns:
+        edges = conduit_lengths(nodes, edges)
+    dz = edges.z_1 - edges.z_0
+    dx = edges.x_1 - edges.x_0
+    dy = edges.y_1 - edges.y_0
+    edges['dz_dr'] = dz/(dx**2 + dy**2)**0.5
+    return edges
+
+def rescale_slope(nodes, edges, alpha, reference_id):
+    nodes = nodes.copy()
+    edges = edges.copy()
+    z_ref = nodes.loc[nodes.id == reference_id, 'z'].iloc[0]
+    nodes['z'] = z_ref + alpha * (nodes['z'] - z_ref)
+    edges = extract_edge_coordinates(nodes, edges)
+    return nodes, edges
+
+
 def gaussian_diameter_distribution(nodes, edges, d):
     return
 

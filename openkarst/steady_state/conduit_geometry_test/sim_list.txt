@@ -1,1 +1,2 @@
-input_files/spinup/anastomotic_n_1366_spinup.yaml
+input_files/spinup/low_slope/branching_straight_network_spinup.yaml
+input_files/spinup/low_slope/pykasso_n58_spinup.yaml

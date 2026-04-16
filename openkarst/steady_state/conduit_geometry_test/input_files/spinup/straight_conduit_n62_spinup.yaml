@@ -9,5 +9,5 @@ head_boundary_file:  'input_data/straight_conduit_n62_ss/head_boundary.pkl' #fil
 initial_conditions_file : None  # file containing initial flowrate and water depth info
 steady_state: False 
 dt_max: 3600
-t_max: 86400  # fix so that if None, it tries the max timeseries or a default value
+t_max: 864000  # fix so that if None, it tries the max timeseries or a default value
 
