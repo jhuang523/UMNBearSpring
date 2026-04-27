@@ -337,7 +337,12 @@ def full_simulation_pipeline(input_file, debug = False):
     t_max = float(input_params.get('t_max', 10000))
     output_dir = input_params.get('output_dir', f'output/{network_name}/{recharge_distribution}')
     steady_state = input_params.get('steady_state', False)
-
+    #head boundary 
+    if head_boundary_file is not None:
+        head_boundary = load_pickle(head_boundary_file)
+    else: 
+        head_boundary = write_constant_head_boundary(network, head_boundary)
+    print_verbose(f'head boundary conditions written', debug)
 
     #initial conditions 
     init_conditions_file = input_params.get('initial_conditions_file', None)
@@ -351,20 +356,20 @@ def full_simulation_pipeline(input_file, debug = False):
             initial_flowrate = 0.0
             initial_water_depth = 0.0
             baseflow= input_params['baseflow']
-            
-            inflow_boundary = write_inflow_boundary(network.diffuse_inlets, baseflow)
-            ss_output_dir = input_params.get('steady_state_output_dir', f'output/spinup/{network_name}')
+            t_ss_max = input_params.get('t_ss_max', 86400*10)
+
+            inflow_boundary = {network.diffuse_inlets : {'flow' : baseflow / len(network.diffuse_inlets)}}
             ss_results = run_openkarst_simulation(network, 
                                 cn_params = cn_params,
                                 initial_flowrate = initial_flowrate,
                                 initial_water_depth = initial_water_depth,
                                 inflow_boundary= inflow_boundary,
                                 head_boundary= head_boundary,
-                                steady_state = True,
+                                steady_state = False,
                                 dt_max = dt_max,
-                                t_max = t_max,
+                                t_max = t_ss_max,
                                 adaptive_timesteps = adaptive_timesteps,
-                                inflow_type = inflow_type,
+                                inflow_type = 'constant',
                                 head_type = head_type,
                                 save_path = ss_output_dir)
             print_verbose(f"Steady state simulation completed for {network_name}. Extracting steady state conditions...", debug)
@@ -387,11 +392,6 @@ def full_simulation_pipeline(input_file, debug = False):
     elif recharge_distribution == 'point':
         inflow_boundary = write_partitioned_inflow_boundary(network.inlets, R_h = R_l + R_h, t_l = t, t_h = t)
     print_verbose(f'inflow boundary conditions written', debug)
-    if head_boundary_file is not None:
-        head_boundary = load_pickle(head_boundary_file)
-    else: 
-        head_boundary = write_constant_head_boundary(network, head_boundary)
-    print_verbose(f'head boundary conditions written', debug)
 
     run_openkarst_simulation(network, 
                                 cn_params = cn_params, 
