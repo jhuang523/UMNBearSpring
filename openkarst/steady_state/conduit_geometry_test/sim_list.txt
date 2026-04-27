@@ -1,4 +1,2 @@
-input_files/low_slope/branching_straight_network_diffuse.yaml
-input_files/low_slope/pykasso_n58_diffuse.yaml
-input_files/low_slope/branching_straight_network_point.yaml
-input_files/low_slope/pykasso_n58_point.yaml
+input_files/anastomotic_simple.yaml
+
