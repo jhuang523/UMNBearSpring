@@ -357,7 +357,7 @@ def full_simulation_pipeline(input_file, debug = False):
             initial_water_depth = 0.0
             baseflow= input_params['baseflow']
             t_ss_max = input_params.get('t_ss_max', 86400*10)
-
+            ss_output_dir = input_params.get('ss_output_dir', f'{output_dir}/spinup/{network_name}')
             inflow_boundary = {network.diffuse_inlets : {'flow' : baseflow / len(network.diffuse_inlets)}}
             ss_results = run_openkarst_simulation(network, 
                                 cn_params = cn_params,
