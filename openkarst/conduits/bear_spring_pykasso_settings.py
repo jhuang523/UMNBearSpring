@@ -98,7 +98,7 @@ model_parameters = {
         {'outlets' : {
             'number'     : 1,
             'data'       : [[557689.0, 4869553.0]], #'../../../../data/cave_data/cave_sump.csv',
-            'subdomain'  : 'domain_surface',
+            'subdomain'  : 'domain',
         },
         'inlets' : {
             'number'     : 8,

@@ -5,23 +5,12 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt 
 import plotly.graph_objects as go
-
+import utils.geos as geos
 from utils.common import print_verbose
 
 
 # #TODO fix this is still V0 
 # def generate_network(settings_file):
-#     catchment = pk.SKS(settings_file)
-#     catchment.compute_karst_network()
-#     network = catchment.karst_simulations[-1]
-#     return network
-
-def plot_network(network):
-    plt.imshow(network)
-
-def flip_row_index(network_arr):
-    """Adjusts indexing so that 0,0 is at top left (for most numpy style ops)"""
-    return np.flipud(network_arr)
 
 #fix to use V1 
 def generate_n_networks(n_iter, settings_file, output_dir, fname, verbose = False):
@@ -249,6 +238,88 @@ def reduce_node_density(nodes, edges, epsilon, protected_types = ['inlet', 'outl
     edges_df = edges_df.drop_duplicates(subset=['from_id', 'to_id']).reset_index(drop=True) # remove any duplicate edges that may have been created
     return nodes_df, edges_df
 
+# def change_node_density(nodes, edges, target_length, tol=0.25):
+#     """
+#     Enforce approximately uniform edge lengths.
+
+#     target_length : desired edge length
+#     tol           : tolerance (fraction), e.g. 0.25 → 25%
+#     """
+
+#     nodes = nodes.copy()
+#     edges = edges.copy()
+
+#     node_lookup = nodes.set_index('id')[['x','y','z']].to_dict('index')
+
+#     new_nodes = []
+#     new_edges = []
+
+#     next_id = nodes['id'].max() + 1
+
+#     for _, row in edges.iterrows():
+#         i, j = row['from_id'], row['to_id']
+
+#         p0 = np.array(list(node_lookup[i].values()))
+#         p1 = np.array(list(node_lookup[j].values()))
+
+#         L = np.linalg.norm(p1 - p0)
+
+#         # --- Case 1: too long → subdivide ---
+#         if L > (1 + tol) * target_length:
+#             n_seg = int(np.ceil(L / target_length))
+
+#             pts = []
+#             for k in range(n_seg + 1):
+#                 t = k / n_seg
+#                 pt = (1 - t) * p0 + t * p1
+
+#                 if k == 0:
+#                     pts.append(i)
+#                 elif k == n_seg:
+#                     pts.append(j)
+#                 else:
+#                     new_nodes.append([next_id, *pt, 'junction'])
+#                     pts.append(next_id)
+#                     next_id += 1
+
+#             for a, b in zip(pts[:-1], pts[1:]):
+#                 new_edges.append([a, b])
+
+#         # --- Case 2: too short → collapse ---
+#         elif L < (1 - tol) * target_length:
+#             # collapse j into i (simple version)
+#             midpoint = 0.5 * (p0 + p1)
+
+#             nodes.loc[nodes['id'] == i, ['x','y','z']] = midpoint
+#             node_lookup[i] = dict(zip(['x','y','z'], midpoint))
+
+#             # redirect edges from j → i
+#             edges.loc[edges['from_id'] == j, 'from_id'] = i
+#             edges.loc[edges['to_id'] == j, 'to_id'] = i
+
+#             # skip adding this edge
+#             continue
+
+#         # --- Case 3: acceptable length ---
+#         else:
+#             new_edges.append([i, j])
+
+#     # --- finalize nodes ---
+#     if new_nodes:
+#         new_nodes_df = pd.DataFrame(
+#             new_nodes, columns=['id','x','y','z','type']
+#         )
+#         nodes = pd.concat([nodes, new_nodes_df], ignore_index=True)
+
+#     # --- finalize edges ---
+#     edges_df = pd.DataFrame(new_edges, columns=['from_id','to_id'])
+#     edges_df = edges_df.drop_duplicates().reset_index(drop=True)
+
+#     # remove self-loops
+#     edges_df = edges_df[edges_df['from_id'] != edges_df['to_id']]
+
+#     return nodes.reset_index(drop=True), edges_df
+
 def conduit_lengths(nodes, edges): 
     #extract edge coordinates if not already existing
     for coord in ['x_0', 'x_1', 'y_0', 'y_1', 'z_0', 'z_1']:
@@ -257,6 +328,11 @@ def conduit_lengths(nodes, edges):
             break
     edges['length'] = ((edges.x_0 - edges.x_1)**2 + (edges.y_0 - edges.y_1)**2 + (edges.z_0 - edges.z_1)**2)**0.5
     return edges 
+
+def project_conduit_elevations(nodes, edges, grid, x0, y1, dx, dy):
+    nodes['z'] = geos.get_elev_from_coords(nodes.x, nodes.y, grid, x0, y1, dx, dy)
+    edges = extract_edge_coordinates(nodes, edges)
+    return nodes, edges
 
 def conduit_slopes(nodes, edges):
     for coord in ['x_0', 'x_1', 'y_0', 'y_1', 'z_0', 'z_1']:

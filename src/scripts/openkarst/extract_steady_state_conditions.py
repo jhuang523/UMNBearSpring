@@ -9,18 +9,18 @@ import numpy as np
 from utils.common import write_pickle
 from argparse import ArgumentParser
 
-def check_convergence(X, tol = 1e-6):
+def check_convergence(X, tol = 1e-6, n_steps = 10):
     #X is an nt x nx array. Checks for convergence at the last two timesteps
-    if np.all(np.abs(X[-1] - X[-2])) > tol:
-        return False
-    return True 
-def check_Q(Q, tol = 1e-6):
+    if np.all(np.abs(np.diff(X[-n_steps:])) < tol):
+        return True
+    return False
+def check_Q(Q, tol = 1e-6, n_steps = 10):
     #check convergence
     #TODO: additional quality checks? 
-    return check_convergence(Q, tol= tol)  
+    return check_convergence(Q, tol= tol, n_steps= n_steps) and np.all(Q[-n_steps:] >= 0) and np.isreal(Q).all()
 
-def check_h(h, tol = 1e-6):
-    return check_convergence(h, tol = tol) and np.all(h >= 0)
+def check_h(h, tol = 1e-6, n_steps = 10):
+    return check_convergence(h, tol = tol, n_steps= n_steps) and np.all(h >= 0)
     
 def extract_steady_state_conditions(results_npz):
     results = np.load(results_npz)

@@ -7,10 +7,12 @@ sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../src"))) #use this 
 import numpy as np
 import pandas as pd
 import pickle
+import traceback
+
 import time
 from utils.openkarst_network import OpenKarstNetwork as OKN
 from utils.common import load_yaml, print_verbose, load_pickle, write_pickle
-from run_openkarst import run_from_yaml
+from run_openkarst import full_simulation_pipeline
 from argparse import ArgumentParser
 from mpi4py import MPI
 
@@ -44,12 +46,13 @@ def run_openkarst_mpi(sim_list, log_path, verbose=False):
             start = time.strftime("%Y-%m-%d %H:%M:%S")
             comm.send(f"[Rank {rank:03d}] START: {input_data_file} at {start}\n", dest=0, tag=0)
             try: 
-                run_from_yaml(input_data_file, verbose=verbose)
+                full_simulation_pipeline(input_data_file, debug=verbose)
                 end = time.strftime("%Y-%m-%d %H:%M:%S")
                 comm.send(f"[Rank {rank:03d}] END:   {input_data_file} at {end}\n", dest=0, tag=0)
             except Exception as e:
                 end = time.strftime("%Y-%m-%d %H:%M:%S")
-                comm.send(f"[Rank {rank:03d}] ERROR: {input_data_file} at {end} with error {e}\n", dest=0, tag=0)
+                tb = traceback.format_exc()
+                comm.send(f"[Rank {rank:03d}] ERROR: {input_data_file} at {end} with error {e}\n {tb}\n", dest=0, tag=0)
 
 def main():
     parser = ArgumentParser(description="Run OpenKarst simulation on a given network")

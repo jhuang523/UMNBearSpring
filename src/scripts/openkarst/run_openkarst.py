@@ -13,6 +13,8 @@ from openkarst.network_generation import compute_conduit_lengths
 from openkarst.visualization.animation_pyvista import animate_network
 from openkarst.models import FlowSimulation
 from argparse import ArgumentParser
+from utils.scripts.openkarst.extract_steady_state_conditions import extract_steady_state_conditions
+
 
 
 
@@ -23,6 +25,14 @@ def load_network_data(nodes_file, edges_file, diameters_file = None, debug = Fal
     cn_geometry = network.load_cave_data(debug = debug, **params)
     inlets, outlets = network.extract_boundary_nodes(node_keys, debug = debug)
     return network
+
+def load_recharge_data(file_path, columns = ['time', 'R_l [V/T]', 'R_h [V/T]']):
+    df = pd.read_csv(file_path)
+    #check that df has correct columns
+    for col in columns:
+        if col not in df.columns:
+            raise ValueError(f"Column {col} not found in recharge data.")
+    return df
 
 def load_initial_conditions(initial_conditions_file):
     """Load initial conditions from pkl file with structure {'initial_flowrate' : float or array, 'initial_water_depth' : float or array}"""
@@ -39,6 +49,58 @@ def load_metadata(metadata_file):
     with open(metadata_file, 'rb') as f:
         metadata = pickle.load(f)
     return metadata
+def write_inflow_boundary(nodes, Q, t):
+    R = {nodes : {'flow' : Q, 'time' : t}}
+    return R
+
+def write_partitioned_inflow_boundary(network : OKN.OpenKarstNetwork, R_l=None, R_h=None, t_l=None, t_h=None):
+    R = {}
+    if R_l is not None: 
+        if t_l is None:
+             return ValueError("Time is None")
+        n_diffuse = len(network.diffuse_inlets)
+        R_l_per_inlet = R_l / n_diffuse 
+        R_diffuse = write_inflow_boundary(network.diffuse_inlets, R_l_per_inlet, t_l)
+        R.update(R_diffuse)
+    if R_h is not None:
+        if t_h is None:
+            return ValueError("Time is None")
+        n_point = len(network.inlets)
+        R_h_per_inlet = R_h / n_point 
+        R_point = write_inflow_boundary(network.inlets, R_h_per_inlet, t_h)
+        R.update(R_point)
+    #check R is not empty and all values are real
+    if R == {}:
+        raise ValueError("No inflow boundary conditions provided.")
+    for inlet, data in R.items():
+        if not np.isreal(data['flow']).all():
+            raise ValueError(f"Recharge values for inlet {inlet} contain non-real numbers.")
+    return R
+
+def write_constant_head_boundary(network : OKN.OpenKarstNetwork, h):
+    if network.outlets is None or len(network.outlets) == 0:
+        raise ValueError("No outlets found in the network.")
+    HB = {network.outlets : {'head' : h}}
+    return HB 
+
+def write_input_data(network : OKN.OpenKarstNetwork, scenario_name: str, R_l=None, R_h=None, t_l=None, t_h=None, h=None, 
+                     flow_bound_path = None, 
+                     head_bound_path = None, 
+                     debug = False):
+    if R_l is not None or R_h is not None:
+        inflow_boundary= write_inflow_boundary(network, R_l, R_h, t_l, t_h)
+    else:
+        raise ValueError("At least one of R_l or R_h must be provided.")
+    if h is not None:
+        head_boundary = write_constant_head_boundary(network, h)
+    else:
+        raise ValueError("Constant head boundary condition must be provided.")
+    #write data to pkl
+    if flow_bound_path is not None:
+        write_pickle(os.path.join(flow_bound_path, f'{scenario_name}.pkl'), inflow_boundary)
+    if head_bound_path is not None:
+        write_pickle(os.path.join(head_bound_path, f'{scenario_name}.pkl'), head_boundary)
+    print_verbose(f"Input data for scenario {scenario_name} written to {flow_bound_path} and {head_bound_path}.", debug)
 
 def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate = None, initial_water_depth = None, inflow_boundary = {}, head_boundary ={}, steady_state = True, t_max = 1000, inflow_type = 'constant', head_type = 'constant', **params):
     save_path = params.get("save_path")
@@ -75,7 +137,7 @@ def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate =
     }
     
     output_settings = {
-        'output_interval': 10.0,
+        'output_interval': params.get('output_interval', 10000.0),
         'time': True,
         'time_step_size': True,
         'flowrates': True,
@@ -235,6 +297,108 @@ def run_from_yaml(
                                 initial_water_depth = initial_water_depth, 
                                 inflow_boundary= inflow_data, 
                                 head_boundary= head_boundary_data, 
+                                steady_state = steady_state, 
+                                dt_max = dt_max, 
+                                t_max = t_max,
+                                adaptive_timesteps = adaptive_timesteps,
+                                inflow_type = inflow_type, 
+                                head_type = head_type, 
+                                save_path = output_dir)
+
+def full_simulation_pipeline(input_file, debug = False):
+    #load recharge and head params
+    input_params = load_yaml(input_file)
+    recharge_file = input_params['recharge_file']
+    recharge_data = load_recharge_data(recharge_file)
+    recharge_distribution = input_params.get('recharge_distribution', 'partitioned')
+    head_boundary = input_params['head_boundary']
+    head_boundary_file = input_params.get('head_boundary_file', None)
+    head_type = input_params.get('head_boundary_type', 'constant')
+    inflow_type = input_params.get('inflow_type', 'constant')
+    #load network data
+    network_dir = input_params['network_dir']
+    network_name = ""
+    for p in network_dir.split('/'):
+        if p not in ['.', 'network']:
+            if network_name == "":
+                network_name = p
+            else:
+                network_name += f'_{p}'
+    nodes_file = input_params.get('nodes_file', 'nodes.csv')
+    edges_file = input_params.get('edges_file', 'edges.csv')
+    network = load_network_data(f'{network_dir}/{nodes_file}', f'{network_dir}/{edges_file}', debug= debug)
+    network.extract_diffuse_inlets()
+    if not network.network_validity():
+        raise Exception("Network validity check failed.")
+    #load timestep and other simulation params
+    cn_params = input_params.get('cn_params', None)
+    adaptive_timesteps = input_params.get('adaptive_timesteps', True)
+    dt_max = float(input_params.get('dt_max', 1000))
+    t_max = float(input_params.get('t_max', 10000))
+    output_dir = input_params.get('output_dir', f'output/{network_name}/{recharge_distribution}')
+    steady_state = input_params.get('steady_state', False)
+
+
+    #initial conditions 
+    init_conditions_file = input_params.get('initial_conditions_file', None)
+    if init_conditions_file is not None:
+        try:
+            init_conditions = load_initial_conditions(init_conditions_file)
+            initial_flowrate = init_conditions['initial_flowrate']
+            initial_water_depth = init_conditions['initial_water_depth']
+        except FileNotFoundError:
+            print_verbose(f"Initial conditions file not found: {init_conditions_file}", debug)
+            initial_flowrate = 0.0
+            initial_water_depth = 0.0
+            baseflow= input_params['baseflow']
+            
+            inflow_boundary = write_inflow_boundary(network.diffuse_inlets, baseflow)
+            ss_output_dir = input_params.get('steady_state_output_dir', f'output/spinup/{network_name}')
+            ss_results = run_openkarst_simulation(network, 
+                                cn_params = cn_params,
+                                initial_flowrate = initial_flowrate,
+                                initial_water_depth = initial_water_depth,
+                                inflow_boundary= inflow_boundary,
+                                head_boundary= head_boundary,
+                                steady_state = True,
+                                dt_max = dt_max,
+                                t_max = t_max,
+                                adaptive_timesteps = adaptive_timesteps,
+                                inflow_type = inflow_type,
+                                head_type = head_type,
+                                save_path = ss_output_dir)
+            print_verbose(f"Steady state simulation completed for {network_name}. Extracting steady state conditions...", debug)
+            IC = extract_steady_state_conditions(f'{ss_output_dir}/results_arrays.npz')
+            write_pickle(init_conditions_file, IC)
+            initial_flowrate = IC['initial_flowrate']
+            initial_water_depth = IC['initial_water_depth']
+
+    else:
+        initial_flowrate = 0.0
+        initial_water_depth = 0.0
+    #write input data 
+    R_l = recharge_data['R_l [V/T]']
+    R_h = recharge_data['R_h [V/T]']
+    t = recharge_data['time']
+    if recharge_distribution == 'partitioned':
+        inflow_boundary = write_partitioned_inflow_boundary(network, R_l= R_l, R_h= R_h, t_l = t, t_h = t)
+    elif recharge_distribution == 'diffuse':
+        inflow_boundary = write_partitioned_inflow_boundary(network.diffuse_inlets, R_l = R_l + R_h, t_l = t, t_h = t)
+    elif recharge_distribution == 'point':
+        inflow_boundary = write_partitioned_inflow_boundary(network.inlets, R_h = R_l + R_h, t_l = t, t_h = t)
+    print_verbose(f'inflow boundary conditions written', debug)
+    if head_boundary_file is not None:
+        head_boundary = load_pickle(head_boundary_file)
+    else: 
+        head_boundary = write_constant_head_boundary(network, head_boundary)
+    print_verbose(f'head boundary conditions written', debug)
+
+    run_openkarst_simulation(network, 
+                                cn_params = cn_params, 
+                                initial_flowrate = initial_flowrate, 
+                                initial_water_depth = initial_water_depth, 
+                                inflow_boundary= inflow_boundary, 
+                                head_boundary= head_boundary, 
                                 steady_state = steady_state, 
                                 dt_max = dt_max, 
                                 t_max = t_max,

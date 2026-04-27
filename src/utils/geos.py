@@ -149,6 +149,11 @@ def get_elev_from_coords(x, y, grid, x0, y1, dx, dy):
     i[i == ny] = ny - 1
     return grid[i,j]
 
+def flip_row_index(network_arr):
+    """Adjusts indexing so that 0,0 is at top left (for most numpy style ops)"""
+    return np.flipud(network_arr)
+
+
 def transform_coordinates(x, y, from_crs, to_crs):
     transformer = Transformer.from_crs(from_crs, to_crs, always_xy=True)
     return transformer.transform(x, y)

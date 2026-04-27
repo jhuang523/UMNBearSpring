@@ -260,7 +260,21 @@ class OpenKarstNetwork:
         V = (self.geometry['throat.lengths'] * (self.geometry['throat.diameters']/2)**2 * np.pi).sum()
         self.update_network(volume = V)
         return V
-
+    
+    def network_validity(self):
+        """Check if network has at least 1 inlet, at least 1 outlet, and all nodes are connected to at least one edge."""
+        if len(self.inlets) == 0:
+            print("Network has no inlets.")
+            return False
+        if len(self.outlets) == 0:
+            print("Network has no outlets.")
+            return False
+        for node in self.graph.nodes():
+            if self.graph.degree(node) == 0:
+                print(f"Node {node} is not connected to any edges.")
+                return False
+        print("Network is valid.")
+        return True
     def plot_3D_network(self, **params):
         node_color = params.get('node_color', None)
         edge_color = params.get('edge_color', None)
