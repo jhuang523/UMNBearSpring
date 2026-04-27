@@ -53,7 +53,7 @@ def write_inflow_boundary(nodes, Q, t):
     R = {nodes : {'flow' : Q, 'time' : t}}
     return R
 
-def write_partitioned_inflow_boundary(network : OKN.OpenKarstNetwork, R_l=None, R_h=None, t_l=None, t_h=None):
+def write_partitioned_inflow_boundary(network : OKN, R_l=None, R_h=None, t_l=None, t_h=None):
     R = {}
     if R_l is not None: 
         if t_l is None:
@@ -77,13 +77,13 @@ def write_partitioned_inflow_boundary(network : OKN.OpenKarstNetwork, R_l=None, 
             raise ValueError(f"Recharge values for inlet {inlet} contain non-real numbers.")
     return R
 
-def write_constant_head_boundary(network : OKN.OpenKarstNetwork, h):
+def write_constant_head_boundary(network : OKN, h):
     if network.outlets is None or len(network.outlets) == 0:
         raise ValueError("No outlets found in the network.")
     HB = {network.outlets : {'head' : h}}
     return HB 
 
-def write_input_data(network : OKN.OpenKarstNetwork, scenario_name: str, R_l=None, R_h=None, t_l=None, t_h=None, h=None, 
+def write_input_data(network : OKN, scenario_name: str, R_l=None, R_h=None, t_l=None, t_h=None, h=None, 
                      flow_bound_path = None, 
                      head_bound_path = None, 
                      debug = False):
