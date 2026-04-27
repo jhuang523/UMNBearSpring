@@ -13,7 +13,7 @@ from openkarst.network_generation import compute_conduit_lengths
 from openkarst.visualization.animation_pyvista import animate_network
 from openkarst.models import FlowSimulation
 from argparse import ArgumentParser
-from utils.scripts.openkarst.extract_steady_state_conditions import extract_steady_state_conditions
+from scripts.openkarst.extract_steady_state_conditions import extract_steady_state_conditions
 
 
 
