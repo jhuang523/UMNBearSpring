@@ -14,4 +14,4 @@
 module load impi/2021/5.1
 module load conda
 source activate openkarst
-mpirun -np $SLURM_NTASKS python  ../../../src/scripts/openkarst/mpi_openkarst.py --sim_list_file sim_list.txt --log_path "output/simulation_$(date +%Y%m%d_%H%M%S).log"
+mpirun -np $SLURM_NTASKS python  ../../../src/scripts/openkarst/mpi_openkarst.py --sim_list_file sim_list.txt --log_path "output/simulation_$(date +%Y%m%d_%H%M%S).log" --verbose
