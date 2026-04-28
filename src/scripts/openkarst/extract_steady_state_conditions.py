@@ -38,14 +38,14 @@ def check_h(h, tol = 1e-3, n_steps = 10):
         print("h contains negative values")
     return convergence and real and positive
 
-def extract_steady_state_conditions(results_npz):
+def extract_steady_state_conditions(results_npz, tol = 1e-3, n_steps = 10):
     results = np.load(results_npz)
     Q = results["Q"]
     h = results["y"]
     #some QC 
-    if not check_Q(Q):
+    if not check_Q(Q, tol = tol, n_steps = n_steps):
         print("Q not converged")
-        if not check_h(h):
+        if not check_h(h, tol = tol, n_steps = n_steps):
             print("h not converged")
             raise ValueError("Neither Q nor h converged. Cannot extract steady state conditions.")
         raise ValueError("Q not converged. Cannot extract steady state conditions.")
