@@ -354,8 +354,8 @@ def full_simulation_pipeline(input_file, debug = False):
             initial_water_depth = init_conditions['initial_water_depth']
         except FileNotFoundError:
             print_verbose(f"Initial conditions file not found: {init_conditions_file}", debug)
-            initial_flowrate = 0.0
-            initial_water_depth = 0.0
+            initial_flowrate = 1e-5
+            initial_water_depth = 1e-5
             baseflow= input_params['baseflow']
             t_ss_max = input_params.get('t_ss_max', 86400*10)
             ss_output_dir = input_params.get('ss_output_dir', f'output/spinup/{network_name}')
