@@ -12,4 +12,5 @@ adaptive_timesteps: True
 dt_max: 100
 t_max: 2160000  # fix so that if None, it tries the max timeseries or a default value
 t_ss_max: 864000
-Q_tol: .001
+Q_tol: .01
+h_tol: 0.03

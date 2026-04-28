@@ -116,8 +116,8 @@ model_parameters = {
                 'fracture' : 0.1,
                 'ratio' : 0.1},
         'fractures' : {'generate': 
-                    {'family_01':{ 'density' : 0.0005 , 'orientation' : 135 , 'dip' : 90, 'length' : 300, 'cost' : 0.1 },  
-                        'family_02': { 'density' : 0.0005 , 'orientation' : 45, 'dip' : 90, 'length' : 500, 'cost' : 0.1}
+                    {'family_01':{ 'density' : 0.0005 , 'orientation' : 135 , 'dip' : 10, 'length' : 300, 'cost' : 0.1 },  
+                        'family_02': { 'density' : 0.0005 , 'orientation' : 45, 'dip' : 10, 'length' : 500, 'cost' : 0.1}
                     }
         
         }

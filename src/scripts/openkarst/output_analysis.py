@@ -9,10 +9,13 @@ import numpy as np
 from utils.common import write_pickle
 from argparse import ArgumentParser
 
+def relative_L2_norm(X):
+    return np.linalg.norm(np.diff(X, axis = 0), axis = 0)/(np.linalg.norm(X[:-1], axis = 0) + 1e-12)
 def check_convergence(X, tol = 1e-3, n_steps = 10):
     """Check using relative error"""
     #X is an nt x nx array or a 1 x nt array. Checks for convergence at the last n_steps timesteps
-    if np.mean(np.abs(np.diff(X[-(n_steps+1):], axis = 0)/X[-(n_steps+1):-1])) < tol:
+    # if np.mean(np.abs(np.diff(X[-(n_steps+1):], axis = 0)/X[-(n_steps+1):-1])) < tol:
+    if (relative_L2_norm(X[-(n_steps+1):])).mean() < tol:
         return True
     return False
 
@@ -39,14 +42,14 @@ def check_h(h, tol = 1e-3, n_steps = 10):
         print("h contains negative values")
     return convergence and real and positive
 
-def extract_steady_state_conditions(results_npz, tol = 1e-3, n_steps = 10):
+def extract_steady_state_conditions(results_npz, Q_tol = 1e-3, h_tol = 1e-3, n_steps = 10):
     results = np.load(results_npz)
     Q = results["Q"]
     h = results["y"]
     #some QC 
-    if not check_Q(Q, tol = tol, n_steps = n_steps):
+    if not check_Q(Q, tol = Q_tol, n_steps = n_steps):
         print("Q not converged")
-        if not check_h(h, tol = tol, n_steps = n_steps):
+        if not check_h(h, tol = h_tol, n_steps = n_steps):
             print("h not converged")
             raise ValueError("Neither Q nor h converged. Cannot extract steady state conditions.")
         raise ValueError("Q not converged. Cannot extract steady state conditions.")

@@ -337,7 +337,9 @@ def full_simulation_pipeline(input_file, debug = False):
     t_max = float(input_params.get('t_max', 10000))
     output_dir = input_params.get('output_dir', f'output/{network_name}/{recharge_distribution}')
     steady_state = input_params.get('steady_state', False)
-    Q_tol = input_params.get('Q_tol', 1e-6)
+    Q_tol = input_params.get('Q_tol', 1e-3)
+    h_tol = input_params.get('h_tol', 1e-3)
+
     #head boundary 
     if head_boundary_file is not None:
         head_boundary = load_pickle(head_boundary_file)
@@ -374,7 +376,7 @@ def full_simulation_pipeline(input_file, debug = False):
                                 head_type = head_type,
                                 save_path = ss_output_dir)
             print_verbose(f"Steady state simulation completed for {network_name}. Extracting steady state conditions...", debug)
-            IC = extract_steady_state_conditions(f'{ss_output_dir}/results_arrays.npz', tol = Q_tol)
+            IC = extract_steady_state_conditions(f'{ss_output_dir}/results_arrays.npz', Q_tol = Q_tol, h_tol = h_tol)
             write_pickle(init_conditions_file, IC)
             initial_flowrate = IC['initial_flowrate']
             initial_water_depth = IC['initial_water_depth']
