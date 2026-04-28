@@ -15,6 +15,7 @@ def check_convergence(X, tol = 1e-3, n_steps = 10):
     if np.mean(np.abs(np.diff(X[-(n_steps+1):], axis = 0)/X[-(n_steps+1):-1])) < tol:
         return True
     return False
+
 def check_Q(Q, tol = 1e-3, n_steps = 10):
     #check convergence
     #TODO: additional quality checks? 

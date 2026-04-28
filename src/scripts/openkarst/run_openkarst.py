@@ -13,7 +13,7 @@ from openkarst.network_generation import compute_conduit_lengths
 from openkarst.visualization.animation_pyvista import animate_network
 from openkarst.models import FlowSimulation
 from argparse import ArgumentParser
-from scripts.openkarst.extract_steady_state_conditions import extract_steady_state_conditions
+from scripts.openkarst.output_analysis import extract_steady_state_conditions
 
 
 
@@ -359,7 +359,7 @@ def full_simulation_pipeline(input_file, debug = False):
             baseflow= input_params['baseflow']
             t_ss_max = input_params.get('t_ss_max', 86400*10)
             ss_output_dir = input_params.get('ss_output_dir', f'output/spinup/{network_name}')
-            inflow_boundary = {network.diffuse_inlets : {'flow' : baseflow / len(network.diffuse_inlets)}}
+            inflow_boundary = {network.diffuse_inlets + network.inlets : {'flow' : baseflow / len(network.diffuse_inlets)}}
             ss_results = run_openkarst_simulation(network, 
                                 cn_params = cn_params,
                                 initial_flowrate = initial_flowrate,
