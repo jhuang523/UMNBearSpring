@@ -60,6 +60,8 @@ def extract_steady_state_conditions(results_npz, Q_tol = 1e-3, h_tol = 1e-3, n_s
     IC = {'initial_flowrate' : Q_ss, 'initial_water_depth' : h_ss}
     return IC
 
+def spring_flow(network, Q): 
+
 def main():
     parser = ArgumentParser()
     parser.add_argument('--input_data', type = str, help = "Path to npz file")

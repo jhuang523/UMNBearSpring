@@ -391,9 +391,9 @@ def full_simulation_pipeline(input_file, debug = False):
     if recharge_distribution == 'partitioned':
         inflow_boundary = write_partitioned_inflow_boundary(network, R_l= R_l, R_h= R_h, t_l = t, t_h = t)
     elif recharge_distribution == 'diffuse':
-        inflow_boundary = write_partitioned_inflow_boundary(network.diffuse_inlets, R_l = R_l + R_h, t_l = t, t_h = t)
+        inflow_boundary = write_partitioned_inflow_boundary(network, R_l = R_l + R_h, t_l = t, t_h = t)
     elif recharge_distribution == 'point':
-        inflow_boundary = write_partitioned_inflow_boundary(network.inlets, R_h = R_l + R_h, t_l = t, t_h = t)
+        inflow_boundary = write_partitioned_inflow_boundary(network, R_h = R_l + R_h, t_l = t, t_h = t)
     print_verbose(f'inflow boundary conditions written', debug)
 
     run_openkarst_simulation(network, 
