@@ -1,19 +1,23 @@
 # import openkarst
 import sys
 import os
+import time
+from pathlib import Path
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../../src"))) #use this to be able to import local packages
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../../../src"))) #use this to be able to import local packages
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../src"))) #use this to be able to import local packages
 import numpy as np
 import pandas as pd
 import pickle
+import pyarrow.parquet as pq
 from utils.openkarst_network import OpenKarstNetwork as OKN
 from utils.common import load_yaml, print_verbose, load_pickle, write_pickle
 from openkarst.network_generation import compute_conduit_lengths
 from openkarst.visualization.animation_pyvista import animate_network
 from openkarst.models import FlowSimulation
 from argparse import ArgumentParser
-from scripts.openkarst.output_analysis import extract_steady_state_conditions
+from scripts.openkarst.extract_steady_state_conditions import extract_steady_state_conditions
+from utils.spring import outlet_flow, write_outlet_flow
 
 
 
@@ -137,7 +141,7 @@ def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate =
     }
     
     output_settings = {
-        'output_interval': params.get('output_interval', 1000.0),
+        'output_interval': params.get('output_interval', 100.0),
         'time': True,
         'time_step_size': True,
         'flowrates': True,
@@ -251,6 +255,28 @@ def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate =
     np.savez_compressed(f'{save_path}/results_arrays.npz', Q=Q, y=y, t=t, re=re)
     return results
 
+def spin_up_simulation(network : OKN, baseflow, head_boundary, head_type, t_ss_max=864000, dt_max = 1000, adaptive_timesteps = True, ss_output_dir=None, init_conditions_file = None, cn_params = None, verbose = False, Q_tol = 1e-3, h_tol = 1e-3):
+    initial_flowrate = 1e-5
+    initial_water_depth = 1e-5
+    inflow_boundary = {network.diffuse_inlets + network.inlets : {'flow' : baseflow / len(network.diffuse_inlets + network.inlets)}}
+    ss_results = run_openkarst_simulation(network, 
+                        cn_params = cn_params,
+                        initial_flowrate = initial_flowrate,
+                        initial_water_depth = initial_water_depth,
+                        inflow_boundary= inflow_boundary,
+                        head_boundary= head_boundary,
+                        steady_state = False,
+                        dt_max = dt_max,
+                        t_max = t_ss_max,
+                        adaptive_timesteps = adaptive_timesteps,
+                        inflow_type = 'constant',
+                        head_type = head_type,
+                        save_path = ss_output_dir)
+    print_verbose(f"Steady state simulation completed. Extracting steady state conditions...", verbose)
+    IC = extract_steady_state_conditions(f'{ss_output_dir}/results_arrays.npz', Q_tol = Q_tol, h_tol = h_tol)
+    write_pickle(init_conditions_file, IC)
+    return IC
+
 def run_from_yaml(
     input_data_file,
     output_dir=None,
@@ -305,7 +331,7 @@ def run_from_yaml(
                                 head_type = head_type, 
                                 save_path = output_dir)
 
-def full_simulation_pipeline(input_file, debug = False):
+def full_simulation_pipeline(input_file, debug = False, **params):
     #load recharge and head params
     input_params = load_yaml(input_file)
     recharge_file = input_params['recharge_file']
@@ -337,8 +363,10 @@ def full_simulation_pipeline(input_file, debug = False):
     t_max = float(input_params.get('t_max', 10000))
     output_dir = input_params.get('output_dir', f'output/{network_name}/{recharge_distribution}')
     steady_state = input_params.get('steady_state', False)
+    spin_up = input_params.get('spin_up', False)
     Q_tol = input_params.get('Q_tol', 1e-3)
     h_tol = input_params.get('h_tol', 1e-3)
+
 
     #head boundary 
     if head_boundary_file is not None:
@@ -350,40 +378,24 @@ def full_simulation_pipeline(input_file, debug = False):
     #initial conditions 
     init_conditions_file = input_params.get('initial_conditions_file', None)
     if init_conditions_file is not None:
-        try:
-            init_conditions = load_initial_conditions(init_conditions_file)
-            initial_flowrate = init_conditions['initial_flowrate']
-            initial_water_depth = init_conditions['initial_water_depth']
-        except FileNotFoundError:
-            print_verbose(f"Initial conditions file not found: {init_conditions_file}", debug)
-            initial_flowrate = 1e-5
-            initial_water_depth = 1e-5
-            baseflow= input_params['baseflow']
-            t_ss_max = input_params.get('t_ss_max', 86400*10)
-            ss_output_dir = input_params.get('ss_output_dir', f'output/spinup/{network_name}')
-            inflow_boundary = {network.diffuse_inlets + network.inlets : {'flow' : baseflow / len(network.diffuse_inlets)}}
-            ss_results = run_openkarst_simulation(network, 
-                                cn_params = cn_params,
-                                initial_flowrate = initial_flowrate,
-                                initial_water_depth = initial_water_depth,
-                                inflow_boundary= inflow_boundary,
-                                head_boundary= head_boundary,
-                                steady_state = False,
-                                dt_max = dt_max,
-                                t_max = t_ss_max,
-                                adaptive_timesteps = adaptive_timesteps,
-                                inflow_type = 'constant',
-                                head_type = head_type,
-                                save_path = ss_output_dir)
-            print_verbose(f"Steady state simulation completed for {network_name}. Extracting steady state conditions...", debug)
-            IC = extract_steady_state_conditions(f'{ss_output_dir}/results_arrays.npz', Q_tol = Q_tol, h_tol = h_tol)
-            write_pickle(init_conditions_file, IC)
-            initial_flowrate = IC['initial_flowrate']
-            initial_water_depth = IC['initial_water_depth']
+        IC_exists = Path(init_conditions_file).exists()
+    baseflow= input_params.get('baseflow', 1e-5)
+    ss_output_dir = input_params.get('ss_output_dir', f'output/spinup/{network_name}')
+    t_ss_max = input_params.get('t_ss_max', 86400*10)
 
-    else:
-        initial_flowrate = 0.0
-        initial_water_depth = 0.0
+
+
+    if spin_up or not IC_exists: #if manually overriding init conditions or if init conditions file doesn't exist, run spin up simulation to extract steady state conditions
+        print_verbose(f"Running spin-up simulation to find steady state conditions for {network_name}", debug)
+        spin_up_simulation(network, baseflow, head_boundary, head_type, t_ss_max, dt_max, adaptive_timesteps, ss_output_dir, init_conditions_file, cn_params, debug, Q_tol, h_tol)
+    elif IC_exists: #load initial conditions from file
+        init_conditions = load_initial_conditions(init_conditions_file)
+        initial_flowrate = init_conditions['initial_flowrate']
+        initial_water_depth = init_conditions['initial_water_depth']
+    else: #set default initial conditions
+        initial_flowrate = 1e-5
+        initial_water_depth = 1e-5
+    print_verbose(f'initial conditions: Q = {initial_flowrate}, h = {initial_water_depth}', debug)
     #write input data 
     R_l = recharge_data['R_l [V/T]']
     R_h = recharge_data['R_h [V/T]']
@@ -396,7 +408,7 @@ def full_simulation_pipeline(input_file, debug = False):
         inflow_boundary = write_partitioned_inflow_boundary(network, R_h = R_l + R_h, t_l = t, t_h = t)
     print_verbose(f'inflow boundary conditions written', debug)
 
-    run_openkarst_simulation(network, 
+    results = run_openkarst_simulation(network, 
                                 cn_params = cn_params, 
                                 initial_flowrate = initial_flowrate, 
                                 initial_water_depth = initial_water_depth, 
@@ -409,6 +421,27 @@ def full_simulation_pipeline(input_file, debug = False):
                                 inflow_type = inflow_type, 
                                 head_type = head_type, 
                                 save_path = output_dir)
+    Q = results['flowrates']
+    y = results['water_depths']
+    t = results['time']
+    spring = outlet_flow(network, Q)
+    hydrograph_output_path = input_params.get('hydrograph_output_path', 'output/hydrographs/')
+    metadata_path = input_params.get('metadata_path', 'output/metadata/')
+    run_id = params.get('run_id', int(time.time()))
+    #metadata 
+    metadata = {
+        'run_id' : run_id,
+        'network_name' : network_name,
+        'recharge_file' : recharge_file,
+        'recharge_distribution' : recharge_distribution,
+        'baseflow' : baseflow
+    }
+    metadata_df = pd.DataFrame(metadata, index = [0])
+    metadata_df.to_parquet(f'{metadata_path}', partition_cols=['run_id'], compression='snappy')
+    print_verbose(f'Metadata written to {metadata_path} with run_id {run_id}', debug)
+    write_outlet_flow(t, spring, hydrograph_output_path, run_id=run_id, verbose=debug)
+    
+
     
 
 if __name__ == "__main__":

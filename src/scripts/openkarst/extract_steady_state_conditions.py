@@ -60,8 +60,19 @@ def extract_steady_state_conditions(results_npz, Q_tol = 1e-3, h_tol = 1e-3, n_s
     IC = {'initial_flowrate' : Q_ss, 'initial_water_depth' : h_ss}
     return IC
 
-def spring_flow(network, Q): 
-    return
+def outlet_flow(network, Q): 
+    edges = network.edges
+    outlet_Q = {}
+    outlet_ids = network.outlets
+    for node in outlet_ids:
+    #flow is stored in the Q array as (ts, edge_index)
+        edges_loc = edges[(edges.to_id == node) | (edges.from_id == node)].index
+        outlet_Q = 0
+        for edge in edges_loc:
+            outlet_Q += Q[:, edge-1]
+        outlet_Q[node] = outlet_Q
+    return outlet_Q
+
 def main():
     parser = ArgumentParser()
     parser.add_argument('--input_data', type = str, help = "Path to npz file")
