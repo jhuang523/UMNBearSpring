@@ -46,14 +46,30 @@ def write_outlet_flow(t, spring_Q, output_path, run_id = None, method = "parquet
         #TODO: Add other output methods
         raise ValueError("Unsupported output method. Use 'parquet'.")
 
+def calculate_recession_coefficients(t, Q_spring, n_coeffs = 3):
+    import pwlf
+    #get max-- assume recession starts at max flow
+
+    max_idx = np.argmax(Q_spring)
+    recession_Q = Q_spring[max_idx:]
+    recession_t = t[max_idx:]
+    #fit in log space
+    logQ = np.log(recession_Q + 1e-12) # add small value to avoid log(0)
+    #use pwlf to fit piecewise linear function to logQ and extract slopes as recession coefficients
+    pwlf_model = pwlf.PiecewiseLinFit(recession_t, logQ) # add small value to avoid log(0)
+    t_segments = pwlf_model.fit(n_coeffs)
+    slopes = pwlf_model.slopes 
+    # linear fit to logQ 
+    return slopes, t_segments
 
 def main():
-    parser = ArgumentParser()
-    parser.add_argument('--input_data', type = str, help = "Path to npz file")
-    parser.add_argument('--output_path', type = str, help = "Output file path")
-    args = parser.parse_args()
-    input_data = args.input_data
-    output_path = args.output_path
+    # parser = ArgumentParser()
+    # parser.add_argument('--input_data', type = str, help = "Path to npz file")
+    # parser.add_argument('--output_path', type = str, help = "Output file path")
+    # args = parser.parse_args()
+    # input_data = args.input_data
+    # output_path = args.output_path
+    return
 
 
 

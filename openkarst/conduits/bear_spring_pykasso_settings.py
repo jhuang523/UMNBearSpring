@@ -5,7 +5,7 @@ x0 = 557546
 x1 = 560487
 y0 = 4867231
 y1 = 4869606
-z0 = 390
+z0 = 370
 z1 = 400
 dx = 5
 dy = 5
@@ -51,48 +51,8 @@ model_parameters = {
                     }
         } 
         },
-            'single_inlet_low_slope' : 
-        {'outlets' : {
-            'number'     : 1,
-            'data'       : [[557766.245118, 4869436.0]], #'../../../../data/cave_data/cave_sump.csv',
-            'subdomain'  : 'domain_surface',
-        },
-        'inlets' : {
-            'number'     : 1,
-            'data'       : '../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace_2D.txt',#[[558515.0, 4867230.0]], #'../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace.txt',
-            'subdomain'  : 'domain_surface',
-            'importance' : [1]
-        },
-        'domain' : {
-            'topography' : np.ones((grid_parameters['ny'], grid_parameters['nx'])) * 380,
-            'water_level' : np.ones((grid_parameters['ny'], grid_parameters['nx'])) * 375.464,  # flat water table at z=375.464m
-        },
-        'sks' : {'algorithm' : 'Isotropic3'},
-        'fractures' : {'generate': 
-                    {'family_01':{ 'density' : 0.00005 , 'orientation' : 135 , 'dip' : 90, 'length' : 300 },  
-                        'family_02': { 'density' : 0.00005 , 'orientation' : 45, 'dip' : 90, 'length' : 500 }
-                    }
-        } 
-        },
 
-    'single_inlet_isotropic' : 
-        {'outlets' : {
-            'number'     : 1,
-            'data'       : [[557766.245118, 4869436.0]], #'../../../../data/cave_data/cave_sump.csv',
-            'subdomain'  : 'domain_surface',
-        },
-        'inlets' : {
-            'number'     : 1,
-            'data'       : '../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace_2D.txt',#[[558515.0, 4867230.0]], #'../../../../data/geo_data/sinkholes/single_sinkhole_dye_trace.txt',
-            'subdomain'  : 'domain_surface',
-            'importance' : [1]
-        },
-        'domain' : {
-            'topography' : dem_grid_path,
-            'water_level' : np.ones((grid_parameters['ny'], grid_parameters['nx'])) * 375.464,  # flat water table at z=375.464m
-        },
-        'sks' : {'algorithm' : 'Isotropic3'},
-        },
+
 
         'dye_trace' : 
         {'outlets' : {
@@ -107,7 +67,7 @@ model_parameters = {
             'importance' : [4, 3, 1]
         },
         'domain' : {
-            'water_level' : np.ones((grid_parameters['nx'], grid_parameters['ny'])) * 375.464,  # flat water table at z=375.464m
+            'water_level' : np.ones((grid_parameters['nx'], grid_parameters['ny'])) *390 ,  # flat water table at z=375.464m
         },
         'sks' : {'algorithm' : 'Riemann3',
                 #  'ratio' : 2,
@@ -115,14 +75,14 @@ model_parameters = {
                 'geology' : 0.5,
                 'fracture' : 0.1,
                 'ratio' : 0.1},
-        'fractures' : {'generate': 
-                    # 'family_01':{ 'density' : 0.0005 , 'orientation' : 135 , 'dip' : 10, 'length' : 300, 'cost' : 0.1 },  
-                    #     'family_02': { 'density' : 0.0005 , 'orientation' : 45, 'dip' : 10, 'length' : 500, 'cost' : 0.1},
-                        {'family_03':{ 'density' : 0.0005 , 'orientation' : 135 , 'dip' : 90, 'length' : 300, 'cost' : 0.1 },  
-                        'family_04': { 'density' : 0.0005 , 'orientation' : 45, 'dip' : 90, 'length' : 500, 'cost' : 0.1}
-                    }
+        # 'fractures' : {'generate': 
+        #             # 'family_01':{ 'density' : 0.0005 , 'orientation' : 135 , 'dip' : 10, 'length' : 300, 'cost' : 0.1 },  
+        #             #     'family_02': { 'density' : 0.0005 , 'orientation' : 45, 'dip' : 10, 'length' : 500, 'cost' : 0.1},
+        #                 {'family_03':{ 'density' : 0.0005 , 'orientation' : 135 , 'dip' : 90, 'length' : 300, 'cost' : 0.1 },  
+        #                 'family_04': { 'density' : 0.0005 , 'orientation' : 45, 'dip' : 90, 'length' : 500, 'cost' : 0.1}
+        #             }
         
-        }
+        # }
         },
         'double_sinkhole' : 
         {'outlets' : {
@@ -137,7 +97,7 @@ model_parameters = {
             'importance' : [1, 1, 1, 1, 1, 1]
         },
         'domain' : {
-            'water_level' : np.ones((grid_parameters['ny'], grid_parameters['nx'])) * 375.464,  # flat water table at z=375.464m
+            'water_level' : np.ones((grid_parameters['ny'], grid_parameters['nx'])) * 390,  # flat water table at z=375.464m
         },
         'sks' : {'algorithm' : 'Riemann3',
                 #  'ratio' : 2,

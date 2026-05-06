@@ -4,3 +4,6 @@ input_files/full_pipeline/pykasso_n58_low_slope.yaml
 input_files/full_pipeline/pykasso_n58.yaml
 input_files/full_pipeline/single_conduit_vert_tort.yaml
 input_files/full_pipeline/straight_conduit_n62.yaml
+input_files/full_pipeline/anastomotic_2.yaml
+input_files/full_pipeline/anastomotic_3.yaml
+

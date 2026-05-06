@@ -361,7 +361,6 @@ def full_simulation_pipeline(input_file, debug = False, **params):
     adaptive_timesteps = input_params.get('adaptive_timesteps', True)
     dt_max = float(input_params.get('dt_max', 1000))
     t_max = float(input_params.get('t_max', 10000))
-    output_dir = input_params.get('output_dir', f'output/{network_name}/{recharge_distribution}')
     steady_state = input_params.get('steady_state', False)
     spin_up = input_params.get('spin_up', False)
     Q_tol = input_params.get('Q_tol', 1e-3)
@@ -400,46 +399,52 @@ def full_simulation_pipeline(input_file, debug = False, **params):
     R_l = recharge_data['R_l [V/T]']
     R_h = recharge_data['R_h [V/T]']
     t = recharge_data['time']
-    if recharge_distribution == 'partitioned':
-        inflow_boundary = write_partitioned_inflow_boundary(network, R_l= R_l, R_h= R_h, t_l = t, t_h = t)
-    elif recharge_distribution == 'diffuse':
-        inflow_boundary = write_partitioned_inflow_boundary(network, R_l = R_l + R_h, t_l = t, t_h = t)
-    elif recharge_distribution == 'point':
-        inflow_boundary = write_partitioned_inflow_boundary(network, R_h = R_l + R_h, t_l = t, t_h = t)
-    print_verbose(f'inflow boundary conditions written', debug)
 
-    results = run_openkarst_simulation(network, 
-                                cn_params = cn_params, 
-                                initial_flowrate = initial_flowrate, 
-                                initial_water_depth = initial_water_depth, 
-                                inflow_boundary= inflow_boundary, 
-                                head_boundary= head_boundary, 
-                                steady_state = steady_state, 
-                                dt_max = dt_max, 
-                                t_max = t_max,
-                                adaptive_timesteps = adaptive_timesteps,
-                                inflow_type = inflow_type, 
-                                head_type = head_type, 
-                                save_path = output_dir)
-    Q = results['flowrates']
-    y = results['water_depths']
-    t = results['time']
-    spring = outlet_flow(network, Q)
-    hydrograph_output_path = input_params.get('hydrograph_output_path', 'output/hydrographs/')
-    metadata_path = input_params.get('metadata_path', 'output/metadata/')
-    run_id = params.get('run_id', int(time.time()))
-    #metadata 
-    metadata = {
-        'run_id' : run_id,
-        'network_name' : network_name,
-        'recharge_file' : recharge_file,
-        'recharge_distribution' : recharge_distribution,
-        'baseflow' : baseflow
-    }
-    metadata_df = pd.DataFrame(metadata, index = [0])
-    metadata_df.to_parquet(f'{metadata_path}', partition_cols=['run_id'], compression='snappy')
-    print_verbose(f'Metadata written to {metadata_path} with run_id {run_id}', debug)
-    write_outlet_flow(t, spring, hydrograph_output_path, run_id=run_id, verbose=debug)
+    for i in range(len(recharge_distribution)):
+        r_dist = recharge_distribution[i]
+        output_dir = input_params.get('output_dir', f'output/{network_name}/{r_dist}')
+        if r_dist == 'partitioned':
+            inflow_boundary = write_partitioned_inflow_boundary(network, R_l= R_l, R_h= R_h, t_l = t, t_h = t)
+        elif r_dist == 'diffuse':
+            inflow_boundary = write_partitioned_inflow_boundary(network, R_l = R_l + R_h, t_l = t, t_h = t)
+        elif r_dist == 'point':
+            inflow_boundary = write_partitioned_inflow_boundary(network, R_h = R_l + R_h, t_l = t, t_h = t)
+        print_verbose(f'inflow boundary conditions written', debug)
+
+        results = run_openkarst_simulation(network, 
+                                    cn_params = cn_params, 
+                                    initial_flowrate = initial_flowrate, 
+                                    initial_water_depth = initial_water_depth, 
+                                    inflow_boundary= inflow_boundary, 
+                                    head_boundary= head_boundary, 
+                                    steady_state = steady_state, 
+                                    dt_max = dt_max, 
+                                    t_max = t_max,
+                                    adaptive_timesteps = adaptive_timesteps,
+                                    inflow_type = inflow_type, 
+                                    head_type = head_type, 
+                                    save_path = output_dir)
+        Q = results['flowrates']
+        y = results['water_depths']
+        t = results['time']
+        spring = outlet_flow(network, Q)
+        hydrograph_output_path = input_params.get('hydrograph_output_path', 'output/hydrographs/')
+        metadata_path = input_params.get('metadata_path', 'output/metadata/')
+        run_id = params.get('run_id', int(time.time()))
+        run_id = f'{run_id}_{i}'
+        #metadata 
+        metadata = {
+            'run_id' : run_id,
+            'network_name' : network_name,
+            'recharge_file' : recharge_file,
+            'recharge_distribution' : r_dist,
+            'baseflow' : baseflow,
+            'output_dir' : output_dir,
+        }
+        metadata_df = pd.DataFrame(metadata, index = [0])
+        metadata_df.to_parquet(f'{metadata_path}', partition_cols=['run_id'], compression='snappy')
+        print_verbose(f'Metadata written to {metadata_path} with run_id {run_id}', debug)
+        write_outlet_flow(t, spring, hydrograph_output_path, run_id=run_id, verbose=debug)
     
 
     

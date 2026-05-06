@@ -1,14 +1,14 @@
 name: simple_test
 description: ''
-creation_date: 2026/05/03 16:10
+creation_date: 2026/05/06 16:01
 pykasso_version: 1.0.1
 grid:
   x0: 557546.0
   y0: 4867231.0
-  z0: 390.0
+  z0: 370.0
   nx: 588
   ny: 475
-  nz: 2
+  nz: 6
   dx: 5.0
   dy: 5.0
   dz: 5.0

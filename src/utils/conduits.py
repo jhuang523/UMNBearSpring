@@ -35,6 +35,11 @@ def generate_n_networks(n_iter, settings_file, output_dir, fname, verbose = Fals
         print_verbose(f'{path} saved', verbose)
     print_verbose(f'generated {n_iter} networks', verbose)
 
+def save_network(nodes, edges, network_dir, network_name):
+    os.makedirs(f'{network_dir}/{network_name}', exist_ok = True)
+    nodes.to_csv(f'{network_dir}/{network_name}_nodes.csv', index = False)
+    edges.to_csv(f'{network_dir}/{network_name}_edges.csv', index = False)
+    print_verbose(f'Network saved to {network_dir}', True)
 def extract_edge_coordinates(nodes, edges):
     """Given a df with nodes with x, y, z coordinates and edges df with to_id and from_id, return appended edges df with x_0, y_0, z_0, x_1, y_1, z_1 columns"""
     if 'id' not in nodes.columns: #id is index
