@@ -11,7 +11,8 @@
 #SBATCH --output=output/logs/job_%j.out
 #SBATCH --error=output/logs/job_%j.err
 
+sim_list =${1:-sim_list.txt}
 module load impi/2021/5.1
 module load conda
 source activate openkarst
-mpirun -np $SLURM_NTASKS python  ../../../src/scripts/openkarst/mpi_openkarst.py --sim_list_file sim_list.txt --log_path "output/simulation_$(date +%Y%m%d_%H%M%S).log" --verbose
+mpirun -np $SLURM_NTASKS python  ../../../src/scripts/openkarst/mpi_openkarst.py --sim_list_file $sim_list --log_path "output/simulation_$(date +%Y%m%d_%H%M%S).log" --verbose
