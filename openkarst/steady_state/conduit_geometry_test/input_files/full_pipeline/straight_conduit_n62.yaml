@@ -6,7 +6,7 @@ recharge_file: 'input_data/recharge_m_s/gaussian_pulse.csv'
 recharge_distribution: ['parititioned', 'diffuse']  # 'gaussian', 'diffuse', 'point'
 head_boundary_type : 'constant'  # 'constant', 'timeseries', 'ramp' 
 head_boundary: 0.01
-spin_up : True
+spin_up : False
 initial_conditions_file : 'input_data/init_conditions/straight_conduit_n62_IC.pkl'  # file containing initial flowrate and water depth info
 baseflow: 0.02 #m3/s
 adaptive_timesteps: True 
