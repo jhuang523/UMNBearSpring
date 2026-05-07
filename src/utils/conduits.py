@@ -61,6 +61,12 @@ def extract_edge_coordinates(nodes, edges):
     ).rename(columns={'x': 'x_1', 'y': 'y_1', 'z': 'z_1'}).drop(columns='id')
     return edges
 
+def remove_duplicate_edges(edges, from_col = 'from_id', to_col = 'to_id'):
+    edges[['id_1', 'id_2']] = np.sort(
+        edges[[from_col, to_col]],
+        axis=1
+    )
+    return edges.drop_duplicates(subset=['id_1', 'id_2']).reset_index(drop=True).drop(columns = ['id_1', 'id_2'])
 def reset_node_ids(nodes, edges):
     """Resets the node ids such that there are no gaps in the numbering"""
     node_map = {old_id: new_id for new_id, old_id in enumerate(nodes.id)}

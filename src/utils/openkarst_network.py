@@ -158,8 +158,7 @@ class OpenKarstNetwork:
                     for line in file:
                         node_a, node_b = map(int, line.strip().split(';'))
                         G.add_edge(node_a, node_b)
-        
-        
+        edges = conduits.remove_duplicate_edges(edges)
         # Load diameters from the file, skipping the header
         if self.diameters is not None:
             node_diameters = self.diameters.set_index('id').to_dict()['d']

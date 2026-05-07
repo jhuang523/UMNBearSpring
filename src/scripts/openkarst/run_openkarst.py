@@ -203,6 +203,20 @@ def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate =
         elif head_type == 'constant':
             head_values = head_boundary[n]['head']
         flow_network.set_waterdepth_BC(nodes = list(n), values = head_values)
+
+    #write input data to pkl for record keeping
+    input_data = {'nodes' : network.nodes, 'edges' : network.edges, 
+                'point_inlets': network.point_inlets,
+                'diffuse_inlets': network.diffuse_inlets,
+                'outlets': network.outlets,
+                'cn_geometry' : cn_geometry, 
+                'inflow_boundary' : inflow_boundary, 
+                'head_boundary' : head_boundary, 
+                'initial_depth' : initial_water_depth, 
+                'initial_flowrate' : initial_flowrate}
+
+    write_pickle(f'{save_path}/input_data.pkl', input_data)
+    print (f'results saved to {save_path}')    
     # Run simulation and store results
     results = flow_network.run_simulation(desired_outputs = output_settings)
     
@@ -234,18 +248,6 @@ def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate =
                         y_history=y_history, 
                         t_history=t_history, 
                         **animation_settings)
-    input_data = {'nodes' : network.nodes, 'edges' : network.edges, 
-                    'point_inlets': network.point_inlets,
-                    'diffuse_inlets': network.diffuse_inlets,
-                    'outlets': network.outlets,
-                    'cn_geometry' : cn_geometry, 
-                    'inflow_boundary' : inflow_boundary, 
-                    'head_boundary' : head_boundary, 
-                    'initial_depth' : initial_water_depth, 
-                    'initial_flowrate' : initial_flowrate}
-
-    write_pickle(f'{save_path}/input_data.pkl', input_data)
-    print (f'results saved to {save_path}')    
 
     # Save large numeric arraylike data efficiently (easy to open and extract)
     Q = results['flowrates']
