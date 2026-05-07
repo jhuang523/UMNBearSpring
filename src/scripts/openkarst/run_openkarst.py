@@ -411,6 +411,10 @@ def full_simulation_pipeline(input_file, debug = False, **params):
             inflow_boundary = write_partitioned_inflow_boundary(network, R_l = R_l + R_h, t_l = t, t_h = t)
         elif r_dist == 'point':
             inflow_boundary = write_partitioned_inflow_boundary(network, R_h = R_l + R_h, t_l = t, t_h = t)
+        else:
+            raise Warning(f"Recharge distribution {r_dist} not recognized. Setting to point.")
+            inflow_boundary = write_partitioned_inflow_boundary(network, R_h = R_l + R_h, t_l = t, t_h = t)
+
         print_verbose(f'inflow boundary conditions written', debug)
 
         results = run_openkarst_simulation(network, 
