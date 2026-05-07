@@ -11,7 +11,7 @@
 #SBATCH --output=output/logs/job_%j.out
 #SBATCH --error=output/logs/job_%j.err
 
-sim_list =${1:-sim_list.txt}
+sim_list=${1:-sim_list.txt}
 module load impi/2021/5.1
 module load conda
 source activate openkarst
