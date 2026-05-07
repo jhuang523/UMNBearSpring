@@ -1,3 +1,4 @@
+input_files/full_pipeline/anastomotic_simple_clean.yaml
 input_files/full_pipeline/anastomotic_2.yaml
 input_files/full_pipeline/anastomotic_3.yaml
 

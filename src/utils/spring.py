@@ -38,13 +38,21 @@ def outlet_flow(network : OpenKarstNetwork, Q):
 def write_outlet_flow(t, spring_Q, output_path, run_id = None, method = "parquet", partition = ["run_id"], verbose = False):
     df = pd.DataFrame(spring_Q)
     df['time'] = t
+    df = df.melt(
+        id_vars="time",
+        var_name="spring",
+        value_name="Q"
+    )
     df['run_id'] = run_id if run_id is not None else float(time.time())
     if method == "parquet":
         df.to_parquet(output_path, partition_cols=partition, compression='snappy')
-        print_verbose(f"Outlet flow written to {output_path} with run_id {df['run_id'].iloc[0]}", verbose)
+        print_verbose(f"Outlet flow written to {output_path} with run_id {run_id}", verbose)
+    elif method == 'dataframe':
+        os.makedirs(output_path, exist_ok=True)
+        df.to_csv(f'{output_path}/{run_id}.csv', index=False)
     else:
         #TODO: Add other output methods
-        raise ValueError("Unsupported output method. Use 'parquet'.")
+        raise ValueError("Unsupported output method. Use 'parquet' or 'dataframe'.")
 
 def calculate_recession_coefficients(t, Q_spring, n_coeffs = 3):
     import pwlf

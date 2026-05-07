@@ -43,15 +43,15 @@ def run_openkarst_mpi(sim_list, log_path, verbose=False):
         sub_list = sim_list[worker_rank::num_workers]
 
         for input_data_file in sub_list:
-            start = time.strftime("%Y-%m-%d %H:%M:%S")
+            start = time.strftime("%Y-%m-%d_%H_%M_%S")
             comm.send(f"[Rank {rank:03d}] START: {input_data_file} at {start}\n", dest=0, tag=0)
             run_id = f'{start}_{rank}'
             try: 
                 full_simulation_pipeline(input_data_file, debug=verbose, run_id=run_id)
-                end = time.strftime("%Y-%m-%d %H:%M:%S")
+                end = time.strftime("%Y-%m-%d_%H_%M_%S")
                 comm.send(f"[Rank {rank:03d}] END:   {input_data_file} at {end}\n", dest=0, tag=0)
             except Exception as e:
-                end = time.strftime("%Y-%m-%d %H:%M:%S")
+                end = time.strftime("%Y-%m-%d_%H_%M_%S")
                 tb = traceback.format_exc()
                 comm.send(f"[Rank {rank:03d}] ERROR: {input_data_file} at {end} with error {e}\n {tb}\n", dest=0, tag=0)
 

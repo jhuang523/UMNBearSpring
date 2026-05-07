@@ -441,11 +441,13 @@ def full_simulation_pipeline(input_file, debug = False, **params):
         spring = outlet_flow(network, Q)
         hydrograph_output_path = input_params.get('hydrograph_output_path', 'output/hydrographs/')
         metadata_path = input_params.get('metadata_path', 'output/metadata/')
+        hydrograph_method = input_params.get('hydrograph_method', 'parquet')
         run_id = params.get('run_id', int(time.time()))
         run_id = f'{run_id}_{i}'
         #metadata 
         metadata = {
             'run_id' : run_id,
+            'network_dir' : network_dir,
             'network_name' : network_name,
             'recharge_file' : recharge_file,
             'recharge_distribution' : r_dist,
@@ -455,7 +457,7 @@ def full_simulation_pipeline(input_file, debug = False, **params):
         metadata_df = pd.DataFrame(metadata, index = [0])
         metadata_df.to_parquet(f'{metadata_path}', partition_cols=['run_id'], compression='snappy')
         print_verbose(f'Metadata written to {metadata_path} with run_id {run_id}', debug)
-        write_outlet_flow(t, spring, hydrograph_output_path, run_id=run_id, verbose=debug)
+        write_outlet_flow(t, spring, hydrograph_output_path, run_id=run_id, method = hydrograph_method,verbose=debug)
     
 
     
