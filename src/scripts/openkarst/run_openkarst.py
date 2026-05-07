@@ -386,7 +386,9 @@ def full_simulation_pipeline(input_file, debug = False, **params):
 
     if spin_up or not IC_exists: #if manually overriding init conditions or if init conditions file doesn't exist, run spin up simulation to extract steady state conditions
         print_verbose(f"Running spin-up simulation to find steady state conditions for {network_name}", debug)
-        spin_up_simulation(network, baseflow, head_boundary, head_type, t_ss_max, dt_max, adaptive_timesteps, ss_output_dir, init_conditions_file, cn_params, debug, Q_tol, h_tol)
+        IC = spin_up_simulation(network, baseflow, head_boundary, head_type, t_ss_max, dt_max, adaptive_timesteps, ss_output_dir, init_conditions_file, cn_params, debug, Q_tol, h_tol)
+        initial_flowrate = IC['initial_flowrate']
+        initial_water_depth = IC['initial_water_depth']
     elif IC_exists: #load initial conditions from file
         init_conditions = load_initial_conditions(init_conditions_file)
         initial_flowrate = init_conditions['initial_flowrate']
