@@ -391,14 +391,17 @@ def full_simulation_pipeline(input_file, debug = False, **params):
         IC = spin_up_simulation(network, baseflow, head_boundary, head_type, t_ss_max, dt_max, adaptive_timesteps, ss_output_dir, init_conditions_file, cn_params, debug, Q_tol, h_tol)
         initial_flowrate = IC['initial_flowrate']
         initial_water_depth = IC['initial_water_depth']
+        print_verbose(f"Steady state conditions extracted and written to {init_conditions_file}", debug)
     elif IC_exists: #load initial conditions from file
         init_conditions = load_initial_conditions(init_conditions_file)
         initial_flowrate = init_conditions['initial_flowrate']
         initial_water_depth = init_conditions['initial_water_depth']
+        print_verbose(f'initial conditions loaded from file {init_conditions_file}', debug)
+
     else: #set default initial conditions
         initial_flowrate = 1e-5
         initial_water_depth = 1e-5
-    print_verbose(f'initial conditions: Q = {initial_flowrate}, h = {initial_water_depth}', debug)
+        print_verbose(f'initial conditions set to default value', debug)
     #write input data 
     R_l = recharge_data['R_l [V/T]']
     R_h = recharge_data['R_h [V/T]']
@@ -414,8 +417,8 @@ def full_simulation_pipeline(input_file, debug = False, **params):
         elif r_dist == 'point':
             inflow_boundary = write_partitioned_inflow_boundary(network, R_h = R_l + R_h, t_l = t, t_h = t)
         else:
-            raise Warning(f"Recharge distribution {r_dist} not recognized. Setting to point.")
             inflow_boundary = write_partitioned_inflow_boundary(network, R_h = R_l + R_h, t_l = t, t_h = t)
+            raise Warning(f"Recharge distribution {r_dist} not recognized. Setting to point.")
 
         print_verbose(f'inflow boundary conditions written', debug)
 
