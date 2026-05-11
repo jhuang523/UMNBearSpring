@@ -126,9 +126,9 @@ def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate =
 
         "max_iterations": 20,
 
-        "picard_depth_tol": 1e-7,
+        "picard_depth_tol": 1e-6,
 
-        "ss_rel_l2tol": 1e-6,
+        "ss_rel_l2tol": 1e-5,
 
     }
 
