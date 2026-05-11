@@ -16,7 +16,7 @@ from openkarst.network_generation import compute_conduit_lengths
 from openkarst.visualization.animation_pyvista import animate_network
 from openkarst.models import FlowSimulation
 from argparse import ArgumentParser
-from scripts.openkarst.extract_steady_state_conditions import extract_steady_state_conditions
+# from scripts.openkarst.extract_steady_state_conditions import extract_steady_state_conditions
 from utils.spring import outlet_flow, write_outlet_flow
 
 
@@ -121,17 +121,12 @@ def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate =
     }
     
     solver_settings = {
-
-        "relaxation_factor": 0.6,
-
-        "max_iterations": 20,
-
-        "picard_depth_tol": 1e-7,
-
-        "ss_rel_l2tol": 1e-6,
-
+        'relaxation_factor': 0.6,    # Dimensionless
+        'max_iterations': 20,        # Maximum Picard iterations
+        'picard_depth_tol': 1e-5,    # Picard depth tolerance (meters)
+        'ss_rel_l2tol': 1e-3,         # L2 tolerance for steady-state
+        'ss_rel_madtol': 1e-8         # Median tolerance for steady-state
     }
-
     
     simulation_settings = {
         'min_waterdepth': 1e-10,      # Minimum water depth (meters)
@@ -221,14 +216,8 @@ def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate =
                 'initial_flowrate' : initial_flowrate}
 
     write_pickle(f'{save_path}/input_data.pkl', input_data)
-    #observation points at springs    
-    flow_network.set_observation_points(
-        nodes=list(network.outlets),
-        variables=["inflow"],
-        interval=output_settings["output_interval"],
-    )
+    print (f'results saved to {save_path}')    
     # Run simulation and store results
-
     results = flow_network.run_simulation(desired_outputs = output_settings)
     
     # Get arrays from results container
@@ -260,31 +249,23 @@ def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate =
                         t_history=t_history, 
                         **animation_settings)
 
-    # Get observation data as DataFrame
-    obs_df = flow_network.get_observation_dataframe()
-
-
-
-    # Save observation data
-
-    obs_df.to_csv(f"{save_path}/spring.csv", index=False)
     # Save large numeric arraylike data efficiently (easy to open and extract)
     Q = results['flowrates']
     y = results['water_depths']
     t = results['time']
     re = results['reynolds_numbers']
     np.savez_compressed(f'{save_path}/results_arrays.npz', Q=Q, y=y, t=t, re=re)
-    print (f'results saved to {save_path}')
-
     return results
 
 def spin_up_simulation(network : OKN, baseflow, head_boundary, head_type, 
                        t_ss_max=864000, dt_max = 1000, 
-                       adaptive_timesteps = True, ss_output_dir=None, 
-                       init_conditions_file = None, cn_params = None, 
-                       verbose = False, Q_tol = 1e-3, h_tol = 1e-3,
-                       initial_flowrate = 0.0, initial_water_depth = 0.0):
-    inflow_boundary = {network.inlets : {'flow' : baseflow / len(network.inlets)}}
+                       adaptive_timesteps = True, 
+                       ss_output_dir=None, init_conditions_file = None, 
+                       cn_params = None, verbose = False, 
+                       Q_tol = 1e-3, h_tol = 1e-3):
+    initial_flowrate = 1e-5
+    initial_water_depth = 1e-5
+    inflow_boundary = {network.diffuse_inlets + network.inlets : {'flow' : baseflow / len(network.diffuse_inlets + network.inlets)}}
     ss_results = run_openkarst_simulation(network, 
                         cn_params = cn_params,
                         initial_flowrate = initial_flowrate,
