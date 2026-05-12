@@ -271,17 +271,15 @@ def adjust_node_spacing(nodes, edges, spacing):
 
         n1 = edge["from_id"]
         n2 = edge["to_id"]
-
-        x1, y1, z1 = coord[n1]["x"], coord[n1]["y"], coord[n1]["z"]
-        x2, y2, z2 = coord[n2]["x"], coord[n2]["y"], coord[n2]["z"]
-
-        dx = x2 - x1
-        dy = y2 - y1
-
-        L = np.sqrt(dx**2 + dy**2)
-
+        length = edge['length']
+        if length <= spacing:
+            new_edges.append({
+                "from": n1,
+                "to": n2
+            })
+            continue
         # number of segments needed
-        nseg = max(1, int(np.ceil(L / spacing)))
+        nseg = max(1, int(np.ceil(length / spacing)))
 
         # interpolation positions
         tvals = np.linspace(0, 1, nseg + 1)

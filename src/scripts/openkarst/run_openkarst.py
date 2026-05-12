@@ -361,6 +361,7 @@ def full_simulation_pipeline(input_file, debug = False, **params):
     #load recharge and head params
     input_params = load_yaml(input_file)
     recharge_file = input_params['recharge_file']
+    recharge_name = recharge_file.split('/')[-1].split('.')[0]
     recharge_data = load_recharge_data(recharge_file)
     recharge_distribution = input_params.get('recharge_distribution', 'partitioned')
     head_boundary = input_params['head_boundary']
@@ -433,7 +434,7 @@ def full_simulation_pipeline(input_file, debug = False, **params):
 
     for i in range(len(recharge_distribution)):
         r_dist = recharge_distribution[i]
-        output_dir = input_params.get('output_dir', f'output/{network_name}/{r_dist}')
+        output_dir = input_params.get('output_dir', f'output/{network_name}/{recharge_name}/{r_dist}')
         if r_dist == 'partitioned':
             inflow_boundary = write_partitioned_inflow_boundary(network, R_l= R_l, R_h= R_h, t_l = t, t_h = t)
         elif r_dist == 'diffuse':
