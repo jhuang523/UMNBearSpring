@@ -283,7 +283,7 @@ def spin_up_simulation(network : OKN, baseflow, head_boundary, head_type,
                        adaptive_timesteps = True, ss_output_dir=None, 
                        init_conditions_file = None, cn_params = None, 
                        verbose = False, Q_tol = 1e-3, h_tol = 1e-3,
-                       initial_flowrate = 0.0, initial_water_depth = 0.0):
+                       initial_flowrate = 1e-6, initial_water_depth = 1e-6):
     inflow_boundary = {network.inlets : {'flow' : baseflow / len(network.inlets)}}
     ss_results = run_openkarst_simulation(network, 
                         cn_params = cn_params,
