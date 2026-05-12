@@ -249,88 +249,79 @@ def reduce_node_density(nodes, edges, epsilon, protected_types = ['inlet', 'outl
     edges_df = edges_df.drop_duplicates(subset=['from_id', 'to_id']).reset_index(drop=True) # remove any duplicate edges that may have been created
     return nodes_df, edges_df
 
-# def change_node_density(nodes, edges, target_length, tol=0.25):
-#     """
-#     Enforce approximately uniform edge lengths.
+def adjust_node_spacing(nodes, edges, spacing):
+    """
+    Add intermediate nodes along edges so that
+    node spacing is approximately <= spacing.
+    """
 
-#     target_length : desired edge length
-#     tol           : tolerance (fraction), e.g. 0.25 → 25%
-#     """
+    # node lookup
+    coord = nodes.set_index("id")[["x", "y", "z"]].to_dict("index")
 
-#     nodes = nodes.copy()
-#     edges = edges.copy()
+    new_nodes = []
+    new_edges = []
 
-#     node_lookup = nodes.set_index('id')[['x','y','z']].to_dict('index')
+    # start new IDs after existing max
+    next_id = nodes["id"].max() + 1
+    if ['x_0', 'x_1', 'y_0', 'y_1', 'z_0', 'z_1'] not in edges.columns:
+        edges = extract_edge_coordinates(nodes, edges)
+    if 'length' not in edges.columns:
+        edges = conduit_lengths(nodes, edges)
+    for _, edge in edges.iterrows():
 
-#     new_nodes = []
-#     new_edges = []
+        n1 = edge["from_id"]
+        n2 = edge["to_id"]
 
-#     next_id = nodes['id'].max() + 1
+        x1, y1, z1 = coord[n1]["x"], coord[n1]["y"], coord[n1]["z"]
+        x2, y2, z2 = coord[n2]["x"], coord[n2]["y"], coord[n2]["z"]
 
-#     for _, row in edges.iterrows():
-#         i, j = row['from_id'], row['to_id']
+        dx = x2 - x1
+        dy = y2 - y1
 
-#         p0 = np.array(list(node_lookup[i].values()))
-#         p1 = np.array(list(node_lookup[j].values()))
+        L = np.sqrt(dx**2 + dy**2)
 
-#         L = np.linalg.norm(p1 - p0)
+        # number of segments needed
+        nseg = max(1, int(np.ceil(L / spacing)))
 
-#         # --- Case 1: too long → subdivide ---
-#         if L > (1 + tol) * target_length:
-#             n_seg = int(np.ceil(L / target_length))
+        # interpolation positions
+        tvals = np.linspace(0, 1, nseg + 1)
 
-#             pts = []
-#             for k in range(n_seg + 1):
-#                 t = k / n_seg
-#                 pt = (1 - t) * p0 + t * p1
+        # create ordered node list along edge
+        edge_nodes = [n1]
 
-#                 if k == 0:
-#                     pts.append(i)
-#                 elif k == n_seg:
-#                     pts.append(j)
-#                 else:
-#                     new_nodes.append([next_id, *pt, 'junction'])
-#                     pts.append(next_id)
-#                     next_id += 1
+        # intermediate nodes
+        for t in tvals[1:-1]:
 
-#             for a, b in zip(pts[:-1], pts[1:]):
-#                 new_edges.append([a, b])
+            xn = x1 + t * dx
+            yn = y1 + t * dy
 
-#         # --- Case 2: too short → collapse ---
-#         elif L < (1 - tol) * target_length:
-#             # collapse j into i (simple version)
-#             midpoint = 0.5 * (p0 + p1)
+            new_nodes.append({
+                "id": next_id,
+                "x": xn,
+                "y": yn
+            })
 
-#             nodes.loc[nodes['id'] == i, ['x','y','z']] = midpoint
-#             node_lookup[i] = dict(zip(['x','y','z'], midpoint))
+            edge_nodes.append(next_id)
+            next_id += 1
 
-#             # redirect edges from j → i
-#             edges.loc[edges['from_id'] == j, 'from_id'] = i
-#             edges.loc[edges['to_id'] == j, 'to_id'] = i
+        edge_nodes.append(n2)
 
-#             # skip adding this edge
-#             continue
+        # connect sequentially
+        for a, b in zip(edge_nodes[:-1], edge_nodes[1:]):
+            new_edges.append({
+                "from": a,
+                "to": b
+            })
 
-#         # --- Case 3: acceptable length ---
-#         else:
-#             new_edges.append([i, j])
+    # combine original + inserted nodes
+    all_nodes = pd.concat(
+        [nodes, pd.DataFrame(new_nodes)],
+        ignore_index=True
+    )
 
-#     # --- finalize nodes ---
-#     if new_nodes:
-#         new_nodes_df = pd.DataFrame(
-#             new_nodes, columns=['id','x','y','z','type']
-#         )
-#         nodes = pd.concat([nodes, new_nodes_df], ignore_index=True)
+    all_edges = pd.DataFrame(new_edges)
 
-#     # --- finalize edges ---
-#     edges_df = pd.DataFrame(new_edges, columns=['from_id','to_id'])
-#     edges_df = edges_df.drop_duplicates().reset_index(drop=True)
-
-#     # remove self-loops
-#     edges_df = edges_df[edges_df['from_id'] != edges_df['to_id']]
-
-#     return nodes.reset_index(drop=True), edges_df
-
+    return all_nodes, all_edges
 def conduit_lengths(nodes, edges): 
     #extract edge coordinates if not already existing
     for coord in ['x_0', 'x_1', 'y_0', 'y_1', 'z_0', 'z_1']:
