@@ -1,4 +1,5 @@
 input_files/double_pulse/anastomotic_low_slope.yaml 
+input_files/full_pipeline/anastomotic_low_slope.yaml 
 input_files/double_pulse/anastomotic_simple_clean.yaml 
 input_files/double_pulse/branching_straight_network.yaml 
 input_files/double_pulse/pykasso_n58_low_slope.yaml 
