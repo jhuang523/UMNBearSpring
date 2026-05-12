@@ -276,7 +276,7 @@ def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate =
     np.savez_compressed(f'{save_path}/results_arrays.npz', Q=Q, y=y, t=t, re=re)
     print (f'results saved to {save_path}')
 
-    return results
+    return results, obs_df
 
 def spin_up_simulation(network : OKN, baseflow, head_boundary, head_type, 
                        t_ss_max=864000, dt_max = 1000, 
@@ -285,7 +285,7 @@ def spin_up_simulation(network : OKN, baseflow, head_boundary, head_type,
                        verbose = False, Q_tol = 1e-3, h_tol = 1e-3,
                        initial_flowrate = 1e-6, initial_water_depth = 1e-6):
     inflow_boundary = {network.inlets : {'flow' : baseflow / len(network.inlets)}}
-    ss_results = run_openkarst_simulation(network, 
+    ss_results, _ = run_openkarst_simulation(network, 
                         cn_params = cn_params,
                         initial_flowrate = initial_flowrate,
                         initial_water_depth = initial_water_depth,
@@ -447,7 +447,7 @@ def full_simulation_pipeline(input_file, debug = False, **params):
 
         print_verbose(f'inflow boundary conditions written', debug)
 
-        results = run_openkarst_simulation(network, 
+        results, spring_df = run_openkarst_simulation(network, 
                                     cn_params = cn_params, 
                                     initial_flowrate = initial_flowrate, 
                                     initial_water_depth = initial_water_depth, 
@@ -469,6 +469,7 @@ def full_simulation_pipeline(input_file, debug = False, **params):
         hydrograph_method = input_params.get('hydrograph_method', 'dataframe')
         run_id = params.get('run_id', int(time.time()))
         run_id = f'{run_id}_{i}'
+        spring_df['run_id'] = run_id
         #metadata 
         metadata = {
             'run_id' : run_id,
@@ -482,7 +483,7 @@ def full_simulation_pipeline(input_file, debug = False, **params):
         metadata_df = pd.DataFrame(metadata, index = [0])
         metadata_df.to_parquet(f'{metadata_path}', partition_cols=['run_id'], compression='snappy')
         print_verbose(f'Metadata written to {metadata_path} with run_id {run_id}', debug)
-        write_outlet_flow(t, spring, hydrograph_output_path, run_id=run_id, method = hydrograph_method,verbose=debug)
+        spring_df.to_csv(f'{hydrograph_output_path}/{run_id}.csv', index=False)
     
 
     

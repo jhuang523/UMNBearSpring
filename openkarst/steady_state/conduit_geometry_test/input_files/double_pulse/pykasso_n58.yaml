@@ -11,7 +11,7 @@ initial_conditions_file : 'input_data/init_conditions/pykasso_n58_IC.pkl'  # fil
 baseflow: 0.02 #m3/s
 adaptive_timesteps: True 
 dt_max: 100
-t_max: 2160000  # fix so that if None, it tries the max timeseries or a default value
+t_max: 5180400.0  # fix so that if None, it tries the max timeseries or a default value
 t_ss_max: 864000
 Q_tol: .01
 h_tol: 0.03
