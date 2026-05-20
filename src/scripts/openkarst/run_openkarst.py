@@ -22,10 +22,10 @@ from utils.spring import outlet_flow, write_outlet_flow
 
 
 
-def load_network_data(nodes_file, edges_file, diameters_file = None, debug = False, **params):
+def load_network_data(nodes_file = None, edges_file=None, diameters_file = None, debug = False, **params):
     """Load network data from csv files and create OpenPNM geometry object"""
     node_keys = params.get('node_keys', {'inlet':['inlet'], 'outlet': ['outfall', 'outlet']})
-    network = OKN(nodes_file=nodes_file, edges_file=edges_file, diameters_file=diameters_file)
+    network = OKN(nodes_file=nodes_file, edges_file=edges_file, diameters_file=diameters_file, **params)
     cn_geometry = network.load_cave_data(debug = debug, **params)
     inlets, outlets = network.extract_boundary_nodes(node_keys, debug = debug)
     return network

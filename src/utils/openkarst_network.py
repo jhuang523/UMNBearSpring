@@ -177,6 +177,7 @@ class OpenKarstNetwork:
                 node_diameters = nodes.set_index('id')['d'].to_dict()
             except KeyError:
                 node_diameters = nodes['d'].to_dict()
+        nodes = nodes.reset_index()
         self.update_network(nodes=nodes, edges= edges, diameters = node_diameters, graph = G)       
         ## check edges, nodes, diameters 
         # Assign average diameters to each edge by averaging diameters of connected nodes

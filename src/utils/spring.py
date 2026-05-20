@@ -33,6 +33,8 @@ def outlet_flow(network : OpenKarstNetwork, Q):
     for node in outlet_ids:
     #flow is stored in the Q array as (ts, edge_index)
         outlet_Q[node] = single_node_flow(Q, node, network)
+    if outlet_Q == {}:
+        raise Warning("No outlets found in network")
     return outlet_Q
 
 def write_outlet_flow(t, spring_Q, output_path, run_id = None, method = "parquet", partition = ["run_id"], verbose = False):

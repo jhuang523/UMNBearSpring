@@ -251,52 +251,73 @@ def reduce_node_density(nodes, edges, epsilon, protected_types = ['inlet', 'outl
 
 def adjust_node_spacing(nodes, edges, spacing):
     """
-    Add intermediate nodes along edges so that
-    node spacing is approximately <= spacing.
+    Subdivide edges so that segment lengths are <= spacing.
+
+    Parameters
+    ----------
+    nodes : DataFrame
+        Columns: ['id', 'x', 'y', 'z']
+
+    edges : DataFrame
+        Columns: ['from_id', 'to_id']
+
+    spacing : float
+        Maximum allowed segment length.
+
+    Returns
+    -------
+    all_nodes : DataFrame
+    all_edges : DataFrame
     """
 
-    # node lookup
-    coord = nodes.set_index("id")[["x", "y", "z"]].to_dict("index")
+    # --- coordinate lookup ---
+    coord = nodes.set_index("id")[["x", "y", "z"]]
 
     new_nodes = []
     new_edges = []
 
-    # start new IDs after existing max
     next_id = nodes["id"].max() + 1
-    if ['x_0', 'x_1', 'y_0', 'y_1', 'z_0', 'z_1'] not in edges.columns:
-        edges = extract_edge_coordinates(nodes, edges)
-    if 'length' not in edges.columns:
-        edges = conduit_lengths(nodes, edges)
+
     for _, edge in edges.iterrows():
 
         n1 = edge["from_id"]
         n2 = edge["to_id"]
-        length = edge['length']
+
+        # --- endpoint coordinates ---
+        p1 = coord.loc[n1].values.astype(float)
+        p2 = coord.loc[n2].values.astype(float)
+
+        # --- edge vector ---
+        dvec = p2 - p1
+        length = np.linalg.norm(dvec)
+
+        # no subdivision needed
         if length <= spacing:
             new_edges.append({
-                "from": n1,
-                "to": n2
+                "from_id": n1,
+                "to_id": n2
             })
             continue
-        # number of segments needed
-        nseg = max(1, int(np.ceil(length / spacing)))
 
-        # interpolation positions
+        # --- number of segments ---
+        nseg = int(np.ceil(length / spacing))
+
+        # interpolation fractions
         tvals = np.linspace(0, 1, nseg + 1)
 
-        # create ordered node list along edge
         edge_nodes = [n1]
 
-        # intermediate nodes
+        # --- create intermediate nodes ---
         for t in tvals[1:-1]:
 
-            xn = x1 + t * dx
-            yn = y1 + t * dy
+            p = p1 + t * dvec
 
             new_nodes.append({
                 "id": next_id,
-                "x": xn,
-                "y": yn
+                "x": p[0],
+                "y": p[1],
+                "z": p[2],
+                "type" : 'junction'
             })
 
             edge_nodes.append(next_id)
@@ -304,14 +325,15 @@ def adjust_node_spacing(nodes, edges, spacing):
 
         edge_nodes.append(n2)
 
-        # connect sequentially
+        # --- connect sequential segments ---
         for a, b in zip(edge_nodes[:-1], edge_nodes[1:]):
+
             new_edges.append({
-                "from": a,
-                "to": b
+                "from_id": a,
+                "to_id": b
             })
 
-    # combine original + inserted nodes
+    # combine nodes
     all_nodes = pd.concat(
         [nodes, pd.DataFrame(new_nodes)],
         ignore_index=True
