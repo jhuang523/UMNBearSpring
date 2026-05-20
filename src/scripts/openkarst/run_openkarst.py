@@ -392,6 +392,7 @@ def full_simulation_pipeline(input_file, debug = False, **params):
     spin_up = input_params.get('spin_up', False)
     Q_tol = input_params.get('Q_tol', 1e-3)
     h_tol = input_params.get('h_tol', 1e-3)
+    parent_dir = params.get('parent_dir', 'output')
 
 
     #head boundary 
@@ -434,7 +435,7 @@ def full_simulation_pipeline(input_file, debug = False, **params):
 
     for i in range(len(recharge_distribution)):
         r_dist = recharge_distribution[i]
-        output_dir = input_params.get('output_dir', f'output/{network_name}/{recharge_name}/{r_dist}')
+        output_dir = input_params.get('output_dir', f'{parent_dir}/{network_name}/{recharge_name}/{r_dist}')
         if r_dist == 'partitioned':
             inflow_boundary = write_partitioned_inflow_boundary(network, R_l= R_l, R_h= R_h, t_l = t, t_h = t)
         elif r_dist == 'diffuse':

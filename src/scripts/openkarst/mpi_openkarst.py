@@ -47,7 +47,7 @@ def run_openkarst_mpi(sim_list, log_path, verbose=False):
             comm.send(f"[Rank {rank:03d}] START: {input_data_file} at {start}\n", dest=0, tag=0)
             run_id = f'{start}_{rank}'
             try: 
-                full_simulation_pipeline(input_data_file, debug=verbose, run_id=run_id)
+                full_simulation_pipeline(input_data_file, debug=verbose, run_id=run_id, parent_dir = f'output/{start}')
                 end = time.strftime("%Y-%m-%d_%H_%M_%S")
                 comm.send(f"[Rank {rank:03d}] END:   {input_data_file} at {end}\n", dest=0, tag=0)
             except Exception as e:
