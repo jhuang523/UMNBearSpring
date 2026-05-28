@@ -57,14 +57,20 @@ def write_inflow_boundary(nodes, Q, t):
     R = {nodes : {'flow' : Q, 'time' : t}}
     return R
 
-def write_partitioned_inflow_boundary(network : OKN, R_l=None, R_h=None, t_l=None, t_h=None):
+def write_partitioned_inflow_boundary(network : OKN, R_l=None, R_h=None, t_l=None, t_h=None, lattice = False):
     R = {}
     if R_l is not None: 
         if t_l is None:
              return ValueError("Time is None")
-        n_diffuse = len(network.diffuse_inlets)
+        if not lattice: 
+            n_diffuse= len(network.lattice_inlets)
+            diffuse_inlets = network.lattice_inlets
+
+        else:
+            n_diffuse = len(network.diffuse_inlets)
+            diffuse_inlets
         R_l_per_inlet = R_l / n_diffuse 
-        R_diffuse = write_inflow_boundary(network.diffuse_inlets, R_l_per_inlet, t_l)
+        R_diffuse = write_inflow_boundary(diffuse_inlets, R_l_per_inlet, t_l)
         R.update(R_diffuse)
     if R_h is not None:
         if t_h is None:
@@ -80,6 +86,11 @@ def write_partitioned_inflow_boundary(network : OKN, R_l=None, R_h=None, t_l=Non
         if not np.isreal(data['flow']).all():
             raise ValueError(f"Recharge values for inlet {inlet} contain non-real numbers.")
     return R
+def write_lattice_boundary(network : OKN, Q = 0): # default is no flow at the edges except for the top 
+    if network.lattice_edges is None or len(network.lattice_edges) == 0:
+        raise ValueError("No lattice edge nodes found in the network.")
+    LB = {network.lattice_edges : {'flow' : Q}}
+    return LB
 
 def write_constant_head_boundary(network : OKN, h):
     if network.outlets is None or len(network.outlets) == 0:
@@ -283,8 +294,12 @@ def spin_up_simulation(network : OKN, baseflow, head_boundary, head_type,
                        adaptive_timesteps = True, ss_output_dir=None, 
                        init_conditions_file = None, cn_params = None, 
                        verbose = False, Q_tol = 1e-3, h_tol = 1e-3,
-                       initial_flowrate = 1e-6, initial_water_depth = 1e-6):
-    inflow_boundary = {network.inlets : {'flow' : baseflow / len(network.inlets)}}
+                       initial_flowrate = 1e-6, initial_water_depth = 1e-6, lattice = False):
+    if lattice:
+        inflow_boundary = write_lattice_boundary(network, Q=baseflow)
+        inflow_boundary.update({network.lattice_inlets : {'flow' : baseflow/len(network.lattice_inlets)}})
+    else:
+        inflow_boundary = {network.inlets : {'flow' : baseflow / len(network.inlets)}}
     ss_results, _ = run_openkarst_simulation(network, 
                         cn_params = cn_params,
                         initial_flowrate = initial_flowrate,
@@ -368,6 +383,7 @@ def full_simulation_pipeline(input_file, debug = False, **params):
     head_boundary_file = input_params.get('head_boundary_file', None)
     head_type = input_params.get('head_boundary_type', 'constant')
     inflow_type = input_params.get('inflow_type', 'constant')
+    lattice = input_params.get('lattice', False)
     #load network data
     network_dir = input_params['network_dir']
     network_name = ""
@@ -380,7 +396,10 @@ def full_simulation_pipeline(input_file, debug = False, **params):
     nodes_file = input_params.get('nodes_file', 'nodes.csv')
     edges_file = input_params.get('edges_file', 'edges.csv')
     network = load_network_data(f'{network_dir}/{nodes_file}', f'{network_dir}/{edges_file}', debug= debug)
-    network.extract_diffuse_inlets()
+    if lattice:
+        network.extract_lattice_boundary_nodes()
+    else:
+        network.extract_diffuse_inlets()
     if not network.network_validity():
         raise Exception("Network validity check failed.")
     #load timestep and other simulation params
@@ -406,15 +425,21 @@ def full_simulation_pipeline(input_file, debug = False, **params):
     init_conditions_file = input_params.get('initial_conditions_file', None)
     if init_conditions_file is not None:
         IC_exists = Path(init_conditions_file).exists()
+    else:
+        IC_exists = False
     baseflow= input_params.get('baseflow', 1e-5)
-    ss_output_dir = input_params.get('ss_output_dir', f'output/spinup/{network_name}')
+    if lattice:
+        ss_output_dir = input_params.get('ss_output_dir', f'output/spinup/lattice/{baseflow}/{network_name}')
+
+    else:
+        ss_output_dir = input_params.get('ss_output_dir', f'output/spinup/{baseflow}/{network_name}')
     t_ss_max = input_params.get('t_ss_max', 86400*10)
 
 
 
     if spin_up or not IC_exists: #if manually overriding init conditions or if init conditions file doesn't exist, run spin up simulation to extract steady state conditions
         print_verbose(f"Running spin-up simulation to find steady state conditions for {network_name}", debug)
-        IC = spin_up_simulation(network, baseflow, head_boundary, head_type, t_ss_max, dt_max, adaptive_timesteps, ss_output_dir, init_conditions_file, cn_params, debug, Q_tol, h_tol)
+        IC = spin_up_simulation(network, baseflow, head_boundary, head_type, t_ss_max, dt_max, adaptive_timesteps, ss_output_dir, init_conditions_file, cn_params, debug, Q_tol, h_tol, lattice = lattice)
         initial_flowrate = IC['initial_flowrate']
         initial_water_depth = IC['initial_water_depth']
         print_verbose(f"Steady state conditions extracted and written to {init_conditions_file}", debug)
@@ -435,15 +460,18 @@ def full_simulation_pipeline(input_file, debug = False, **params):
 
     for i in range(len(recharge_distribution)):
         r_dist = recharge_distribution[i]
-        output_dir = input_params.get('output_dir', f'{parent_dir}/{network_name}/{recharge_name}/{r_dist}')
-        if r_dist == 'partitioned':
-            inflow_boundary = write_partitioned_inflow_boundary(network, R_l= R_l, R_h= R_h, t_l = t, t_h = t)
-        elif r_dist == 'diffuse':
-            inflow_boundary = write_partitioned_inflow_boundary(network, R_l = R_l + R_h, t_l = t, t_h = t)
-        elif r_dist == 'point':
-            inflow_boundary = write_partitioned_inflow_boundary(network, R_h = R_l + R_h, t_l = t, t_h = t)
+        if lattice:
+            output_dir = input_params.get('output_dir', f'{parent_dir}/lattice/{network_name}/{recharge_name}/{r_dist}')
         else:
-            inflow_boundary = write_partitioned_inflow_boundary(network, R_h = R_l + R_h, t_l = t, t_h = t)
+            output_dir = input_params.get('output_dir', f'{parent_dir}/{network_name}/{recharge_name}/{r_dist}')
+        if r_dist == 'partitioned':
+            inflow_boundary = write_partitioned_inflow_boundary(network, R_l= R_l, R_h= R_h, t_l = t, t_h = t, lattice = lattice)
+        elif r_dist == 'diffuse':
+            inflow_boundary = write_partitioned_inflow_boundary(network, R_l = R_l + R_h, t_l = t, t_h = t, lattice = lattice)
+        elif r_dist == 'point':
+            inflow_boundary = write_partitioned_inflow_boundary(network, R_h = R_l + R_h, t_l = t, t_h = t, lattice = lattice)
+        else:
+            inflow_boundary = write_partitioned_inflow_boundary(network, R_h = R_l + R_h, t_l = t, t_h = t, lattice = lattice)
             raise Warning(f"Recharge distribution {r_dist} not recognized. Setting to point.")
 
         print_verbose(f'inflow boundary conditions written', debug)

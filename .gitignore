@@ -28,3 +28,4 @@ model_runs/
 *.pkl
 *.log
 *.pyc
+networks/lattice/

@@ -71,18 +71,16 @@ model_parameters = {
         },
         'sks' : {'algorithm' : 'Riemann3',
                 #  'ratio' : 2,
-                'karst' : 0.01,
+                'karst' : 0.1,
                 'geology' : 0.5,
                 'fracture' : 0.1,
                 'ratio' : 0.1},
-        # 'fractures' : {'generate': 
-        #             # 'family_01':{ 'density' : 0.0005 , 'orientation' : 135 , 'dip' : 10, 'length' : 300, 'cost' : 0.1 },  
-        #             #     'family_02': { 'density' : 0.0005 , 'orientation' : 45, 'dip' : 10, 'length' : 500, 'cost' : 0.1},
-        #                 {'family_03':{ 'density' : 0.0005 , 'orientation' : 135 , 'dip' : 90, 'length' : 300, 'cost' : 0.1 },  
-        #                 'family_04': { 'density' : 0.0005 , 'orientation' : 45, 'dip' : 90, 'length' : 500, 'cost' : 0.1}
-        #             }
-        
-        # }
+        'fractures' : {'generate': 
+                    {'family_01': { 'density' : 0.0005 , 'orientation' : 135 , 'dip' : 10, 'length' : 300, 'cost' : 0.1 },  
+                        'family_02': { 'density' : 0.0005 , 'orientation' : 45, 'dip' : 10, 'length' : 500, 'cost' : 0.1},
+                        'family_03':{ 'density' : 0.0005 , 'orientation' : 135 , 'dip' : 90, 'length' : 300, 'cost' : 0.1 },  
+                        'family_04': { 'density' : 0.0005 , 'orientation' : 45, 'dip' : 90, 'length' : 500, 'cost' : 0.1}
+                    }}
         },
         'double_sinkhole' : 
         {'outlets' : {

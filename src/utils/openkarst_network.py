@@ -232,6 +232,11 @@ class OpenKarstNetwork:
         diffuse_inlets = self.nodes.id[(self.nodes.type != inlet_label) & (self.nodes.type != outlet_label)].to_list()
         self.update_network(diffuse_inlets = tuple(diffuse_inlets))
     
+    def extract_lattice_boundary_nodes(self, lattice_no_flow_label = 'lattice_edge', lattice_inlet_label = 'lattice_top'):
+        lattice_inlets = self.nodes.id[self.nodes.type == lattice_no_flow_label].to_list()
+        lattice_outlets = self.nodes.id[self.nodes.type == lattice_inlet_label].to_list()
+        self.update_network(lattice_inlets = tuple(lattice_inlets), lattice_edges = tuple(lattice_outlets))
+
     def store_inlets(self,node_dict):
         """Store inlet nodes from a dictionary that contains 'point_inlets' and 'diffuse_inlets' keys."""
         self.point_inlets += tuple(node_dict['point_inlets'])
