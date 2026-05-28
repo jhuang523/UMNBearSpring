@@ -3,7 +3,7 @@
 network_dir: 'networks/pykasso_n58'
 inflow_type : 'timeseries'  # 'constant', 'timeseries', 'ramp'
 recharge_file: 'input_data/recharge_m_s/gaussian_pulse_high_flow.csv'
-recharge_distribution: ['diffuse']
+recharge_distribution: ['partitioned']
 head_boundary_type : 'constant'  # 'constant', 'timeseries', 'ramp' 
 head_boundary: 0.01
 spin_up : False

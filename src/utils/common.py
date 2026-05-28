@@ -25,6 +25,7 @@ def load_pickle(path: str):
     return data
 
 def write_pickle(path: str, data):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, 'wb') as f:
         pickle.dump(data, f)
         
