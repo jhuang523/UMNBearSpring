@@ -1,4 +1,7 @@
-input_files/full_pipeline/single_conduit_vert_tort.yaml 
-input_files/full_pipeline/single_conduit_vert_tort_low_slope.yaml 
-input_files/high_flow/single_conduit_vert_tort.yaml 
-input_files/high_flow/single_conduit_vert_tort_low_slope.yaml 
+input_files/high_flow/anastomotic_low_slope.yaml
+input_files/high_flow/anastomotic_simple_clean.yaml
+input_files/high_flow/branching_straight_network.yaml
+input_files/high_flow/pykasso_n58_low_slope.yaml
+input_files/high_flow/pykasso_n58.yaml
+input_files/high_flow/slope_0008.yaml
+input_files/high_flow/straight_conduit_n62.yaml
