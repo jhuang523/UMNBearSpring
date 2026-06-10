@@ -1,6 +1,6 @@
 #will contain recharge, initial conditions, boundary conditions 
 
-network_dir: 'networks/lattice/2D/pykasso_n58'
+network_dir: 'networks/lattice/2D/pykasso_n58_plan'
 inflow_type : 'timeseries'  # 'constant', 'timeseries', 'ramp'
 recharge_file: 'input_data/recharge_m_s/gaussian_pulse_high_flow.csv'
 recharge_distribution: ['partitioned']
@@ -8,7 +8,7 @@ lattice: True
 head_boundary_type : 'constant'  # 'constant', 'timeseries', 'ramp' 
 head_boundary: 0.01
 spin_up : True
-initial_conditions_file : 'input_data/init_conditions/high_flow/lattice/2D/pykasso_n58_IC.pkl'  # file containing initial flowrate and water depth info
+initial_conditions_file : 'input_data/init_conditions/high_flow/lattice/2D/pykasso_n58_plan_IC.pkl'  # file containing initial flowrate and water depth info
 baseflow: 0.2 #m3/s
 adaptive_timesteps: True 
 dt_max: 100
@@ -17,5 +17,4 @@ t_ss_max: 864000
 Q_tol: .01
 h_tol: 0.03
 hydrograph_output_path: 'output/hydrographs'
-cn_params: 
-  - epsilon: 0.1
+

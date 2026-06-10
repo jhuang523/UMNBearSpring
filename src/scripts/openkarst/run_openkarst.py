@@ -62,13 +62,13 @@ def write_partitioned_inflow_boundary(network : OKN, R_l=None, R_h=None, t_l=Non
     if R_l is not None: 
         if t_l is None:
              return ValueError("Time is None")
-        if not lattice: 
+        if lattice: 
             n_diffuse= len(network.lattice_inlets)
             diffuse_inlets = network.lattice_inlets
 
         else:
             n_diffuse = len(network.diffuse_inlets)
-            diffuse_inlets
+            diffuse_inlets = network.diffuse_inlets
         R_l_per_inlet = R_l / n_diffuse 
         R_diffuse = write_inflow_boundary(diffuse_inlets, R_l_per_inlet, t_l)
         R.update(R_diffuse)
