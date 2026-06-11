@@ -28,7 +28,7 @@ def check_Q(Q, tol = 1e-3, n_steps = 10):
         print("No convergence")
     if not real:
         print("Q contains non-real values")
-    return convergence and real
+    return convergence, real
 
 def check_h(h, tol = 1e-3, n_steps = 10):
     convergence = check_convergence(h, tol= tol, n_steps= n_steps)
@@ -40,19 +40,28 @@ def check_h(h, tol = 1e-3, n_steps = 10):
         print("h contains non-real values")
     if not positive:
         print("h contains negative values")
-    return convergence and real and positive
+    return convergence, real, positive
 
 def extract_steady_state_conditions(results_npz, Q_tol = 1e-3, h_tol = 1e-3, n_steps = 10):
     results = np.load(results_npz)
     Q = results["Q"]
     h = results["y"]
+    Q_converged, Q_real = check_Q(Q, tol = Q_tol, n_steps = n_steps)
+    h_converged, h_real, h_positive = check_h(h, tol = h_tol, n_steps = n_steps)
     #some QC 
-    if not check_Q(Q, tol = Q_tol, n_steps = n_steps):
-        print("Q not converged")
-        if not check_h(h, tol = h_tol, n_steps = n_steps):
-            print("h not converged")
-            raise ValueError("Neither Q nor h converged. Cannot extract steady state conditions.")
-        raise ValueError("Q not converged. Cannot extract steady state conditions.")
+    error = ""
+    if not Q_converged:
+        error += "Q not converged.\n" 
+    if not h_converged:
+        error += "h not converged.\n"
+    if not Q_real:
+        error += "Q contains non-real values.\n"
+    if not h_real:
+        error += "h contains non-real values.\n"
+    if not h_positive:
+        error += "h contains negative values.\n"
+    if not (Q_converged and h_converged and Q_real and h_real and h_positive):
+        raise ValueError(f"Cannot extract steady state conditions. Errors: {error}")
     
     #
     Q_ss = Q[-1]

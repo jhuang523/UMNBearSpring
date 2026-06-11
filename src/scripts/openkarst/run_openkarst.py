@@ -375,9 +375,14 @@ def run_from_yaml(
 def full_simulation_pipeline(input_file, debug = False, **params):
     #load recharge and head params
     input_params = load_yaml(input_file)
-    recharge_file = input_params['recharge_file']
-    recharge_name = recharge_file.split('/')[-1].split('.')[0]
-    recharge_data = load_recharge_data(recharge_file)
+    recharge_file = input_params.get('recharge_file', None)
+    if recharge_file is not None:
+        recharge_name = recharge_file.split('/')[-1].split('.')[0]
+        recharge_data = load_recharge_data(recharge_file)
+    else:
+        recharge_data = input_params.get('recharge_data', None)
+    if recharge_data is None:
+        raise Exception("Recharge not given.")
     recharge_distribution = input_params.get('recharge_distribution', 'partitioned')
     head_boundary = input_params['head_boundary']
     head_boundary_file = input_params.get('head_boundary_file', None)
@@ -411,7 +416,7 @@ def full_simulation_pipeline(input_file, debug = False, **params):
     spin_up = input_params.get('spin_up', False)
     Q_tol = input_params.get('Q_tol', 1e-3)
     h_tol = input_params.get('h_tol', 1e-3)
-    parent_dir = params.get('parent_dir', 'output')
+    parent_dir = input_params.get('parent_dir', 'output')
 
 
     #head boundary 
@@ -430,7 +435,6 @@ def full_simulation_pipeline(input_file, debug = False, **params):
     baseflow= input_params.get('baseflow', 1e-5)
     if lattice:
         ss_output_dir = input_params.get('ss_output_dir', f'output/spinup/lattice/{baseflow}/{network_name}')
-
     else:
         ss_output_dir = input_params.get('ss_output_dir', f'output/spinup/{baseflow}/{network_name}')
     t_ss_max = input_params.get('t_ss_max', 86400*10)
