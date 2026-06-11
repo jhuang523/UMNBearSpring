@@ -1,3 +1,5 @@
 input_files/lattice/pykasso_n58_2D_plan_short.yaml
+input_files/lattice/pykasso_n58_2D.yaml
+
 
 

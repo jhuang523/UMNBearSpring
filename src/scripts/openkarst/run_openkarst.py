@@ -224,6 +224,7 @@ def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate =
     input_data = {'nodes' : network.nodes, 'edges' : network.edges, 
                 'point_inlets': network.point_inlets,
                 'diffuse_inlets': network.diffuse_inlets,
+                'lattice_inlets': network.get('lattice_inlets', None),
                 'outlets': network.outlets,
                 'cn_geometry' : cn_geometry, 
                 'inflow_boundary' : inflow_boundary, 
@@ -296,7 +297,7 @@ def spin_up_simulation(network : OKN, baseflow, head_boundary, head_type,
                        verbose = False, Q_tol = 1e-3, h_tol = 1e-3,
                        initial_flowrate = 1e-6, initial_water_depth = 1e-6, lattice = False):
     if lattice:
-        inflow_boundary = write_lattice_boundary(network, Q=baseflow)
+        inflow_boundary = write_lattice_boundary(network, Q=0)
         inflow_boundary.update({network.lattice_inlets : {'flow' : baseflow/len(network.lattice_inlets)}})
     else:
         inflow_boundary = {network.inlets : {'flow' : baseflow / len(network.inlets)}}
