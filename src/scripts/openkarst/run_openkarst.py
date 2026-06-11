@@ -224,7 +224,7 @@ def run_openkarst_simulation(network : OKN, cn_params = None, initial_flowrate =
     input_data = {'nodes' : network.nodes, 'edges' : network.edges, 
                 'point_inlets': network.point_inlets,
                 'diffuse_inlets': network.diffuse_inlets,
-                'lattice_inlets': network.get('lattice_inlets', None),
+                'lattice_inlets': getattr(network, 'lattice_inlets', None),
                 'outlets': network.outlets,
                 'cn_geometry' : cn_geometry, 
                 'inflow_boundary' : inflow_boundary, 

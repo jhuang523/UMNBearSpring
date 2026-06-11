@@ -17,5 +17,4 @@ t_ss_max: 864000
 Q_tol: .01
 h_tol: 0.03
 hydrograph_output_path: 'output/hydrographs'
-cn_params: 
-  - epsilon: 0.1
+
