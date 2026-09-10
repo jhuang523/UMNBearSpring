@@ -54,7 +54,7 @@ class OpenKarstNetwork:
         self.nodes = data.get('nodes')
         self.edges = data.get('edges')
         self.diameters = data.get('diameters')
-        self.geometry = None
+        self.geometry = data.get('geometry')
         self.graph = None
         self.inlets = ()
         self.diffuse_inlets = ()
@@ -77,129 +77,126 @@ class OpenKarstNetwork:
         if self.edges is not None:
             self.edges.to_csv(f"{save_path}/edges.csv", index=False)
         print_verbose(f"Data saved to {save_path}", params.get('debug', False))
-    def load_cave_data(self,debug = False, **params):
-        """
-        Loads the cave data from the CSV files and constructs a NetworkX graph.
+    def load_cave_data(self, debug=False, **params):
+        """Load cave network and return an OpenPNM network."""
 
-        This method reads the node coordinates, edge connections, and node diameters
-        from their respective CSV files. It constructs a NetworkX graph with the
-        loaded data, where nodes have coordinates and edges have average diameters
-        based on the connected nodes. The two diameters available at each node are
-        currently averaged. The graph is then converted into an OpenPNM geometry
-        object with assigned conduit lengths and diameters.
-
-        Returns:
-            openpnm.network.GenericNetwork: An OpenPNM geometry object representing
-                the network with assigned conduit lengths and diameters.
-        """
-        
-        G = nx.Graph()
-        node_diameters = {}
-        #if node data is provided, use it directly
-        if self.nodes is not None: 
-            nodes = self.nodes
-            if 'z' not in nodes.columns:
-                nodes['z'] = params.get('z', 0)
-            if 'd' not in nodes.columns:
-                nodes['d']= params.get('d', 1) #assign uniform value
-            nodes = nodes.set_index('id')
-
-            coords_array = nodes[['x', 'y', 'z']].to_numpy()  # shape (N, 3)
-            node_ids = nodes.index.to_numpy()
-
-            nodes_list = list(zip(node_ids, [{'coords': coord.tolist()} for coord in coords_array]))
-            G.add_nodes_from(nodes_list)
-            G = nx.relabel_nodes(G, lambda x: int(x))
-            if debug:
-                print(G.nodes)
-        # Load nodes and their coordinates from the file, skipping the header
+        # ------------------------------------------------------------------
+        # Nodes
+        # ------------------------------------------------------------------
+        if self.nodes is not None:
+            nodes = self.nodes.copy()
+        elif self.nodes_file.endswith(".csv"):
+            nodes = pd.read_csv(self.nodes_file)
         else:
-            if self.nodes_file.endswith('.csv'):
-                nodes = pd.read_csv(self.nodes_file)
-                if 'z' not in nodes.columns:
-                    nodes['z'] = params.get('z', 0)
-                if 'd' not in nodes.columns:
-                    nodes['d']= params.get('d', 1) #assign uniform value
+            nodes = pd.read_csv(
+                self.nodes_file,
+                sep=";",
+                names=["id", "x", "y", "z"],
+                skiprows=1,
+            )
 
-                coords_array = nodes[['x', 'y', 'z']].to_numpy()  # shape (N, 3)
-                node_ids = nodes.id.to_numpy()
+        nodes["id"] = nodes["id"].astype(int)
 
-                nodes_list = list(zip(node_ids, [{'coords': coord.tolist()} for coord in coords_array]))
-                G.add_nodes_from(nodes_list)
-                G = nx.relabel_nodes(G, lambda x: int(x))
-                if debug:
-                    print(G.nodes)
-            else:
-                #TODO: fix so this stores .txt files as dfs 
-                with open(self.nodes_file, 'r') as file:
-                    next(file)  # Skip the header line
-                    for line in file:
-                        node_id, x, y, z = line.strip().split(';')
-                        G.add_node(int(node_id), coords=[float(x), float(y), float(z)])
+        if "z" not in nodes:
+            nodes["z"] = params.get("z", 0)
 
-        #load edges
+        if "d" not in nodes:
+            nodes["d"] = params.get("d", 1.0)
+
+        # ------------------------------------------------------------------
+        # Edges
+        # ------------------------------------------------------------------
         if self.edges is not None:
-            edges = self.edges
-            edge_data = edges[['from_id', 'to_id']].astype(int).itertuples(index=False, name=None)
-            G.add_edges_from(edge_data)
-            if debug:
-                print(edge_data)
+            edges = self.edges.copy()
+        elif self.edges_file.endswith(".csv"):
+            edges = pd.read_csv(self.edges_file)
         else:
-            if self.edges_file.endswith('.csv'):
-                edges = pd.read_csv(self.edges_file)
-                edge_data = edges[['from_id', 'to_id']].astype(int).itertuples(index=False, name=None)
-                G.add_edges_from(edge_data)
-                if debug:
-                    print(edge_data)
-            else:
-                #TODO: fix so this stores .txt files as dfs 
-                with open(self.edges_file, 'r') as file:
-                    next(file)  # Skip the header line
-                    for line in file:
-                        node_a, node_b = map(int, line.strip().split(';'))
-                        G.add_edge(node_a, node_b)
+            edges = pd.read_csv(
+                self.edges_file,
+                sep=";",
+                names=["from_id", "to_id"],
+                skiprows=1,
+            )
+
+        edges[["from_id", "to_id"]] = edges[["from_id", "to_id"]].astype(int)
         edges = conduits.remove_duplicate_edges(edges)
-        # Load diameters from the file, skipping the header
-        if self.diameters is not None:
-            node_diameters = self.diameters.set_index('id').to_dict()['d']
-            nodes['d'] = nodes['id'].map(node_diameters)
-        elif self.diameters_file is not None: #to do fix this so it can take in CSV
-            node_diameters = {}
-            with open(self.diameters_file, 'r') as file:
-                next(file)  # Skip the header line
-                for line in file:
-                    node_id, cswidth, csheight = line.strip().split(';')
-                    average_diameter = (float(cswidth) + float(csheight)) / 2
-                    node_diameters[int(node_id)] = average_diameter
-            nodes['d'] = nodes['id'].map(node_diameters)
-        else:
-            try:
-                node_diameters = nodes.set_index('id')['d'].to_dict()
-            except KeyError:
-                node_diameters = nodes['d'].to_dict()
-        nodes = nodes.reset_index()
-        self.update_network(nodes=nodes, edges= edges, diameters = node_diameters, graph = G)       
-        ## check edges, nodes, diameters 
-        # Assign average diameters to each edge by averaging diameters of connected nodes
-        edge_diameters = {}
-        for node_a, node_b in G.edges():
-            avg_diameter = (node_diameters[node_a] + node_diameters[node_b]) / 2
-            edge_diameters[tuple(sorted((node_a, node_b)))] = avg_diameter
-            
-        # Create an openPNM geometry object
-        cn_geometry = op.io.network_from_networkx(G)
-        
-        # Compute and assign conduit lengths 
-        coords_diff = np.diff(cn_geometry.coords[cn_geometry.conns], axis=1).squeeze()
-        squared_diffs = coords_diff**2
-        sum_squared_diffs = np.sum(squared_diffs, axis=1)
-        conduit_lengths = np.sqrt(sum_squared_diffs)
-        cn_geometry['throat.lengths'] = conduit_lengths
-        
-        # # Assign conduit diameters to openPNM geometry object
-        cn_geometry['throat.diameters'] = [edge_diameters[tuple(sorted(edge))] for edge in cn_geometry['throat.conns']]
-        self.update_network(geometry = cn_geometry)
-        return cn_geometry
+
+        # ------------------------------------------------------------------
+        # Diameters
+        # ------------------------------------------------------------------
+        if isinstance(self.diameters, (int, float)):
+            nodes["d"] = float(self.diameters)
+
+        elif isinstance(self.diameters, pd.DataFrame):
+            diameter_map = self.diameters.set_index("id")["d"]
+            nodes["d"] = nodes["id"].map(diameter_map)
+
+        elif self.diameters_file is not None:
+            d = pd.read_csv(
+                self.diameters_file,
+                sep=";",
+                names=["id", "width", "height"],
+                skiprows=1,
+            )
+            d["d"] = (d["width"] + d["height"]) / 2
+            nodes["d"] = nodes["id"].map(d.set_index("id")["d"])
+
+        node_diameters = nodes.set_index("id")["d"].to_dict()
+
+        # ------------------------------------------------------------------
+        # NetworkX graph
+        # ------------------------------------------------------------------
+        G = nx.Graph()
+
+        G.add_nodes_from(
+            (
+                row.id,
+                {"coords": [row.x, row.y, row.z]},
+            )
+            for row in nodes.itertuples(index=False)
+        )
+
+        G.add_edges_from(
+            edges[["from_id", "to_id"]].itertuples(index=False, name=None)
+        )
+
+        if debug:
+            print(G.nodes(data=True))
+            print(G.edges())
+
+        self.update_network(
+            nodes=nodes,
+            edges=edges,
+            diameters=node_diameters,
+            graph=G,
+        )
+
+        # ------------------------------------------------------------------
+        # Edge diameters
+        # ------------------------------------------------------------------
+        edge_diameters = {
+            tuple(sorted((u, v))):
+            (node_diameters[u] + node_diameters[v]) / 2
+            for u, v in G.edges
+        }
+
+        # ------------------------------------------------------------------
+        # OpenPNM network
+        # ------------------------------------------------------------------
+        net = op.io.network_from_networkx(G)
+
+        coords = net.coords[net.conns]
+        net["throat.lengths"] = np.linalg.norm(coords[:, 0] - coords[:, 1], axis=1)
+
+        net["throat.diameters"] = [
+            edge_diameters[tuple(sorted(edge))]
+            for edge in net["throat.conns"]
+        ]
+
+        self.update_network(geometry=net)
+
+        return net
+    
     def extract_edge_coordinates(self, debug = False):
         edges = conduits.extract_edge_coordinates(self.nodes, self.edges)
         self.update_network(edges = edges)
@@ -211,7 +208,9 @@ class OpenKarstNetwork:
 
         degree_df = pd.DataFrame(self.graph.degree(), columns = ['id', 'degree'])
         degree_df = degree_df.set_index('id') 
+        self.nodes['degree'] = self.nodes.id.map(degree_df['degree'])
         self.update_network(degree = degree_df)
+        return self.nodes
         print_verbose("node degrees calculated", debug)
     def conduit_lengths(self, debug = False): 
         edges = conduits.conduit_lengths(self.nodes, self.edges)
@@ -302,8 +301,19 @@ class OpenKarstNetwork:
         ax = params.get("ax", None)
         lc = params.get("lc", None)
         sc = params.get("sc", None)
+        hide_nodes = params.get("hide_nodes", False)
+        edge_lookup = {
+            tuple(sorted((row.from_id, row.to_id))): i
+            for i, row in self.edges.iterrows()
+        }
 
-        segments = self.edges[
+        order = [
+            edge_lookup[tuple(sorted(conn))]
+            for conn in self.geometry['throat.conns']
+        ]
+
+        edges_ordered = self.edges.iloc[order].reset_index(drop=True)
+        segments = edges_ordered[
             [f'{axes[0]}_0', f'{axes[1]}_0',
             f'{axes[0]}_1', f'{axes[1]}_1']
         ].values.reshape(-1, 2, 2)
@@ -331,16 +341,18 @@ class OpenKarstNetwork:
             #     norm=norm_h,
             #     s=30
             # )
-            sns.scatterplot(self.nodes, x = axes[0], y = axes[1], hue = h, ax = ax, palette = 'viridis')
-            plt.colorbar(lc, ax=ax, label="Flowrate (m³/s)")
+            if not hide_nodes: 
+                sns.scatterplot(self.nodes, x = axes[0], y = axes[1], hue = h, ax = ax, palette = 'viridis')
+                plt.legend(title = "Head")
+            cbar = plt.colorbar(lc, ax=ax, label="Flowrate (m³/s)")
             plt.grid(True)
-            plt.legend(title = "Head")
+            
 
-            return lc, sc
+            return ax, lc, sc, cbar
         # ---------- UPDATE MODE ----------
         lc.set_array(Q)
         sc.set_array(h)
-        return lc, sc
+        return ax, lc, sc, cbar
     
     
     def animate_network_flow(self, Q, h, t, Q_out, **params): #Q and h are arrays that match the number of edges (Q) and number of nodes (h)

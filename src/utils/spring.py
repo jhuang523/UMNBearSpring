@@ -82,6 +82,15 @@ def calculate_volume(t, Q_spring):
     volume = np.trapezoid(Q_spring, t)
     return volume
 
+def calculate_storage_signal(t, Q_spring, t_R, R):
+    R_interp = np.interp(t, t_R, R)
+    return R_interp - Q_spring 
+
+def calculate_pulse_width(t, Q, threshold = 0.1):
+    mask = np.abs(Q) > threshold * np.max(np.abs(Q))
+    width = t[mask].values[-1] - t[mask].values[0]
+    return width
+
 def main():
     # parser = ArgumentParser()
     # parser.add_argument('--input_data', type = str, help = "Path to npz file")

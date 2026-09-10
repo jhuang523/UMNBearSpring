@@ -1,0 +1,23 @@
+#will contain recharge, initial conditions, boundary conditions 
+
+network_dir: 'networks/lattice/2D/simple_test'
+inflow_type : 'constant'  # 'constant', 'timeseries', 'ramp'
+# recharge_file: 'input_data/recharge_m_s/gaussian_pulse_high_flow.csv'
+recharge_data: 0.2 #m3/s
+recharge_distribution: ['partitioned']
+lattice: True
+output_dir: 'output/test/simple'
+ss_output_dir: 'output/test/simple/steady_state'
+head_boundary_type : 'constant'  # 'constant', 'timeseries', 'ramp' 
+head_boundary: 0.01
+spin_up : True
+initial_conditions_file : 'input_data/init_conditions/high_flow/lattice/2D/simple_test.pkl'  # file containing initial flowrate and water depth info
+baseflow: 0.2 #m3/s
+adaptive_timesteps: True 
+dt_max: 100
+t_max: 100000  # fix so that if None, it tries the max timeseries or a default value
+t_ss_max: 100000
+Q_tol: .01
+h_tol: 0.03
+hydrograph_output_path: 'output/hydrographs'
+

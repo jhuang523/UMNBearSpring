@@ -74,6 +74,8 @@ def reset_node_ids(nodes, edges):
     edges['from_id'] = edges.from_id.map(node_map)
     edges['to_id'] = edges.to_id.map(node_map)
     nodes['id'] = nodes.id.map(node_map)
+    nodes = nodes.reset_index(drop=True)
+    edges = edges.reset_index(drop=True)
     return nodes, edges
 
 def densify_edges(nodes, edges, density_factor=3):
@@ -404,11 +406,11 @@ def plot_2D_network(nodes,
 
     palette = params.get("palette", "coolwarm")
     cmap = sns.color_palette(palette, as_cmap=True)
-    if node_color is not None: 
+    if node_color is not None and type(node_color) == str: 
         if node_color in nodes.columns:
             node_color = nodes[node_color]
         norm_node = plt.Normalize(vmin=params.get("vmin_node", node_color.min()), vmax=params.get("vmax_node", node_color.max()))
-    if edge_color is not None:
+    if edge_color is not None and type(edge_color) == str:
         if edge_color in edges.columns:
             edge_color = edges[edge_color]
         norm_edge = plt.Normalize(vmin=params.get("vmin_edge", edge_color.min()), vmax=params.get("vmax_edge", edge_color.max()))
